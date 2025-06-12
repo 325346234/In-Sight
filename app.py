@@ -96,78 +96,79 @@ def main():
         initial_sidebar_state="expanded"
     )
     
-    # Custom CSS styling with skyblue and white theme
+    # Custom CSS styling with POSCO brand colors (blues)
     st.markdown("""
     <style>
     /* Main background and text */
     .stApp {
-        background: linear-gradient(135deg, #e6f3ff 0%, #ffffff 100%);
+        background: linear-gradient(135deg, #f0f6ff 0%, #ffffff 100%);
     }
     
     /* Header styling */
     .main-header {
-        background: linear-gradient(90deg, #87ceeb, #4682b4);
+        background: linear-gradient(90deg, #1e3a8a, #3b82f6);
         padding: 2rem;
         border-radius: 15px;
         text-align: center;
         color: white;
         margin-bottom: 2rem;
-        box-shadow: 0 4px 15px rgba(70, 130, 180, 0.3);
+        box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
     }
     
     /* Cards and containers */
     .stContainer > div {
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.95);
         border-radius: 10px;
         padding: 1rem;
         margin: 0.5rem 0;
-        box-shadow: 0 2px 10px rgba(135, 206, 235, 0.2);
+        box-shadow: 0 2px 10px rgba(59, 130, 246, 0.15);
+        border: 1px solid rgba(59, 130, 246, 0.1);
     }
     
     /* Buttons */
     .stButton > button {
-        background: linear-gradient(45deg, #87ceeb, #4682b4);
+        background: linear-gradient(45deg, #1e40af, #3b82f6);
         color: white;
         border: none;
         border-radius: 25px;
         padding: 0.5rem 2rem;
         font-weight: bold;
         transition: all 0.3s ease;
-        box-shadow: 0 3px 10px rgba(70, 130, 180, 0.3);
+        box-shadow: 0 3px 10px rgba(30, 64, 175, 0.3);
     }
     
     .stButton > button:hover {
-        background: linear-gradient(45deg, #4682b4, #1e90ff);
+        background: linear-gradient(45deg, #1e3a8a, #2563eb);
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(70, 130, 180, 0.4);
+        box-shadow: 0 5px 15px rgba(30, 58, 138, 0.4);
     }
     
     /* Input fields */
     .stNumberInput > div > div > input {
-        border: 2px solid #87ceeb;
+        border: 2px solid #3b82f6;
         border-radius: 8px;
         background: rgba(255, 255, 255, 0.9);
     }
     
     .stNumberInput > div > div > input:focus {
-        border-color: #4682b4;
-        box-shadow: 0 0 10px rgba(135, 206, 235, 0.5);
+        border-color: #1e40af;
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
     }
     
     /* Progress bar */
     .stProgress > div > div > div {
-        background: linear-gradient(90deg, #87ceeb, #4682b4);
+        background: linear-gradient(90deg, #3b82f6, #1e40af);
     }
     
     /* Metrics */
     .metric-container {
-        background: linear-gradient(135deg, #ffffff, #f0f8ff);
-        border: 2px solid #87ceeb;
+        background: linear-gradient(135deg, #ffffff, #f0f6ff);
+        border: 2px solid #3b82f6;
         border-radius: 10px;
         padding: 1rem;
         margin: 0.5rem;
         text-align: center;
-        box-shadow: 0 3px 10px rgba(135, 206, 235, 0.2);
+        box-shadow: 0 3px 10px rgba(59, 130, 246, 0.2);
     }
     
     /* Dataframe styling */
@@ -175,30 +176,32 @@ def main():
         background: white;
         border-radius: 10px;
         overflow: hidden;
-        box-shadow: 0 3px 15px rgba(135, 206, 235, 0.2);
+        box-shadow: 0 3px 15px rgba(59, 130, 246, 0.2);
+        border: 1px solid rgba(59, 130, 246, 0.1);
     }
     
     /* Success/Info messages */
     .stSuccess {
-        background: linear-gradient(90deg, #e6f3ff, #ffffff);
-        border-left: 5px solid #4682b4;
+        background: linear-gradient(90deg, #f0f6ff, #ffffff);
+        border-left: 5px solid #1e40af;
         border-radius: 5px;
     }
     
     /* Section headers */
     .section-header {
-        background: linear-gradient(90deg, #f0f8ff, #e6f3ff);
+        background: linear-gradient(90deg, #f0f6ff, #e0f2fe);
         padding: 1rem;
         border-radius: 10px;
-        border-left: 5px solid #4682b4;
+        border-left: 5px solid #1e40af;
         margin: 1rem 0;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
     }
     
     /* Navigation elements */
     .nav-button {
-        background: linear-gradient(45deg, #ffffff, #f0f8ff);
-        border: 2px solid #87ceeb;
-        color: #4682b4;
+        background: linear-gradient(45deg, #ffffff, #f0f6ff);
+        border: 2px solid #3b82f6;
+        color: #1e40af;
         border-radius: 20px;
         padding: 0.5rem 1.5rem;
         font-weight: bold;
@@ -206,8 +209,20 @@ def main():
     }
     
     .nav-button:hover {
-        background: linear-gradient(45deg, #87ceeb, #4682b4);
+        background: linear-gradient(45deg, #3b82f6, #1e40af);
         color: white;
+    }
+    
+    /* Sidebar styling */
+    .css-1d391kg {
+        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    }
+    
+    /* Chart styling */
+    .js-plotly-plot {
+        border-radius: 10px;
+        box-shadow: 0 3px 15px rgba(59, 130, 246, 0.1);
+        overflow: hidden;
     }
     </style>
     """, unsafe_allow_html=True)
