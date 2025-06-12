@@ -535,10 +535,6 @@ def create_sidebar():
 
 def create_top_menu():
     """Create top horizontal navigation menu with logo"""
-    # Initialize session state
-    if 'current_mode' not in st.session_state:
-        st.session_state['current_mode'] = '실전모드'
-    
     # Top navigation bar with logo - reduced margins
     st.markdown("""
     <div style="margin-top: -1rem; margin-bottom: 0.5rem;">
@@ -572,50 +568,33 @@ def create_top_menu():
     st.markdown("</div>", unsafe_allow_html=True)
     st.markdown("---")
     
-    # Mode selection and menu in horizontal layout
-    col1, col2, col3, col4, col5, col6, col7 = st.columns([1, 1, 1, 1, 1, 1, 1])
+    # Unified menu without mode distinction
+    col1, col2, col3, col4, col5 = st.columns([2, 2, 2, 2, 2])
     
-    # Mode selection
     with col1:
-        if st.button("실전모드", key="real_mode", 
-                    use_container_width=True,
-                    type="primary" if st.session_state['current_mode'] == '실전모드' else "secondary"):
-            st.session_state['current_mode'] = '실전모드'
-            st.rerun()
-    
-    with col2:
-        if st.button("연습모드", key="practice_mode", 
-                    use_container_width=True,
-                    type="primary" if st.session_state['current_mode'] == '연습모드' else "secondary"):
-            st.session_state['current_mode'] = '연습모드'
-            st.rerun()
-    
-    # Menu items based on mode
-    with col3:
         if st.button("🤖 AI 경제성 분석", key="ai_analysis", use_container_width=True):
             st.session_state['current_page'] = 'analysis_input'
             st.rerun()
     
-    if st.session_state['current_mode'] == '실전모드':
-        with col4:
-            if st.button("📋 권한 관리", key="auth_menu", use_container_width=True):
-                st.session_state['current_page'] = 'auth_management'
-                st.rerun()
-        
-        with col5:
-            if st.button("권한 요청하기", key="auth_request", use_container_width=True):
-                st.session_state['current_page'] = 'auth_request'
-                st.rerun()
-        
-        with col6:
-            if st.button("요청받은 권한", key="auth_received", use_container_width=True):
-                st.session_state['current_page'] = 'auth_received'
-                st.rerun()
-        
-        with col7:
-            if st.button("결재 현황", key="approval_status", use_container_width=True):
-                st.session_state['current_page'] = 'approval_status'
-                st.rerun()
+    with col2:
+        if st.button("📋 권한 관리", key="auth_menu", use_container_width=True):
+            st.session_state['current_page'] = 'auth_management'
+            st.rerun()
+    
+    with col3:
+        if st.button("권한 요청하기", key="auth_request", use_container_width=True):
+            st.session_state['current_page'] = 'auth_request'
+            st.rerun()
+    
+    with col4:
+        if st.button("요청받은 권한", key="auth_received", use_container_width=True):
+            st.session_state['current_page'] = 'auth_received'
+            st.rerun()
+    
+    with col5:
+        if st.button("결재 현황", key="approval_status", use_container_width=True):
+            st.session_state['current_page'] = 'approval_status'
+            st.rerun()
 
 def main():
     st.set_page_config(
@@ -876,19 +855,8 @@ def main():
         </div>
         """, unsafe_allow_html=True)
         
-        # Page routing based on sidebar selection
+        # Page routing based on menu selection
         current_page = st.session_state.get('current_page', 'input')
-        current_mode = st.session_state.get('current_mode', '실전모드')
-        
-        # Show current mode in header
-        mode_color = "#1e40af" if current_mode == "실전모드" else "#059669"
-        st.markdown(f"""
-        <div style="text-align: right; margin-bottom: 1rem;">
-            <span style="background: {mode_color}; color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; font-weight: 500;">
-                {current_mode}
-            </span>
-        </div>
-        """, unsafe_allow_html=True)
         
         if current_page == 'input':
             show_video_home_page()
