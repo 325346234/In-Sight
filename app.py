@@ -179,7 +179,13 @@ with st.sidebar:
         st.markdown("---")
     
     # AI 경제성 분석 메뉴
-    st.markdown("### 🤖 AI 경제성 분석")
+    st.markdown("""
+    <div style="margin: 10px 0;">
+        <h2 style="color: #2E5084; font-size: 24px; font-weight: bold; margin-bottom: 15px;">
+            🤖 AI 경제성 분석
+        </h2>
+    </div>
+    """, unsafe_allow_html=True)
     if st.button("AI 경제성 분석", key="ai_analysis", use_container_width=True):
         st.session_state.current_page = "AI 경제성 분석"
     
