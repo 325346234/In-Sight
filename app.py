@@ -110,10 +110,9 @@ def create_company_logo():
         logo_html = f"""
         <div style="text-align: center; margin: 20px 0;">
             <div style="
-                background: white;
+                background: transparent;
                 padding: 20px;
                 border-radius: 15px;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
                 margin-bottom: 20px;
             ">
                 <img src="data:image/png;base64,{img_base64}" 
