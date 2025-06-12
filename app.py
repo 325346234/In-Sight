@@ -1172,8 +1172,8 @@ def display_results(results, params):
         y=manufacturing_costs,
         mode='lines+markers',
         name='제조원가',
-        line=dict(color='#6c757d', width=3),
-        marker=dict(color='#6c757d', size=8)
+        line=dict(color='#64748b', width=3),
+        marker=dict(color='#64748b', size=8)
     ))
     
     fig2.update_layout(
