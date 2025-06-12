@@ -4,8 +4,182 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 import time
+import io
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+from openpyxl.utils.dataframe import dataframe_to_rows
 from financial_calculator import FinancialCalculator
 from data_loader import DataLoader
+
+def create_excel_with_formulas(df_results, results, project_params):
+    """Create Excel file with multiple sheets and formulas"""
+    wb = Workbook()
+    
+    # Remove default sheet
+    wb.remove(wb.active)
+    
+    # Create sheets
+    summary_ws = wb.create_sheet("요약")
+    detail_ws = wb.create_sheet("상세분석")
+    assumptions_ws = wb.create_sheet("가정사항")
+    formulas_ws = wb.create_sheet("계산식")
+    
+    # Styling
+    header_font = Font(bold=True, color="FFFFFF")
+    header_fill = PatternFill(start_color="1e40af", end_color="1e40af", fill_type="solid")
+    border = Border(left=Side(style='thin'), right=Side(style='thin'), 
+                   top=Side(style='thin'), bottom=Side(style='thin'))
+    center_align = Alignment(horizontal='center', vertical='center')
+    
+    # 1. Summary Sheet
+    summary_ws.title = "요약"
+    summary_ws['A1'] = "철강사업 프로젝트 경제성 분석 요약"
+    summary_ws['A1'].font = Font(size=16, bold=True)
+    summary_ws.merge_cells('A1:D1')
+    
+    # Key metrics
+    summary_data = [
+        ["지표", "값", "단위", "평가"],
+        ["NPV", results.get('npv', 0), "USD", "=IF(B5>0,\"양수\",\"음수\")"],
+        ["IRR", results.get('irr', 0), "%", "=IF(B6>Assumptions!B3,\"양호\",\"개선필요\")"],
+        ["투자회수기간", results.get('payback_period', 0), "년", "=IF(B7<10,\"양호\",\"장기\")"],
+        ["할인율", project_params.get('discount_rate', 0), "%", "기준"],
+        ["총투자비", project_params.get('total_investment', 0), "USD", "계획"]
+    ]
+    
+    for row_idx, row_data in enumerate(summary_data, start=4):
+        for col_idx, value in enumerate(row_data, start=1):
+            cell = summary_ws.cell(row=row_idx, column=col_idx, value=value)
+            if row_idx == 4:  # Header row
+                cell.font = header_font
+                cell.fill = header_fill
+            cell.border = border
+            cell.alignment = center_align
+    
+    # 2. Detail Analysis Sheet
+    detail_ws.title = "상세분석"
+    
+    # Remove $ formatting for Excel formulas
+    df_numeric = df_results.copy()
+    for col in df_numeric.columns:
+        if col != '연도':
+            df_numeric[col] = df_numeric[col].str.replace('$', '').str.replace(',', '').astype(float, errors='ignore')
+    
+    # Add headers
+    headers = list(df_numeric.columns)
+    for col_idx, header in enumerate(headers, start=1):
+        cell = detail_ws.cell(row=1, column=col_idx, value=header)
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.border = border
+        cell.alignment = center_align
+    
+    # Add data with formulas
+    for row_idx, (_, row_data) in enumerate(df_numeric.iterrows(), start=2):
+        for col_idx, value in enumerate(row_data, start=1):
+            cell = detail_ws.cell(row=row_idx, column=col_idx)
+            
+            # Add formulas for calculated fields
+            if col_idx == 1:  # Year column
+                cell.value = value
+            elif col_idx == 5:  # EBIT = Revenue - Manufacturing Cost - Sales Admin
+                cell.value = f"=B{row_idx}-C{row_idx}-D{row_idx}"
+            elif col_idx == 7:  # Pretax Income = EBIT - Financial Cost
+                cell.value = f"=E{row_idx}-F{row_idx}"
+            elif col_idx == 9:  # Net Income = Pretax Income - Tax
+                cell.value = f"=G{row_idx}-H{row_idx}"
+            elif col_idx == 13:  # Cash Inflow = Net Income + Depreciation + Residual + WC Inflow
+                cell.value = f"=I{row_idx}+J{row_idx}+K{row_idx}+L{row_idx}"
+            elif col_idx == 17:  # Cash Outflow = Investment + WC Increase
+                cell.value = f"=N{row_idx}+P{row_idx}"
+            elif col_idx == 18:  # Net Cash Flow = Cash Inflow - Cash Outflow
+                cell.value = f"=M{row_idx}-Q{row_idx}"
+            else:
+                cell.value = value
+                
+            cell.border = border
+            if isinstance(value, (int, float)) and col_idx > 1:
+                cell.number_format = '#,##0'
+    
+    # 3. Assumptions Sheet
+    assumptions_ws.title = "가정사항"
+    assumptions_ws['A1'] = "프로젝트 가정사항"
+    assumptions_ws['A1'].font = Font(size=14, bold=True)
+    
+    assumptions_data = [
+        ["항목", "값", "단위"],
+        ["프로젝트 기간", project_params.get('project_years', 20), "년"],
+        ["할인율", project_params.get('discount_rate', 8), "%"],
+        ["법인세율", project_params.get('tax_rate', 25), "%"],
+        ["총투자비", project_params.get('total_investment', 400000000), "USD"],
+        ["차입비율", project_params.get('debt_ratio', 50), "%"],
+        ["장기차입이율", project_params.get('long_term_rate', 3.7), "%"],
+        ["건설기간", project_params.get('construction_period', 4), "년"],
+        ["사업기간", project_params.get('operation_period', 15), "년"]
+    ]
+    
+    for row_idx, row_data in enumerate(assumptions_data, start=3):
+        for col_idx, value in enumerate(row_data, start=1):
+            cell = assumptions_ws.cell(row=row_idx, column=col_idx, value=value)
+            if row_idx == 3:  # Header row
+                cell.font = header_font
+                cell.fill = header_fill
+            cell.border = border
+            cell.alignment = center_align
+    
+    # 4. Formulas Sheet
+    formulas_ws.title = "계산식"
+    formulas_ws['A1'] = "주요 계산식"
+    formulas_ws['A1'].font = Font(size=14, bold=True)
+    
+    formula_explanations = [
+        ["계산항목", "수식", "설명"],
+        ["NPV", "=ΣCASH_FLOWS/(1+할인율)^기간", "순현재가치"],
+        ["IRR", "=IRR(현금흐름범위)", "내부수익률"],
+        ["EBIT", "=매출액-제조원가-판관비", "영업이익"],
+        ["순이익", "=세전이익-법인세", "당기순이익"],
+        ["현금흐름", "=현금유입-현금유출", "순현금흐름"],
+        ["투자회수기간", "=누적현금흐름이 양수가 되는 기간", "투자금 회수 소요기간"]
+    ]
+    
+    for row_idx, row_data in enumerate(formula_explanations, start=3):
+        for col_idx, value in enumerate(row_data, start=1):
+            cell = formulas_ws.cell(row=row_idx, column=col_idx, value=value)
+            if row_idx == 3:  # Header row
+                cell.font = header_font
+                cell.fill = header_fill
+            cell.border = border
+            if col_idx == 2:  # Formula column
+                cell.font = Font(family='Consolas')
+    
+    # Add NPV and IRR calculations in formulas sheet
+    formulas_ws['A12'] = "NPV 계산"
+    formulas_ws['A12'].font = Font(bold=True)
+    formulas_ws['B12'] = f"=NPV(Assumptions!B3/100,상세분석!R2:R21)"
+    
+    formulas_ws['A13'] = "IRR 계산"
+    formulas_ws['A13'].font = Font(bold=True)
+    formulas_ws['B13'] = f"=IRR(상세분석!R2:R21)"
+    
+    # Auto-adjust column widths
+    for ws in [summary_ws, detail_ws, assumptions_ws, formulas_ws]:
+        for column in ws.columns:
+            max_length = 0
+            column_letter = column[0].column_letter
+            for cell in column:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(str(cell.value))
+                except:
+                    pass
+            adjusted_width = min(max_length + 2, 20)
+            ws.column_dimensions[column_letter].width = adjusted_width
+    
+    # Save to BytesIO
+    output = io.BytesIO()
+    wb.save(output)
+    output.seek(0)
+    return output.getvalue()
 
 def show_progress_page():
     """Show analysis progress page with animation"""
@@ -632,13 +806,13 @@ def display_results(results, params):
     
     st.dataframe(df_results, use_container_width=True)
     
-    # Download button for results
-    csv = df_results.to_csv(index=False, encoding='utf-8-sig')
+    # Download button for Excel results with formulas
+    excel_data = create_excel_with_formulas(df_results, results, st.session_state['project_params'])
     st.download_button(
-        label="결과를 CSV로 다운로드",
-        data=csv,
-        file_name="financial_analysis_results.csv",
-        mime="text/csv"
+        label="📊 결과를 Excel로 다운로드 (수식 포함)",
+        data=excel_data,
+        file_name="steel_economic_analysis.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
 if __name__ == "__main__":
