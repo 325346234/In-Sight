@@ -44,7 +44,7 @@ including AI-powered economic evaluation, risk assessment, and investment recomm
 st.sidebar.title("Navigation")
 analysis_type = st.sidebar.selectbox(
     "Select Analysis Type",
-    ["Project Analysis", "Comparative Analysis", "Market Analysis"]
+    ["Project Analysis", "Detailed Steel Investment Analysis", "Comparative Analysis", "Market Analysis"]
 )
 
 # Main content area
@@ -403,93 +403,11 @@ if analysis_type == "Project Analysis":
                     st.write(ai_results['detailed_analysis'])
             else:
                 st.info("AI analysis not available. Please check your OpenAI API configuration.")
-        
-        # Export functionality
-        st.header("📄 Export Report")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            if st.button("📊 Export to Excel"):
-                # Create Excel report
-                output = io.BytesIO()
-                with pd.ExcelWriter(output, engine='openpyxl') as writer:
-                    # Summary sheet
-                    summary_data = {
-                        'Metric': ['Project Name', 'Initial Investment', 'NPV', 'IRR', 'Payback Period'],
-                        'Value': [
-                            results['project_name'],
-                            f"${results['initial_investment']:.1f}M",
-                            f"${results['npv']:.2f}M",
-                            f"{results['irr']:.2%}" if results['irr'] else "N/A",
-                            f"{results['payback_period']:.1f} years" if results['payback_period'] else "N/A"
-                        ]
-                    }
-                    pd.DataFrame(summary_data).to_excel(writer, sheet_name='Summary', index=False)
-                    
-                    # Cash flows sheet
-                    cf_data = pd.DataFrame({
-                        'Year': range(1, len(results['cash_flows']) + 1),
-                        'Cash Flow (Million USD)': results['cash_flows']
-                    })
-                    cf_data.to_excel(writer, sheet_name='Cash Flows', index=False)
-                
-                st.download_button(
-                    label="Download Excel Report",
-                    data=output.getvalue(),
-                    file_name=f"{results['project_name']}_investment_analysis.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                )
-        
-        with col2:
-            if st.button("📋 Export Summary Report"):
-                # Create text summary
-                report_text = f"""
-STEEL INDUSTRY INVESTMENT ANALYSIS REPORT
-=========================================
 
-Project: {results['project_name']}
-Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-
-FINANCIAL METRICS
------------------
-Initial Investment: ${results['initial_investment']:.1f} Million USD
-Net Present Value: ${results['npv']:.2f} Million USD
-Internal Rate of Return: {results['irr']:.2%} if results['irr'] else 'N/A'
-Payback Period: {results['payback_period']:.1f} years if results['payback_period'] else 'N/A'
-
-STEEL INDUSTRY PARAMETERS
--------------------------
-Production Capacity: {results['steel_parameters']['production_capacity']} Million Tons/Year
-Steel Grade: {results['steel_parameters']['steel_grade']}
-Facility Type: {results['steel_parameters']['facility_type']}
-Iron Ore Price: ${results['steel_parameters']['iron_ore_price']}/ton
-Steel Price: ${results['steel_parameters']['steel_price']}/ton
-
-RISK ASSESSMENT
----------------
-Value at Risk (95%): ${results['risk_metrics']['var_95']:.1f} Million USD
-Expected Shortfall: ${results['risk_metrics']['expected_shortfall']:.1f} Million USD
-Standard Deviation: ${results['risk_metrics']['std_dev']:.1f} Million USD
-
-"""
-                if st.session_state.ai_analysis:
-                    report_text += f"""
-AI RECOMMENDATION
------------------
-Recommendation: {st.session_state.ai_analysis.get('recommendation', 'Not Available')}
-Confidence: {st.session_state.ai_analysis.get('confidence_score', 0):.1%}
-
-Key Insights:
-{chr(10).join([f"• {insight}" for insight in st.session_state.ai_analysis.get('key_insights', [])])}
-"""
-                
-                st.download_button(
-                    label="Download Text Report",
-                    data=report_text,
-                    file_name=f"{results['project_name']}_summary_report.txt",
-                    mime="text/plain"
-                )
+elif analysis_type == "Detailed Steel Investment Analysis":
+    # Import and display the detailed analysis
+    from steel_investment_analysis import display_analysis_results
+    display_analysis_results()
 
 elif analysis_type == "Comparative Analysis":
     st.header("🔄 Comparative Investment Analysis")
