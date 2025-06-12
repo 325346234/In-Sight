@@ -395,7 +395,7 @@ def main():
         show_input_page()
 
 def show_advanced_analysis_page():
-    """Advanced analysis page with Monte Carlo, sensitivity dashboard, and IRR regression"""
+    """Advanced analysis page with automatic Monte Carlo analysis for all variables"""
     
     # Check if analysis has been run
     if 'analysis_results' not in st.session_state or st.session_state['analysis_results'] is None:
@@ -411,51 +411,136 @@ def show_advanced_analysis_page():
     sales_data = st.session_state['sales_data']
     
     # Monte Carlo Risk Analysis Section
-    st.markdown("### 📊 Monte Carlo 위험분석")
+    st.markdown("### 📊 Monte Carlo IRR 위험분석")
+    st.markdown("**독립변수별 IRR 민감도 분석 (시뮬레이션 500회)**")
     
-    monte_carlo_col1, monte_carlo_col2 = st.columns([1, 1])
+    # Perform Monte Carlo analysis for all three variables automatically
+    variables = ['price', 'cost', 'investment']
+    variable_names = {'price': '판매가격', 'cost': '제조원가', 'investment': '투자비'}
     
-    with monte_carlo_col1:
-        st.markdown("#### 분석 설정")
-        variable_type = st.selectbox(
-            "분석 변수 선택",
-            options=['price', 'cost', 'investment'],
-            format_func=lambda x: {'price': '판매가격', 'cost': '제조원가', 'investment': '투자비'}[x],
-            key="mc_variable"
-        )
-        
-        variation = st.slider("변동폭 (%)", min_value=5, max_value=50, value=20, step=5, key="mc_variation")
-        n_simulations = st.slider("시뮬레이션 횟수", min_value=100, max_value=1000, value=500, step=100, key="mc_sims")
-        
-        if st.button("Monte Carlo 분석 실행", key="run_monte_carlo"):
-            with st.spinner("Monte Carlo 분석 중..."):
-                mc_results = perform_single_variable_monte_carlo(
-                    params, cost_data, sales_data, variable_type, n_simulations
-                )
-                st.session_state['mc_results'] = mc_results
+    # Run analyses for each variable
+    with st.spinner("Monte Carlo 분석 실행 중... (총 1,500회 시뮬레이션)"):
+        mc_results_all = {}
+        for var_type in variables:
+            mc_result = perform_single_variable_monte_carlo(params, cost_data, sales_data, var_type, 500)
+            if mc_result:
+                mc_results_all[var_type] = mc_result
     
-    with monte_carlo_col2:
-        if 'mc_results' in st.session_state and st.session_state['mc_results']:
-            mc_results = st.session_state['mc_results']
-            st.markdown("#### 📊 통계 요약")
+    if mc_results_all:
+        # Display results for each variable
+        for var_type, mc_results in mc_results_all.items():
+            st.markdown(f"#### {variable_names[var_type]} 분석 결과")
             
-            col1, col2, col3 = st.columns(3)
+            # Metrics display
+            col1, col2, col3, col4, col5 = st.columns(5)
             with col1:
                 st.metric("기준 IRR", f"{mc_results['base_irr']:.2%}")
             with col2:
                 st.metric("평균 IRR", f"{mc_results['mean_irr']:.2%}")
             with col3:
                 st.metric("표준편차", f"{mc_results['std_irr']:.2%}")
-            
-            # Risk metrics
-            col4, col5, col6 = st.columns(3)
             with col4:
-                st.metric("최악 시나리오 (5%)", f"{mc_results['p5_irr']:.2%}")
+                st.metric("5% VaR", f"{mc_results['p5_irr']:.2%}")
             with col5:
-                st.metric("최선 시나리오 (95%)", f"{mc_results['p95_irr']:.2%}")
-            with col6:
-                risk_level = "높음" if mc_results['std_irr'] > 0.05 else "보통" if mc_results['std_irr'] > 0.02 else "낮음"
-                st.metric("위험 수준", risk_level)
+                st.metric("95% 상위", f"{mc_results['p95_irr']:.2%}")
+            
+            # Charts
+            chart_col1, chart_col2 = st.columns(2)
+            
+            with chart_col1:
+                # IRR Distribution Histogram
+                fig_hist = go.Figure()
+                fig_hist.add_trace(go.Histogram(
+                    x=mc_results['irr_results'],
+                    nbinsx=30,
+                    marker_color='#1f77b4',
+                    opacity=0.7,
+                    name=f'IRR 분포'
+                ))
+                
+                # Add vertical lines for statistics
+                fig_hist.add_vline(x=mc_results['base_irr'], line_dash="dash", line_color="red", 
+                                   annotation_text="기준값")
+                fig_hist.add_vline(x=mc_results['mean_irr'], line_dash="dash", line_color="blue", 
+                                   annotation_text="평균")
+                
+                fig_hist.update_layout(
+                    title=f"{variable_names[var_type]} - IRR 분포",
+                    xaxis_title="IRR",
+                    yaxis_title="빈도",
+                    showlegend=False,
+                    height=300
+                )
+                st.plotly_chart(fig_hist, use_container_width=True)
+            
+            with chart_col2:
+                # Scatter plot: Variable vs IRR
+                fig_scatter = go.Figure()
+                fig_scatter.add_trace(go.Scatter(
+                    x=(np.array(mc_results['factor_values']) - 1) * 100,
+                    y=np.array(mc_results['irr_results']) * 100,
+                    mode='markers',
+                    marker=dict(color='#ff7f0e', opacity=0.6, size=4),
+                    name=f'{variable_names[var_type]} vs IRR'
+                ))
+                
+                fig_scatter.update_layout(
+                    title=f"{variable_names[var_type]} 변동 vs IRR",
+                    xaxis_title=f"{variable_names[var_type]} 변동 (%)",
+                    yaxis_title="IRR (%)",
+                    showlegend=False,
+                    height=300
+                )
+                st.plotly_chart(fig_scatter, use_container_width=True)
+            
+            # Statistical summary
+            stats_data = {
+                '통계량': ['최솟값', '5%ile', '25%ile', '평균', '75%ile', '95%ile', '최댓값', '표준편차'],
+                'IRR (%)': [
+                    f"{mc_results['min_irr']:.2%}",
+                    f"{mc_results['p5_irr']:.2%}",
+                    f"{mc_results['p25_irr']:.2%}",
+                    f"{mc_results['mean_irr']:.2%}",
+                    f"{mc_results['p75_irr']:.2%}",
+                    f"{mc_results['p95_irr']:.2%}",
+                    f"{mc_results['max_irr']:.2%}",
+                    f"{mc_results['std_irr']:.2%}"
+                ]
+            }
+            
+            stats_df = pd.DataFrame(stats_data)
+            st.dataframe(stats_df, use_container_width=True, hide_index=True)
+            
+            # Risk assessment
+            correlation = np.corrcoef(mc_results['factor_values'], mc_results['irr_results'])[0,1]
+            risk_level = "높음" if mc_results['std_irr'] > 0.05 else "보통" if mc_results['std_irr'] > 0.02 else "낮음"
+            
+            st.markdown(f"""
+            **위험도 평가:**
+            - 변수 상관계수: {correlation:.3f}
+            - 위험 수준: {risk_level}
+            - 하방위험 (VaR 5%): {mc_results['p5_irr']:.2%}
+            """)
+            
+            st.markdown("---")
+        
+        # Comparative summary
+        st.markdown("#### 📈 변수별 위험도 비교")
+        
+        comparison_data = {
+            '변수': [variable_names[var] for var in variables if var in mc_results_all],
+            '기준 IRR': [f"{mc_results_all[var]['base_irr']:.2%}" for var in variables if var in mc_results_all],
+            '평균 IRR': [f"{mc_results_all[var]['mean_irr']:.2%}" for var in variables if var in mc_results_all],
+            '표준편차': [f"{mc_results_all[var]['std_irr']:.2%}" for var in variables if var in mc_results_all],
+            '5% VaR': [f"{mc_results_all[var]['p5_irr']:.2%}" for var in variables if var in mc_results_all],
+            '95% 상위': [f"{mc_results_all[var]['p95_irr']:.2%}" for var in variables if var in mc_results_all]
+        }
+        
+        comparison_df = pd.DataFrame(comparison_data)
+        st.dataframe(comparison_df, use_container_width=True, hide_index=True)
+    
+    else:
+        st.error("Monte Carlo 분석을 실행할 수 없습니다. 데이터를 확인해주세요.")
     
     # Dynamic Sensitivity Analysis Dashboard
     st.markdown("---")
