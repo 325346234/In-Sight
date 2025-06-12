@@ -8,6 +8,43 @@ from financial_calculator import FinancialCalculator
 from data_loader import DataLoader
 from scipy import stats
 
+def create_custom_layout(content, classes="", style=""):
+    """
+    Helper function to create flexible custom layouts
+    
+    Available CSS classes:
+    - Layout: flex-row, flex-col, custom-container
+    - Sizing: w-25, w-33, w-50, w-66, w-75, w-100, h-25, h-50, h-100
+    - Spacing: p-0/1/2/3 (padding), m-0/1/2/3 (margin)
+    - Colors: bg-dark, bg-darker, bg-light, bg-white, text-white, text-dark, text-gray
+    - Borders: border-0/1/2, rounded, rounded-lg, rounded-xl
+    - Effects: shadow, shadow-lg
+    - Text: text-center, text-left, text-right
+    
+    Example usage:
+    create_custom_layout("<h1>Title</h1>", "bg-light p-2 rounded text-center")
+    """
+    return f'<div class="{classes}" style="{style}">{content}</div>'
+
+def create_flex_container(children, direction="row", classes="", style=""):
+    """
+    Create flexible container with multiple children
+    
+    Args:
+        children: List of HTML content strings
+        direction: "row" or "col" 
+        classes: Additional CSS classes
+        style: Additional inline styles
+    
+    Example:
+    create_flex_container([
+        create_custom_layout("Left", "flex-1 bg-light p-1"),
+        create_custom_layout("Right", "flex-1 bg-dark p-1")
+    ], "row", "w-100")
+    """
+    flex_class = "flex-row" if direction == "row" else "flex-col"
+    return f'<div class="{flex_class} {classes}" style="{style}">{"".join(children)}</div>'
+
 def perform_single_variable_monte_carlo(base_params, base_cost_data, base_sales_data, variable_type, n_simulations=500):
     """
     Perform Monte Carlo analysis on IRR sensitivity for a single variable
@@ -221,16 +258,113 @@ def main():
         layout="wide"
     )
     
-    # Custom CSS styling inspired by POSCO design principles
+    # Custom CSS styling with flexible layout system
     st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
     
-    /* Main background and text */
+    /* Remove all default Streamlit constraints */
+    .main .block-container {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+    
     .stApp {
         background: #2c3e50;
         font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
         color: #ffffff;
+        margin: 0;
+        padding: 0;
+    }
+    
+    /* Remove default margins and padding from all elements */
+    .element-container {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Hide Streamlit branding and default elements */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    /* Flexible container system */
+    .custom-container {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    .flex-row {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        gap: 0;
+    }
+    
+    .flex-col {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .flex-1 { flex: 1; }
+    .flex-2 { flex: 2; }
+    .flex-3 { flex: 3; }
+    .flex-4 { flex: 4; }
+    
+    .w-25 { width: 25%; }
+    .w-33 { width: 33.33%; }
+    .w-50 { width: 50%; }
+    .w-66 { width: 66.66%; }
+    .w-75 { width: 75%; }
+    .w-100 { width: 100%; }
+    
+    .h-100 { height: 100vh; }
+    .h-50 { height: 50vh; }
+    .h-25 { height: 25vh; }
+    
+    .p-0 { padding: 0; }
+    .p-1 { padding: 1rem; }
+    .p-2 { padding: 2rem; }
+    .p-3 { padding: 3rem; }
+    
+    .m-0 { margin: 0; }
+    .m-1 { margin: 1rem; }
+    .m-2 { margin: 2rem; }
+    .m-3 { margin: 3rem; }
+    
+    .text-center { text-align: center; }
+    .text-left { text-align: left; }
+    .text-right { text-align: right; }
+    
+    .bg-dark { background-color: #2c3e50; }
+    .bg-darker { background-color: #1a252f; }
+    .bg-light { background-color: #34495e; }
+    .bg-white { background-color: #ffffff; }
+    
+    .text-white { color: #ffffff; }
+    .text-dark { color: #2c3e50; }
+    .text-gray { color: #bdc3c7; }
+    
+    .border-0 { border: none; }
+    .border-1 { border: 1px solid #5d6d7e; }
+    .border-2 { border: 2px solid #5d6d7e; }
+    
+    .rounded { border-radius: 8px; }
+    .rounded-lg { border-radius: 12px; }
+    .rounded-xl { border-radius: 16px; }
+    
+    .shadow { box-shadow: 0 1px 3px rgba(255, 255, 255, 0.1); }
+    .shadow-lg { box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15); }
+    
+    /* Override Streamlit column system */
+    .stColumn {
+        padding: 0 !important;
+        margin: 0 !important;
     }
     
     /* Header styling - POSCO inspired */
@@ -448,27 +582,9 @@ def main():
     </style>
     """, unsafe_allow_html=True)
     
-    # Top menu bar with POSCO blue styling - zero margins
+    # Top menu bar with flexible styling
     st.markdown("""
-    <style>
-    .main .block-container {
-        padding: 0 !important;
-        margin: 0 !important;
-        max-width: 100% !important;
-    }
-    </style>
-    <div style="
-        background: #ffffff;
-        padding: 2rem 2rem;
-        margin: 0;
-        color: #2c3e50;
-        border-bottom: 3px solid #ecf0f1;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        position: relative;
-        z-index: 1000;
-        width: 100vw;
-        margin-left: calc(-50vw + 50%);
-    ">
+    <div class="custom-container bg-white p-2 border-0 shadow w-100 text-dark">
         <!-- Menu content will be added here later -->
         <div style="height: 40px;"></div>
     </div>
