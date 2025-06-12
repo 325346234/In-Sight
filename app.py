@@ -94,19 +94,50 @@ st.markdown("""
 
 # 회사 로고 (SVG로 간단히 생성)
 def create_company_logo():
-    logo_svg = """
-    <div class="company-logo">
-        <svg width="120" height="80" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
-            <rect width="120" height="80" fill="#2E5084" rx="10"/>
-            <rect x="20" y="25" width="15" height="30" fill="white"/>
-            <rect x="40" y="20" width="15" height="35" fill="white"/>
-            <rect x="60" y="15" width="15" height="40" fill="white"/>
-            <rect x="80" y="30" width="15" height="25" fill="white"/>
-            <text x="60" y="70" text-anchor="middle" fill="white" font-size="10" font-weight="bold">STEEL TECH</text>
-        </svg>
-    </div>
-    """
-    return logo_svg
+    """Display POSCO Holdings logo"""
+    try:
+        # Load POSCO Holdings logo
+        import base64
+        
+        # Load the uploaded POSCO Holdings logo
+        logo_path = "attached_assets/POSCO Holdings_eng_1749727332592.png"
+        
+        # Convert image to base64 for HTML display
+        with open(logo_path, "rb") as f:
+            img_bytes = f.read()
+            img_base64 = base64.b64encode(img_bytes).decode()
+        
+        logo_html = f"""
+        <div style="text-align: center; margin: 20px 0;">
+            <div style="
+                background: white;
+                padding: 20px;
+                border-radius: 15px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                margin-bottom: 20px;
+            ">
+                <img src="data:image/png;base64,{img_base64}" 
+                     style="max-width: 200px; height: auto;" 
+                     alt="POSCO Holdings">
+            </div>
+        </div>
+        """
+        return logo_html
+    except Exception as e:
+        # Fallback to original logo if image loading fails
+        logo_svg = """
+        <div class="company-logo">
+            <svg width="120" height="80" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
+                <rect width="120" height="80" fill="#2E5084" rx="10"/>
+                <rect x="20" y="25" width="15" height="30" fill="white"/>
+                <rect x="40" y="20" width="15" height="35" fill="white"/>
+                <rect x="60" y="15" width="15" height="40" fill="white"/>
+                <rect x="80" y="30" width="15" height="25" fill="white"/>
+                <text x="60" y="70" text-anchor="middle" fill="white" font-size="10" font-weight="bold">STEEL TECH</text>
+            </svg>
+        </div>
+        """
+        return logo_svg
 
 # 사이드바 구성
 with st.sidebar:
