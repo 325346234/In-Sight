@@ -515,9 +515,9 @@ def create_sidebar():
     with st.sidebar:
         # Center-aligned POSCO Holdings logo
         try:
-            col1, col2, col3 = st.columns([1, 2, 1])
+            col1, col2, col3 = st.columns([0.5, 3, 0.5])
             with col2:
-                st.image("attached_assets/POSCO Holdings_eng_1749733209456.png", width=180)
+                st.image("attached_assets/POSCO Holdings_eng_1749733209456.png", width=240)
         except:
             st.markdown("""
             <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 8px; margin: 1rem 0;">
