@@ -705,7 +705,7 @@ def show_insights_page():
             import os
             
             # Initialize OpenAI client
-            client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+            client = OpenAI(api_key=os.environ.get("API_KEY"))
             
             # Generate steel industry investment news summaries
             prompt = """
