@@ -945,31 +945,8 @@ def show_video_home_page():
             allow="autoplay; encrypted-media; fullscreen"
             allowfullscreen>
         </iframe>
-        <div class="video-overlay">
-            <h3 style="margin: 0 0 0.5rem 0; color: white;">POSCO Holdings 투자 경제성 분석 시스템</h3>
-            <p style="margin: 0; opacity: 0.9;">Steel Industry Investment Economic Analysis Platform</p>
-        </div>
     </div>
     """, unsafe_allow_html=True)
-    
-    st.markdown("<br>", unsafe_allow_html=True)
-    
-    # Action buttons below video
-    col1, col2, col3 = st.columns([1, 2, 1])
-    
-    with col2:
-        st.markdown("""
-        <div style="text-align: center; margin: 2rem 0;">
-            <h3 style="color: #1e40af; margin-bottom: 1rem;">시작하기</h3>
-            <p style="color: #64748b; margin-bottom: 2rem;">
-                투자 프로젝트의 경제성 분석을 시작하려면 아래 버튼을 클릭하세요
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        if st.button("📊 경제성 분석 시작", key="start_analysis", use_container_width=True, type="primary"):
-            st.session_state['current_page'] = 'analysis_input'
-            st.rerun()
 
 def show_input_page():
     st.markdown("""
