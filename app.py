@@ -257,7 +257,7 @@ elif st.session_state.current_page == "AI 경제성 분석":
         
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.metric("단위당 판매가격", f"{unit_selling_price:,.0f} 원/톤")
+            st.metric("단위당 판매가격", f"${unit_selling_price:,.0f}/톤")
         with col2:
             year5_volume = st.number_input("5년차 판매량 (톤)", value=70000, min_value=0)
         with col3:
@@ -267,7 +267,7 @@ elif st.session_state.current_page == "AI 경제성 분석":
         with col1:
             year7_plus_volume = st.number_input("7년차 이후 판매량 (톤)", value=100000, min_value=0)
         with col2:
-            st.metric("연간 매출 전망 (7년차 기준)", f"{(unit_selling_price * year7_plus_volume / 1e6):,.1f} 백만원")
+            st.metric("연간 매출 전망 (7년차 기준)", f"${(unit_selling_price * year7_plus_volume / 1e6):,.1f}M")
         
         # 사업계획 섹션
         st.markdown('<div class="section-header"><h3>🏗️ 사업계획</h3></div>', unsafe_allow_html=True)
@@ -277,7 +277,7 @@ elif st.session_state.current_page == "AI 경제성 분석":
             business_period = st.number_input("사업기간 (년)", value=15, min_value=1, max_value=30)
             construction_period = st.number_input("공사기간 (년)", value=4, min_value=1, max_value=10)
         with col2:
-            total_investment = st.number_input("총 투자비 (억원)", value=4.0, min_value=0.1, step=0.1) * 1e8
+            total_investment = st.number_input("총 투자비 (Million USD)", value=400.0, min_value=0.1, step=0.1) * 1e6
             machinery_ratio = st.number_input("기계설비 투자비 비율 (%)", value=80.0, min_value=0.0, max_value=100.0)
         with col3:
             building_ratio = st.number_input("건축물 투자비 비율 (%)", value=20.0, min_value=0.0, max_value=100.0)
@@ -415,14 +415,14 @@ elif st.session_state.current_page == "AI 경제성 분석":
             col1, col2, col3, col4 = st.columns(4)
             
             with col1:
-                st.metric("순현재가치 (NPV)", f"{npv/1e8:.2f} 억원")
+                st.metric("순현재가치 (NPV)", f"${npv/1e6:.2f}M")
             with col2:
                 irr_pct = irr * 100 if irr else 0
                 st.metric("내부수익률 (IRR)", f"{irr_pct:.2f}%" if irr else "계산불가")
             with col3:
                 st.metric("할인율", f"{discount_rate:.2f}%")
             with col4:
-                st.metric("총투자비", f"{total_investment/1e8:.1f} 억원")
+                st.metric("총투자비", f"${total_investment/1e6:.1f}M")
             
             # 투자 결정 지원
             st.subheader("💡 투자 결정 지원")
@@ -467,8 +467,8 @@ elif st.session_state.current_page == "AI 경제성 분석":
             fig.update_layout(
                 title="현금흐름 분석",
                 xaxis_title="년도",
-                yaxis=dict(title="연도별 현금흐름 (백만원)", side="left"),
-                yaxis2=dict(title="누적 현금흐름 (백만원)", side="right", overlaying="y"),
+                yaxis=dict(title="연도별 현금흐름 (Million USD)", side="left"),
+                yaxis2=dict(title="누적 현금흐름 (Million USD)", side="right", overlaying="y"),
                 height=500,
                 hovermode='x unified'
             )
