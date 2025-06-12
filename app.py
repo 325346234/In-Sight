@@ -514,9 +514,10 @@ def create_sidebar():
     """Create sidebar with POSCO Holdings logo and navigation"""
     with st.sidebar:
         # Center-aligned POSCO Holdings logo
-        st.markdown("<div style='text-align: center; margin-bottom: 1rem;'>", unsafe_allow_html=True)
         try:
-            st.image("attached_assets/POSCO Holdings_eng_1749733209456.png", width=180)
+            col1, col2, col3 = st.columns([1, 2, 1])
+            with col2:
+                st.image("attached_assets/POSCO Holdings_eng_1749733209456.png", width=180)
         except:
             st.markdown("""
             <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 8px; margin: 1rem 0;">
@@ -524,7 +525,6 @@ def create_sidebar():
                 <p style="color: #e0f2fe; margin: 0; font-size: 0.9rem;">HOLDINGS</p>
             </div>
             """, unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
         
         # Title
         st.markdown("""
@@ -561,19 +561,19 @@ def create_sidebar():
                 st.session_state['current_page'] = 'auth_management'
                 st.rerun()
             
-            # 권한 관리 하위 메뉴 (expander로 구성)
-            with st.expander("권한 관리 세부 메뉴"):
-                if st.button("권한 요청하기", key="auth_request", use_container_width=True):
-                    st.session_state['current_page'] = 'auth_request'
-                    st.rerun()
-                
-                if st.button("요청받은 권한", key="auth_received", use_container_width=True):
-                    st.session_state['current_page'] = 'auth_received'
-                    st.rerun()
-                
-                if st.button("결재 현황", key="approval_status", use_container_width=True):
-                    st.session_state['current_page'] = 'approval_status'
-                    st.rerun()
+            # 권한 관리 하위 메뉴 (항상 표시)
+            st.markdown("&nbsp;&nbsp;&nbsp;&nbsp;", unsafe_allow_html=True)  # 들여쓰기
+            if st.button("&nbsp;&nbsp;&nbsp;&nbsp;권한 요청하기", key="auth_request", use_container_width=True):
+                st.session_state['current_page'] = 'auth_request'
+                st.rerun()
+            
+            if st.button("&nbsp;&nbsp;&nbsp;&nbsp;요청받은 권한", key="auth_received", use_container_width=True):
+                st.session_state['current_page'] = 'auth_received'
+                st.rerun()
+            
+            if st.button("&nbsp;&nbsp;&nbsp;&nbsp;결재 현황", key="approval_status", use_container_width=True):
+                st.session_state['current_page'] = 'approval_status'
+                st.rerun()
         
         # AI 경제성 분석 메뉴 (실전모드/연습모드 공통)
         if st.button("🤖 AI 경제성 분석", key="ai_analysis", use_container_width=True):
