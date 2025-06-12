@@ -593,7 +593,7 @@ def create_top_menu():
     # Menu items based on mode
     with col3:
         if st.button("🤖 AI 경제성 분석", key="ai_analysis", use_container_width=True):
-            st.session_state['current_page'] = 'input'
+            st.session_state['current_page'] = 'analysis_input'
             st.rerun()
     
     if st.session_state['current_mode'] == '실전모드':
@@ -891,7 +891,7 @@ def main():
         """, unsafe_allow_html=True)
         
         if current_page == 'input':
-            show_input_page()
+            show_video_home_page()
         elif current_page == 'analysis':
             if 'analysis_results' in st.session_state:
                 show_analysis_page()
@@ -928,6 +928,80 @@ def main():
             show_auth_received_page()
         elif current_page == 'approval_status':
             show_approval_status_page()
+        elif current_page == 'analysis_input':
+            show_input_page()
+
+def show_video_home_page():
+    """Show initial page with full-screen YouTube video"""
+    st.markdown("""
+    <style>
+    .video-container {
+        position: relative;
+        width: 100%;
+        height: 80vh;
+        padding-bottom: 0;
+        overflow: hidden;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(30, 64, 175, 0.2);
+    }
+    
+    .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 12px;
+    }
+    
+    .video-overlay {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        background: rgba(30, 64, 175, 0.9);
+        color: white;
+        padding: 1rem;
+        border-radius: 8px;
+        backdrop-filter: blur(10px);
+        z-index: 10;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div class="video-container">
+        <iframe 
+            src="https://www.youtube.com/embed/lukBN6Dg3LU?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1&fs=1"
+            allow="autoplay; encrypted-media; fullscreen"
+            allowfullscreen>
+        </iframe>
+        <div class="video-overlay">
+            <h3 style="margin: 0 0 0.5rem 0; color: white;">POSCO Holdings 투자 경제성 분석 시스템</h3>
+            <p style="margin: 0; opacity: 0.9;">Steel Industry Investment Economic Analysis Platform</p>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Action buttons below video
+    col1, col2, col3 = st.columns([1, 2, 1])
+    
+    with col2:
+        st.markdown("""
+        <div style="text-align: center; margin: 2rem 0;">
+            <h3 style="color: #1e40af; margin-bottom: 1rem;">시작하기</h3>
+            <p style="color: #64748b; margin-bottom: 2rem;">
+                투자 프로젝트의 경제성 분석을 시작하려면 아래 버튼을 클릭하세요
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        if st.button("📊 경제성 분석 시작", key="start_analysis", use_container_width=True, type="primary"):
+            st.session_state['current_page'] = 'analysis_input'
+            st.rerun()
 
 def show_input_page():
     st.markdown("""
