@@ -602,7 +602,7 @@ def main():
     
     /* Sidebar styling - POSCO brand */
     .css-1d391kg {
-        background: linear-gradient(180deg, #1e40af 0%, #3b82f6 100%);
+        background: rgba(255, 255, 255, 0.5) !important;
         border-right: 1px solid #e2e8f0;
     }
     
