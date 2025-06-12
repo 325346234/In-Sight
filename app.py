@@ -447,7 +447,22 @@ def main():
     </style>
     """, unsafe_allow_html=True)
     
-
+    # Top menu bar with POSCO blue styling
+    st.markdown("""
+    <div style="
+        background: linear-gradient(135deg, #003366 0%, #004488 100%);
+        padding: 1rem 2rem;
+        margin: -1rem -1rem 2rem -1rem;
+        color: white;
+        border-bottom: 3px solid #0066cc;
+        box-shadow: 0 2px 10px rgba(0, 51, 102, 0.2);
+        position: relative;
+        z-index: 1000;
+    ">
+        <!-- Menu content will be added here later -->
+        <div style="height: 20px;"></div>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Initialize session state variables
     if 'current_page' not in st.session_state:
