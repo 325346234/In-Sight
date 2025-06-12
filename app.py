@@ -649,7 +649,7 @@ def display_results(results, params):
         st.markdown(f"""
         <div class="metric-container">
             <h4>총 매출액</h4>
-            <h2 style="color: #4682b4;">${total_revenue:,.0f}</h2>
+            <h2 style="color: #1e40af;">${total_revenue:,.0f}</h2>
         </div>
         """, unsafe_allow_html=True)
     
@@ -659,7 +659,7 @@ def display_results(results, params):
         st.markdown(f"""
         <div class="metric-container">
             <h4>최종년도 순현금흐름</h4>
-            <h2 style="color: #4682b4;">${final_cash_flow:,.0f}</h2>
+            <h2 style="color: #1e40af;">${final_cash_flow:,.0f}</h2>
         </div>
         """, unsafe_allow_html=True)
     
@@ -668,7 +668,7 @@ def display_results(results, params):
         st.markdown(f"""
         <div class="metric-container">
             <h4>총 투자비</h4>
-            <h2 style="color: #4682b4;">${total_investment:,.0f}</h2>
+            <h2 style="color: #1e40af;">${total_investment:,.0f}</h2>
         </div>
         """, unsafe_allow_html=True)
     
@@ -683,7 +683,7 @@ def display_results(results, params):
     cash_flows = list(results['net_cash_flow'].values())
     
     fig = go.Figure()
-    colors = ['#ff6b6b' if cf < 0 else '#4682b4' for cf in cash_flows]
+    colors = ['#ff6b6b' if cf < 0 else '#1e40af' for cf in cash_flows]
     
     fig.add_trace(go.Bar(
         x=[f"Year {y}" for y in years],
@@ -696,7 +696,7 @@ def display_results(results, params):
         title={
             'text': "연도별 순현금흐름",
             'x': 0.5,
-            'font': {'color': '#4682b4', 'size': 20}
+            'font': {'color': '#1e40af', 'size': 20}
         },
         xaxis_title="연도",
         yaxis_title="현금흐름 ($)",
