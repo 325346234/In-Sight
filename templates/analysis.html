@@ -1,0 +1,324 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <h1 class="mb-4">🤖 AI 투자 경제성 분석</h1>
+    
+    {% if error %}
+    <div class="alert alert-danger">
+        <strong>오류:</strong> {{ error }}
+    </div>
+    {% else %}
+    
+    <!-- Basic Data Display -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="metric-card">
+                <div class="metric-value">${{ "%.0f"|format(unit_selling_price) }}</div>
+                <div class="metric-label">단위당 판매가격 (/톤)</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="metric-card">
+                <div class="metric-value">${{ "%.0f"|format(avg_material_cost) }}</div>
+                <div class="metric-label">평균 소재비용 (/톤)</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="metric-card">
+                <div class="metric-value">${{ "%.0f"|format(avg_processing_cost) }}</div>
+                <div class="metric-label">평균 가공비용 (/톤)</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Analysis Form -->
+    <div class="analysis-form">
+        <div class="section-header">
+            <h3>📈 판매계획</h3>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">5년차 판매량 (톤)</label>
+                <input type="number" class="form-control" id="year5_volume" value="70000" min="0">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">6년차 판매량 (톤)</label>
+                <input type="number" class="form-control" id="year6_volume" value="80000" min="0">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">7년차 이후 판매량 (톤)</label>
+                <input type="number" class="form-control" id="year7_plus_volume" value="100000" min="0">
+            </div>
+        </div>
+        
+        <div class="section-header">
+            <h3>🏗️ 사업계획</h3>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">사업기간 (년)</label>
+                <input type="number" class="form-control" id="business_period" value="15" min="1" max="30">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">공사기간 (년)</label>
+                <input type="number" class="form-control" id="construction_period" value="4" min="1" max="10">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">총 투자비 (Million USD)</label>
+                <input type="number" class="form-control" id="total_investment" value="400.0" min="0.1" step="0.1">
+            </div>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">기계설비 투자비 비율 (%)</label>
+                <input type="number" class="form-control" id="machinery_ratio" value="80.0" min="0" max="100">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">건축물 투자비 비율 (%)</label>
+                <input type="number" class="form-control" id="building_ratio" value="20.0" min="0" max="100">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">할인율 (%)</label>
+                <input type="number" class="form-control" id="discount_rate" value="6.92" min="0" step="0.01">
+            </div>
+        </div>
+        
+        <div class="section-header">
+            <h3>💰 재무계획</h3>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">차입비율 (%)</label>
+                <input type="number" class="form-control" id="debt_ratio" value="50.0" min="0" max="100">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">장기차입금 이율 (%)</label>
+                <input type="number" class="form-control" id="long_term_rate" value="3.7" min="0" step="0.1">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">법인세율 (%)</label>
+                <input type="number" class="form-control" id="tax_rate" value="25.0" min="0" max="50">
+            </div>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <label class="form-label">유예기간 (년)</label>
+                <input type="number" class="form-control" id="grace_period" value="4" min="0">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">상환기간 (년)</label>
+                <input type="number" class="form-control" id="repayment_period" value="8" min="1">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">판관비율 (%)</label>
+                <input type="number" class="form-control" id="sales_admin_ratio" value="4.0" min="0">
+            </div>
+            <div class="col-md-3">
+                <!-- Placeholder for alignment -->
+            </div>
+        </div>
+        
+        <div class="section-header">
+            <h3>🔄 운전자금</h3>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <label class="form-label">매출채권일수 (일)</label>
+                <input type="number" class="form-control" id="receivables_days" value="30" min="0">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">매입채무일수 (일)</label>
+                <input type="number" class="form-control" id="payables_days" value="50" min="0">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">제품재고일수 (일)</label>
+                <input type="number" class="form-control" id="product_inventory_days" value="30" min="0">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">소재재고일수 (일)</label>
+                <input type="number" class="form-control" id="material_inventory_days" value="40" min="0">
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <button type="button" class="btn btn-primary btn-lg" id="analyzeBtn">
+                🔍 투자 경제성 분석 실행
+            </button>
+        </div>
+    </div>
+    
+    <!-- Results Section -->
+    <div id="resultsSection" style="display: none;">
+        <div class="section-header">
+            <h3>📊 분석 결과</h3>
+        </div>
+        
+        <!-- Metrics -->
+        <div class="row mb-4" id="metricsRow">
+            <!-- Metrics will be populated here -->
+        </div>
+        
+        <!-- Investment Decision -->
+        <div id="investmentDecision" class="mb-4">
+            <!-- Decision will be populated here -->
+        </div>
+        
+        <!-- Cash Flow Chart -->
+        <div class="mb-4">
+            <h4>💰 현금흐름 분석</h4>
+            <div id="cashFlowChart" style="height: 500px;"></div>
+        </div>
+        
+        <!-- AI Analysis -->
+        <div id="aiAnalysisSection" class="mb-4">
+            <!-- AI analysis will be populated here -->
+        </div>
+    </div>
+    
+    <!-- Loading -->
+    <div id="loadingSection" class="loading" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">분석 중...</span>
+        </div>
+        <h4 class="mt-3">AI가 투자 경제성을 분석하고 있습니다...</h4>
+    </div>
+    
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('analyzeBtn').addEventListener('click', function() {
+    // Show loading
+    document.getElementById('loadingSection').style.display = 'block';
+    document.getElementById('resultsSection').style.display = 'none';
+    
+    // Collect form data
+    const data = {
+        year5_volume: parseInt(document.getElementById('year5_volume').value),
+        year6_volume: parseInt(document.getElementById('year6_volume').value),
+        year7_plus_volume: parseInt(document.getElementById('year7_plus_volume').value),
+        business_period: parseInt(document.getElementById('business_period').value),
+        construction_period: parseInt(document.getElementById('construction_period').value),
+        total_investment: parseFloat(document.getElementById('total_investment').value) * 1e6,
+        machinery_ratio: parseFloat(document.getElementById('machinery_ratio').value),
+        building_ratio: parseFloat(document.getElementById('building_ratio').value),
+        discount_rate: parseFloat(document.getElementById('discount_rate').value),
+        debt_ratio: parseFloat(document.getElementById('debt_ratio').value),
+        long_term_rate: parseFloat(document.getElementById('long_term_rate').value),
+        tax_rate: parseFloat(document.getElementById('tax_rate').value),
+        grace_period: parseInt(document.getElementById('grace_period').value),
+        repayment_period: parseInt(document.getElementById('repayment_period').value),
+        sales_admin_ratio: parseFloat(document.getElementById('sales_admin_ratio').value),
+        receivables_days: parseInt(document.getElementById('receivables_days').value),
+        payables_days: parseInt(document.getElementById('payables_days').value),
+        product_inventory_days: parseInt(document.getElementById('product_inventory_days').value),
+        material_inventory_days: parseInt(document.getElementById('material_inventory_days').value)
+    };
+    
+    // Send analysis request
+    fetch('/api/analyze', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        document.getElementById('loadingSection').style.display = 'none';
+        
+        if (result.success) {
+            displayResults(result.results);
+        } else {
+            alert('분석 중 오류가 발생했습니다: ' + result.error);
+        }
+    })
+    .catch(error => {
+        document.getElementById('loadingSection').style.display = 'none';
+        alert('분석 요청 중 오류가 발생했습니다: ' + error);
+    });
+});
+
+function displayResults(results) {
+    // Display metrics
+    const metricsHtml = `
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-value">$${results.npv.toFixed(2)}M</div>
+                <div class="metric-label">순현재가치 (NPV)</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-value">${results.irr ? results.irr.toFixed(2) + '%' : '계산불가'}</div>
+                <div class="metric-label">내부수익률 (IRR)</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-value">${results.discount_rate.toFixed(2)}%</div>
+                <div class="metric-label">할인율</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-value">$${results.total_investment.toFixed(1)}M</div>
+                <div class="metric-label">총투자비</div>
+            </div>
+        </div>
+    `;
+    document.getElementById('metricsRow').innerHTML = metricsHtml;
+    
+    // Investment decision
+    let decisionHtml = '';
+    if (results.irr && results.irr > results.discount_rate) {
+        decisionHtml = `
+            <div class="alert alert-success">
+                <h5>✅ 투자 권장</h5>
+                <p>IRR(${results.irr.toFixed(2)}%)이 할인율(${results.discount_rate.toFixed(2)}%)보다 높아 투자 타당성이 있습니다.</p>
+            </div>
+        `;
+    } else {
+        decisionHtml = `
+            <div class="alert alert-warning">
+                <h5>⚠️ 투자 재검토 필요</h5>
+                <p>IRR(${results.irr ? results.irr.toFixed(2) + '%' : '계산불가'})이 할인율(${results.discount_rate.toFixed(2)}%)보다 낮아 투자를 재검토해야 합니다.</p>
+            </div>
+        `;
+    }
+    document.getElementById('investmentDecision').innerHTML = decisionHtml;
+    
+    // Display chart
+    Plotly.newPlot('cashFlowChart', JSON.parse(results.chart).data, JSON.parse(results.chart).layout);
+    
+    // Display AI analysis
+    if (results.ai_analysis) {
+        const aiHtml = `
+            <div class="section-header">
+                <h3>🤖 AI 분석 결과</h3>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">투자 추천도: ${results.ai_analysis.recommendation || 'N/A'}</h5>
+                    <p class="card-text">${results.ai_analysis.summary || '분석 결과를 불러올 수 없습니다.'}</p>
+                    ${results.ai_analysis.key_insights ? '<h6>주요 인사이트:</h6><ul>' + results.ai_analysis.key_insights.map(insight => '<li>' + insight + '</li>').join('') + '</ul>' : ''}
+                    ${results.ai_analysis.risk_factors ? '<h6>위험 요소:</h6><ul>' + results.ai_analysis.risk_factors.map(risk => '<li>' + risk + '</li>').join('') + '</ul>' : ''}
+                </div>
+            </div>
+        `;
+        document.getElementById('aiAnalysisSection').innerHTML = aiHtml;
+    }
+    
+    document.getElementById('resultsSection').style.display = 'block';
+}
+</script>
+{% endblock %}

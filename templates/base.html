@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 투자 경제성 분석</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/plotly.js@2.26.0/dist/plotly.min.js"></script>
+    <style>
+        .sidebar {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            padding: 20px;
+            border-right: 1px solid #dee2e6;
+        }
+        
+        .company-logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .company-logo img {
+            max-width: 200px;
+            height: auto;
+        }
+        
+        .mode-buttons {
+            margin-bottom: 30px;
+        }
+        
+        .mode-button {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .mode-button.active {
+            background-color: #2E5084;
+            color: white;
+        }
+        
+        .mode-button:not(.active) {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+        
+        .mode-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .menu-section {
+            margin-bottom: 20px;
+        }
+        
+        .menu-title {
+            color: #2E5084;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .menu-button {
+            width: 100%;
+            margin-bottom: 8px;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            background-color: #ffffff;
+            color: #495057;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #dee2e6;
+        }
+        
+        .menu-button:hover {
+            background-color: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .main-content {
+            padding: 0;
+            margin: 0;
+        }
+        
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        
+        .analysis-form {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #2E5084, #4a69bd);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2E5084;
+        }
+        
+        .metric-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert-warning {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+        }
+        
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 sidebar">
+                <!-- Company Logo -->
+                <div class="company-logo">
+                    {% if logo_base64 %}
+                        <img src="data:image/png;base64,{{ logo_base64 }}" alt="POSCO Holdings">
+                    {% else %}
+                        <div style="background: #2E5084; color: white; padding: 20px; border-radius: 10px;">
+                            <h3>STEEL TECH</h3>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Mode Buttons -->
+                <div class="mode-buttons">
+                    <button class="mode-button active" id="practiceMode">연습모드</button>
+                    <button class="mode-button" id="realMode">실전모드</button>
+                </div>
+                
+                <!-- Permission Management (only in real mode) -->
+                <div class="menu-section" id="permissionMenu" style="display: none;">
+                    <h5>📋 권한 관리</h5>
+                    <button class="menu-button" onclick="location.href='#'">권한 요청하기</button>
+                    <button class="menu-button" onclick="location.href='#'">요청받은 권한</button>
+                    <button class="menu-button" onclick="location.href='#'">결재 현황</button>
+                    <hr>
+                </div>
+                
+                <!-- AI Analysis Menu -->
+                <div class="menu-section">
+                    <div class="menu-title">🤖 AI 경제성 분석</div>
+                    <button class="menu-button" onclick="location.href='/analysis'">AI 경제성 분석</button>
+                </div>
+                
+                <hr>
+                
+                <!-- Main Page Button -->
+                <button class="menu-button" onclick="location.href='/'">🏠 메인페이지</button>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9 main-content">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Mode switching
+        document.getElementById('practiceMode').addEventListener('click', function() {
+            document.getElementById('practiceMode').classList.add('active');
+            document.getElementById('realMode').classList.remove('active');
+            document.getElementById('permissionMenu').style.display = 'none';
+        });
+        
+        document.getElementById('realMode').addEventListener('click', function() {
+            document.getElementById('realMode').classList.add('active');
+            document.getElementById('practiceMode').classList.remove('active');
+            document.getElementById('permissionMenu').style.display = 'block';
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
