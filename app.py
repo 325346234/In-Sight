@@ -540,61 +540,72 @@ def create_top_menu():
     <div style="margin-top: -1rem; margin-bottom: 0.5rem;">
     """, unsafe_allow_html=True)
     
-    col_logo, col_title, col_spacer = st.columns([1, 3, 1])
+    # Main layout: logo section and menu section
+    col_left, col_right = st.columns([2, 3])
     
-    with col_logo:
-        st.markdown("""
-        <div style="margin-left: -0.5rem; margin-top: -0.5rem;">
-        """, unsafe_allow_html=True)
-        try:
-            st.image("attached_assets/POSCO Holdings_eng_1749733209456.png", width=150)
-        except:
+    with col_left:
+        # Logo and title section
+        logo_col, title_col = st.columns([1, 1])
+        
+        with logo_col:
             st.markdown("""
-            <div style="text-align: center; padding: 0.5rem; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 8px;">
-                <h3 style="color: white; margin: 0; font-weight: 700;">POSCO</h3>
-                <p style="color: #e0f2fe; margin: 0; font-size: 0.7rem;">HOLDINGS</p>
+            <div style="margin-left: -0.5rem; margin-top: -0.5rem;">
+            """, unsafe_allow_html=True)
+            try:
+                st.image("attached_assets/POSCO Holdings_eng_1749733209456.png", width=150)
+            except:
+                st.markdown("""
+                <div style="text-align: center; padding: 0.5rem; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 8px;">
+                    <h3 style="color: white; margin: 0; font-weight: 700;">POSCO</h3>
+                    <p style="color: #e0f2fe; margin: 0; font-size: 0.7rem;">HOLDINGS</p>
+                </div>
+                """, unsafe_allow_html=True)
+            st.markdown("</div>", unsafe_allow_html=True)
+        
+        with title_col:
+            st.markdown("""
+            <div style="padding: 2rem 0 0 0;">
+                <h3 style="color: #1e40af; margin: 0; font-weight: 600;">AI 투자 경제성 분석</h3>
             </div>
             """, unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
     
-    with col_title:
+    with col_right:
+        # Menu section
         st.markdown("""
-        <div style="text-align: center; padding: 0.5rem 0; margin-top: -0.3rem;">
-            <h2 style="color: #1e40af; margin: 0; font-weight: 600;">AI 투자 경제성 분석</h2>
-            <p style="color: #64748b; margin: 0; font-size: 0.9rem;">Steel Industry Investment Economic Analysis</p>
-        </div>
+        <div style="padding-top: 1rem;">
         """, unsafe_allow_html=True)
+        
+        menu_col1, menu_col2, menu_col3, menu_col4, menu_col5 = st.columns([1, 1, 1, 1, 1])
+        
+        with menu_col1:
+            if st.button("🤖 AI 경제성 분석", key="ai_analysis", use_container_width=True):
+                st.session_state['current_page'] = 'analysis_input'
+                st.rerun()
+        
+        with menu_col2:
+            if st.button("📋 권한 관리", key="auth_menu", use_container_width=True):
+                st.session_state['current_page'] = 'auth_management'
+                st.rerun()
+        
+        with menu_col3:
+            if st.button("권한 요청하기", key="auth_request", use_container_width=True):
+                st.session_state['current_page'] = 'auth_request'
+                st.rerun()
+        
+        with menu_col4:
+            if st.button("요청받은 권한", key="auth_received", use_container_width=True):
+                st.session_state['current_page'] = 'auth_received'
+                st.rerun()
+        
+        with menu_col5:
+            if st.button("결재 현황", key="approval_status", use_container_width=True):
+                st.session_state['current_page'] = 'approval_status'
+                st.rerun()
+        
+        st.markdown("</div>", unsafe_allow_html=True)
     
     st.markdown("</div>", unsafe_allow_html=True)
     st.markdown("---")
-    
-    # Unified menu without mode distinction
-    col1, col2, col3, col4, col5 = st.columns([2, 2, 2, 2, 2])
-    
-    with col1:
-        if st.button("🤖 AI 경제성 분석", key="ai_analysis", use_container_width=True):
-            st.session_state['current_page'] = 'analysis_input'
-            st.rerun()
-    
-    with col2:
-        if st.button("📋 권한 관리", key="auth_menu", use_container_width=True):
-            st.session_state['current_page'] = 'auth_management'
-            st.rerun()
-    
-    with col3:
-        if st.button("권한 요청하기", key="auth_request", use_container_width=True):
-            st.session_state['current_page'] = 'auth_request'
-            st.rerun()
-    
-    with col4:
-        if st.button("요청받은 권한", key="auth_received", use_container_width=True):
-            st.session_state['current_page'] = 'auth_received'
-            st.rerun()
-    
-    with col5:
-        if st.button("결재 현황", key="approval_status", use_container_width=True):
-            st.session_state['current_page'] = 'approval_status'
-            st.rerun()
 
 def main():
     st.set_page_config(
