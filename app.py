@@ -15,12 +15,11 @@ def create_excel_with_formulas(df_results, results, project_params):
     """Create Excel file with multiple sheets and formulas"""
     wb = Workbook()
     
-    # Get default sheet and rename it
-    summary_ws = wb.active
-    if summary_ws is not None:
-        summary_ws.title = "요약"
-    
-    # Create additional sheets
+    # Create all sheets properly
+    default_sheet = wb.active
+    if default_sheet:
+        wb.remove(default_sheet)
+    summary_ws = wb.create_sheet("요약")
     detail_ws = wb.create_sheet("상세분석")
     assumptions_ws = wb.create_sheet("가정사항")
     formulas_ws = wb.create_sheet("계산식")
@@ -703,7 +702,7 @@ def display_results(results, params):
         showlegend=False,
         plot_bgcolor='rgba(240, 248, 255, 0.3)',
         paper_bgcolor='white',
-        font={'color': '#4682b4'}
+        font={'color': '#1e40af'}
     )
     
     st.plotly_chart(fig, use_container_width=True)
@@ -726,8 +725,8 @@ def display_results(results, params):
         y=revenues,
         mode='lines+markers',
         name='총 매출액',
-        line=dict(color='#4682b4', width=3),
-        marker=dict(color='#4682b4', size=8)
+        line=dict(color='#1e40af', width=3),
+        marker=dict(color='#1e40af', size=8)
     ))
     
     fig2.add_trace(go.Scatter(
@@ -743,14 +742,14 @@ def display_results(results, params):
         title={
             'text': "매출액 및 제조원가 추이",
             'x': 0.5,
-            'font': {'color': '#4682b4', 'size': 20}
+            'font': {'color': '#1e40af', 'size': 20}
         },
         xaxis_title="연도",
         yaxis_title="금액 ($)",
         legend=dict(x=0, y=1, bgcolor='rgba(255,255,255,0.8)'),
         plot_bgcolor='rgba(240, 248, 255, 0.3)',
         paper_bgcolor='white',
-        font={'color': '#4682b4'}
+        font={'color': '#1e40af'}
     )
     
     st.plotly_chart(fig2, use_container_width=True)
