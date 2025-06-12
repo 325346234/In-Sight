@@ -539,10 +539,17 @@ def create_top_menu():
     if 'current_mode' not in st.session_state:
         st.session_state['current_mode'] = '실전모드'
     
-    # Top navigation bar with logo
+    # Top navigation bar with logo - reduced margins
+    st.markdown("""
+    <div style="margin-top: -1rem; margin-bottom: 0.5rem;">
+    """, unsafe_allow_html=True)
+    
     col_logo, col_title, col_spacer = st.columns([1, 3, 1])
     
     with col_logo:
+        st.markdown("""
+        <div style="margin-left: -0.5rem; margin-top: -0.5rem;">
+        """, unsafe_allow_html=True)
         try:
             st.image("attached_assets/POSCO Holdings_eng_1749733209456.png", width=150)
         except:
@@ -552,15 +559,17 @@ def create_top_menu():
                 <p style="color: #e0f2fe; margin: 0; font-size: 0.7rem;">HOLDINGS</p>
             </div>
             """, unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
     
     with col_title:
         st.markdown("""
-        <div style="text-align: center; padding: 1rem 0;">
+        <div style="text-align: center; padding: 0.5rem 0; margin-top: -0.3rem;">
             <h2 style="color: #1e40af; margin: 0; font-weight: 600;">AI 투자 경제성 분석</h2>
             <p style="color: #64748b; margin: 0; font-size: 0.9rem;">Steel Industry Investment Economic Analysis</p>
         </div>
         """, unsafe_allow_html=True)
     
+    st.markdown("</div>", unsafe_allow_html=True)
     st.markdown("---")
     
     # Mode selection and menu in horizontal layout
