@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">📝 권한 요청하기</h2>
+        <p>새로운 시스템 접근 권한을 요청합니다</p>
+    </div>
+    
+    <form class="form-container">
+        <div class="flex gap-10">
+            <div style="flex: 1;">
+                <div class="form-group">
+                    <label for="auth_type">요청 권한 유형</label>
+                    <select id="auth_type" name="auth_type">
+                        <option value="analysis">경제성 분석 실행</option>
+                        <option value="excel">Excel 다운로드</option>
+                        <option value="sensitivity">민감도 분석</option>
+                        <option value="monte_carlo">Monte Carlo 분석</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="department">부서명</label>
+                    <input type="text" id="department" name="department" placeholder="부서명을 입력하세요">
+                </div>
+            </div>
+            
+            <div style="flex: 1;">
+                <div class="form-group">
+                    <label for="manager">담당자명</label>
+                    <input type="text" id="manager" name="manager" placeholder="담당자명을 입력하세요">
+                </div>
+                
+                <div class="form-group">
+                    <label for="priority">우선순위</label>
+                    <select id="priority" name="priority">
+                        <option value="normal">일반</option>
+                        <option value="urgent">긴급</option>
+                        <option value="critical">매우긴급</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="reason">요청 사유</label>
+            <textarea id="reason" name="reason" rows="4" placeholder="권한이 필요한 사유를 상세히 입력하세요"></textarea>
+        </div>
+        
+        <div class="text-center">
+            <button type="submit" class="btn">권한 요청 제출</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

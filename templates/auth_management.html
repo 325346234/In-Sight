@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">📋 권한 관리</h2>
+        <p>시스템 접근 권한 및 승인 관리</p>
+    </div>
+    
+    <div class="flex gap-10">
+        <div style="flex: 1;" class="text-center">
+            <div class="card">
+                <h4>요청 대기</h4>
+                <h2 style="color: #f59e0b; font-size: 2rem;">3</h2>
+                <p>승인 대기 중인 요청</p>
+            </div>
+        </div>
+        
+        <div style="flex: 1;" class="text-center">
+            <div class="card">
+                <h4>승인 완료</h4>
+                <h2 style="color: #22c55e; font-size: 2rem;">12</h2>
+                <p>이번 달 승인된 요청</p>
+            </div>
+        </div>
+        
+        <div style="flex: 1;" class="text-center">
+            <div class="card">
+                <h4>활성 사용자</h4>
+                <h2 style="color: #1e40af; font-size: 2rem;">24</h2>
+                <p>현재 시스템 사용자</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">📊 프로젝트 파라미터 입력</h2>
+        <p>각 항목의 값을 입력하세요. 기본값이 사전 설정되어 있습니다.</p>
+    </div>
+    
+    <form id="analysisForm" class="form-container">
+        <div class="flex gap-10">
+            <div style="flex: 1;">
+                <div class="form-group">
+                    <label for="total_investment">총투자비 (억원)</label>
+                    <input type="number" id="total_investment" name="total_investment" value="1000" step="0.1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="construction_period">공사기간 (년)</label>
+                    <input type="number" id="construction_period" name="construction_period" value="2" min="1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="business_period">사업기간 (년)</label>
+                    <input type="number" id="business_period" name="business_period" value="15" min="1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="equity_ratio">자본비율 (%)</label>
+                    <input type="number" id="equity_ratio" name="equity_ratio" value="30" min="0" max="100" step="0.1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="debt_ratio">차입비율 (%)</label>
+                    <input type="number" id="debt_ratio" name="debt_ratio" value="70" min="0" max="100" step="0.1">
+                </div>
+            </div>
+            
+            <div style="flex: 1;">
+                <div class="form-group">
+                    <label for="machinery_ratio">기계설비투자비비율 (%)</label>
+                    <input type="number" id="machinery_ratio" name="machinery_ratio" value="70" min="0" max="100" step="0.1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="building_ratio">건축물투자비비율 (%)</label>
+                    <input type="number" id="building_ratio" name="building_ratio" value="30" min="0" max="100" step="0.1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="interest_rate">장기차입금리 (%)</label>
+                    <input type="number" id="interest_rate" name="interest_rate" value="4.5" min="0" step="0.1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="grace_period">장기차입거치기간 (년)</label>
+                    <input type="number" id="grace_period" name="grace_period" value="2" min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="repayment_period">장기차입상환기간 (년)</label>
+                    <input type="number" id="repayment_period" name="repayment_period" value="10" min="1">
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-20">
+            <button type="submit" class="btn">경제성 분석 실행</button>
+        </div>
+    </form>
+</div>
+
+<div id="results" class="card" style="display: none;">
+    <div class="card-header">
+        <h2 class="card-title">📈 분석 결과</h2>
+    </div>
+    <div id="resultsContent"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('analysisForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const params = {};
+    for (let [key, value] of formData.entries()) {
+        params[key] = parseFloat(value);
+    }
+    
+    try {
+        const response = await fetch('/api/calculate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ params })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('resultsContent').innerHTML = `
+                <div class="text-center">
+                    <h3 style="color: #1e40af;">IRR (내부수익률)</h3>
+                    <h2 style="color: #22c55e; font-size: 2.5rem;">${(data.results.irr * 100).toFixed(2)}%</h2>
+                    <p>투자 프로젝트의 내부수익률입니다.</p>
+                </div>
+            `;
+        } else {
+            alert('계산 중 오류가 발생했습니다: ' + data.error);
+        }
+    } catch (error) {
+        alert('서버 연결 중 오류가 발생했습니다.');
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}POSCO AI 투자 경제성 분석{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <div class="logo-section">
+                <img src="{{ url_for('static', filename='images/POSCO_logo.png') }}" alt="POSCO" class="logo">
+                <h1 class="title">AI 투자 경제성 분석</h1>
+            </div>
+            <div class="menu-section">
+                <a href="/" class="nav-btn {% if request.endpoint == 'index' %}active{% endif %}">
+                    🤖 AI 경제성 분석
+                </a>
+                <a href="/auth_management" class="nav-btn {% if request.endpoint == 'auth_management' %}active{% endif %}">
+                    📋 권한 관리
+                </a>
+                <a href="/auth_request" class="nav-btn {% if request.endpoint == 'auth_request' %}active{% endif %}">
+                    권한 요청하기
+                </a>
+                <a href="/auth_received" class="nav-btn {% if request.endpoint == 'auth_received' %}active{% endif %}">
+                    요청받은 권한
+                </a>
+                <a href="/approval_status" class="nav-btn {% if request.endpoint == 'approval_status' %}active{% endif %}">
+                    결재 현황
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
