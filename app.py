@@ -537,7 +537,7 @@ def create_top_menu():
     """Create top horizontal navigation menu with logo"""
     # Top navigation bar with logo - reduced margins
     st.markdown("""
-    <div style="margin-top: -1rem; margin-bottom: 0.5rem;">
+    <div style="margin-top: -2rem; margin-bottom: 0.25rem;">
     """, unsafe_allow_html=True)
     
     # Main layout: logo section and menu section
@@ -546,7 +546,7 @@ def create_top_menu():
     with col_left:
         # Logo section
         st.markdown("""
-        <div style="margin-left: -0.25rem; margin-top: -0.25rem;">
+        <div style="margin-left: -1rem; margin-top: -1rem;">
         """, unsafe_allow_html=True)
         try:
             st.image("attached_assets/POSCO_1749737338153.png", width=225)
@@ -561,7 +561,7 @@ def create_top_menu():
         
         # Title directly under logo
         st.markdown("""
-        <div style="margin-left: -0.25rem; margin-top: 0.25rem;">
+        <div style="margin-left: -1rem; margin-top: -0.5rem;">
             <h3 style="color: #1e40af; margin: 0; font-weight: 600;">AI 투자 경제성 분석</h3>
         </div>
         """, unsafe_allow_html=True)
