@@ -513,49 +513,72 @@ def show_monte_carlo_analysis():
 def create_sidebar():
     """Create sidebar with POSCO Holdings logo and navigation"""
     with st.sidebar:
-        # Add POSCO Holdings logo at the top
+        # Center-aligned POSCO Holdings logo
+        st.markdown("<div style='text-align: center; margin-bottom: 1rem;'>", unsafe_allow_html=True)
         try:
-            st.image("attached_assets/POSCO Holdings_eng_1749733209456.png", width=200)
+            st.image("attached_assets/POSCO Holdings_eng_1749733209456.png", width=180)
         except:
             st.markdown("""
-            <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 8px; margin-bottom: 2rem;">
+            <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 8px; margin: 1rem 0;">
                 <h2 style="color: white; margin: 0; font-weight: 700;">POSCO</h2>
                 <p style="color: #e0f2fe; margin: 0; font-size: 0.9rem;">HOLDINGS</p>
             </div>
             """, unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
         
-        st.markdown("---")
-        
-        # Navigation menu
-        st.markdown("### 📋 분석 메뉴")
-        
-        # Page selection
-        page_options = {
-            "input": "📊 데이터 입력",
-            "analysis": "📈 경제성 분석", 
-            "sensitivity": "🎯 민감도 분석",
-            "monte_carlo": "🎲 Monte Carlo 분석"
-        }
-        
-        selected_page = st.radio("페이지 선택:", list(page_options.keys()), 
-                                format_func=lambda x: page_options[x], key="page_selector")
-        
-        st.session_state['current_page'] = selected_page
-        
-        st.markdown("---")
-        
-        # Quick info panel
-        st.markdown("### ℹ️ 프로젝트 정보")
+        # Title
         st.markdown("""
-        <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #1e40af;">
-            <p style="margin: 0; font-size: 0.85rem; color: #64748b;">
-                <strong>분석 유형:</strong> 철강사업 투자<br>
-                <strong>기준 통화:</strong> USD<br>
-                <strong>분석 방법:</strong> DCF, IRR<br>
-                <strong>위험 분석:</strong> Monte Carlo
-            </p>
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <h3 style="color: #1e40af; margin: 0; font-weight: 600;">AI 투자 경제성 분석</h3>
         </div>
         """, unsafe_allow_html=True)
+        
+        # Mode selection
+        if 'current_mode' not in st.session_state:
+            st.session_state['current_mode'] = '실전모드'
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("실전모드", key="real_mode", 
+                        use_container_width=True,
+                        type="primary" if st.session_state['current_mode'] == '실전모드' else "secondary"):
+                st.session_state['current_mode'] = '실전모드'
+                st.rerun()
+        
+        with col2:
+            if st.button("연습모드", key="practice_mode", 
+                        use_container_width=True,
+                        type="primary" if st.session_state['current_mode'] == '연습모드' else "secondary"):
+                st.session_state['current_mode'] = '연습모드'
+                st.rerun()
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        # Menu based on mode
+        if st.session_state['current_mode'] == '실전모드':
+            # 권한 관리 메뉴
+            if st.button("📋 권한 관리", key="auth_menu", use_container_width=True):
+                st.session_state['current_page'] = 'auth_management'
+                st.rerun()
+            
+            # 권한 관리 하위 메뉴 (expander로 구성)
+            with st.expander("권한 관리 세부 메뉴"):
+                if st.button("권한 요청하기", key="auth_request", use_container_width=True):
+                    st.session_state['current_page'] = 'auth_request'
+                    st.rerun()
+                
+                if st.button("요청받은 권한", key="auth_received", use_container_width=True):
+                    st.session_state['current_page'] = 'auth_received'
+                    st.rerun()
+                
+                if st.button("결재 현황", key="approval_status", use_container_width=True):
+                    st.session_state['current_page'] = 'approval_status'
+                    st.rerun()
+        
+        # AI 경제성 분석 메뉴 (실전모드/연습모드 공통)
+        if st.button("🤖 AI 경제성 분석", key="ai_analysis", use_container_width=True):
+            st.session_state['current_page'] = 'input'
+            st.rerun()
 
 def main():
     st.set_page_config(
@@ -821,6 +844,17 @@ def main():
         
         # Page routing based on sidebar selection
         current_page = st.session_state.get('current_page', 'input')
+        current_mode = st.session_state.get('current_mode', '실전모드')
+        
+        # Show current mode in header
+        mode_color = "#1e40af" if current_mode == "실전모드" else "#059669"
+        st.markdown(f"""
+        <div style="text-align: right; margin-bottom: 1rem;">
+            <span style="background: {mode_color}; color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; font-weight: 500;">
+                {current_mode}
+            </span>
+        </div>
+        """, unsafe_allow_html=True)
         
         if current_page == 'input':
             show_input_page()
@@ -829,7 +863,7 @@ def main():
                 show_analysis_page()
             else:
                 st.warning("먼저 데이터를 입력하고 분석을 실행해주세요.")
-                if st.button("데이터 입력 페이지로 이동"):
+                if st.button("AI 경제성 분석으로 이동"):
                     st.session_state['current_page'] = 'input'
                     st.rerun()
         elif current_page == 'sensitivity':
@@ -837,7 +871,7 @@ def main():
                 show_sensitivity_analysis()
             else:
                 st.warning("먼저 기본 분석을 완료해주세요.")
-                if st.button("데이터 입력 페이지로 이동"):
+                if st.button("AI 경제성 분석으로 이동"):
                     st.session_state['current_page'] = 'input'
                     st.rerun()
         elif current_page == 'monte_carlo':
@@ -845,13 +879,21 @@ def main():
                 show_monte_carlo_analysis()
             else:
                 st.warning("먼저 기본 분석을 완료해주세요.")
-                if st.button("데이터 입력 페이지로 이동"):
+                if st.button("AI 경제성 분석으로 이동"):
                     st.session_state['current_page'] = 'input'
                     st.rerun()
         elif current_page == 'progress':
             show_progress_page()
         elif current_page == 'results':
             show_analysis_page()
+        elif current_page == 'auth_management':
+            show_auth_management_page()
+        elif current_page == 'auth_request':
+            show_auth_request_page()
+        elif current_page == 'auth_received':
+            show_auth_received_page()
+        elif current_page == 'approval_status':
+            show_approval_status_page()
 
 def show_input_page():
     st.markdown("""
@@ -2018,6 +2060,132 @@ def display_results(results, params):
         except Exception as e:
             st.error("회귀분석 계산 중 오류가 발생했습니다.")
             st.info("극단적인 파라미터 값으로 인한 계산 오류일 수 있습니다.")
+
+def show_auth_management_page():
+    """Show authority management overview page"""
+    st.markdown("""
+    <div class="section-header">
+        <h2>📋 권한 관리</h2>
+        <p>시스템 접근 권한 및 승인 관리</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("""
+        <div class="metric-container">
+            <h4>요청 대기</h4>
+            <h2 style="color: #f59e0b;">3</h2>
+            <p>승인 대기 중인 요청</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div class="metric-container">
+            <h4>승인 완료</h4>
+            <h2 style="color: #22c55e;">12</h2>
+            <p>이번 달 승인된 요청</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown("""
+        <div class="metric-container">
+            <h4>활성 사용자</h4>
+            <h2 style="color: #1e40af;">24</h2>
+            <p>현재 시스템 사용자</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+def show_auth_request_page():
+    """Show authority request page"""
+    st.markdown("""
+    <div class="section-header">
+        <h2>📝 권한 요청하기</h2>
+        <p>새로운 시스템 접근 권한을 요청합니다</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    with st.form("auth_request_form"):
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.selectbox("요청 권한 유형", [
+                "경제성 분석 실행",
+                "Excel 다운로드", 
+                "민감도 분석",
+                "Monte Carlo 분석"
+            ])
+            st.text_input("부서명")
+        
+        with col2:
+            st.text_input("담당자명")
+            st.selectbox("우선순위", ["일반", "긴급", "매우긴급"])
+        
+        st.text_area("요청 사유", height=100)
+        
+        if st.form_submit_button("권한 요청 제출", use_container_width=True):
+            st.success("권한 요청이 성공적으로 제출되었습니다!")
+
+def show_auth_received_page():
+    """Show received authority requests page"""
+    st.markdown("""
+    <div class="section-header">
+        <h2>📨 요청받은 권한</h2>
+        <p>다른 사용자로부터 받은 권한 요청을 확인하고 승인합니다</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.info("승인 대기 중인 요청이 없습니다.")
+
+def show_approval_status_page():
+    """Show approval status page"""
+    st.markdown("""
+    <div class="section-header">
+        <h2>📊 결재 현황</h2>
+        <p>권한 요청 및 승인 현황을 확인합니다</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.markdown("""
+        <div class="metric-container">
+            <h4>총 요청</h4>
+            <h2 style="color: #1e40af;">47</h2>
+            <p>이번 달 전체 요청</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div class="metric-container">
+            <h4>승인</h4>
+            <h2 style="color: #22c55e;">32</h2>
+            <p>승인된 요청</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown("""
+        <div class="metric-container">
+            <h4>대기</h4>
+            <h2 style="color: #f59e0b;">12</h2>
+            <p>승인 대기 중</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col4:
+        st.markdown("""
+        <div class="metric-container">
+            <h4>거절</h4>
+            <h2 style="color: #ef4444;">3</h2>
+            <p>거절된 요청</p>
+        </div>
+        """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
