@@ -251,10 +251,15 @@ class FinancialCalculator:
         
         try:
             # Initial guess for IRR
-            irr = fsolve(npv, 0.1)[0]
-            return irr
+            result = fsolve(npv, 0.1)
+            if len(result) > 0:
+                irr = float(result[0])
+                # Validate IRR is reasonable (-100% to 500%)
+                if -1.0 <= irr <= 5.0 and not (np.isnan(irr) or np.isinf(irr)):
+                    return irr
+            return 0.0
         except:
-            return 0
+            return 0.0
     
     def calculate_all_metrics(self):
         """모든 재무지표 계산"""
