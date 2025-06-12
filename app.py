@@ -405,9 +405,9 @@ if analysis_type == "Project Analysis":
                 st.info("AI analysis not available. Please check your OpenAI API configuration.")
 
 elif analysis_type == "Detailed Steel Investment Analysis":
-    # Import and display the detailed analysis
-    from steel_investment_analysis import display_analysis_results
-    display_analysis_results()
+    # Import and display the detailed analysis using actual Excel data
+    from steel_analysis_demo import run_steel_analysis_demo
+    run_steel_analysis_demo()
 
 elif analysis_type == "Comparative Analysis":
     st.header("🔄 Comparative Investment Analysis")

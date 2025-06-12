@@ -455,9 +455,26 @@ def display_analysis_results():
                     summary_df = pd.DataFrame(summary_data)
                     
                     # Excel 파일 작성
-                    with pd.ExcelWriter(output, engine='openpyxl', mode='w') as writer:
-                        df_results.to_excel(writer, sheet_name='투자분석결과', index=False)
-                        summary_df.to_excel(writer, sheet_name='투자요약', index=False)
+                    try:
+                        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+                            df_results.to_excel(writer, sheet_name='투자분석결과', index=False)
+                            summary_df.to_excel(writer, sheet_name='투자요약', index=False)
+                    except ImportError:
+                        # Fallback to openpyxl with proper buffer handling
+                        import tempfile
+                        import os
+                        
+                        with tempfile.NamedTemporaryFile(suffix='.xlsx', delete=False) as tmp_file:
+                            with pd.ExcelWriter(tmp_file.name, engine='openpyxl') as writer:
+                                df_results.to_excel(writer, sheet_name='투자분석결과', index=False)
+                                summary_df.to_excel(writer, sheet_name='투자요약', index=False)
+                        
+                        # Read the temporary file into BytesIO
+                        with open(tmp_file.name, 'rb') as f:
+                            output.write(f.read())
+                        
+                        # Clean up temporary file
+                        os.unlink(tmp_file.name)
                     
                     excel_data = output.getvalue()
                     
