@@ -544,30 +544,27 @@ def create_top_menu():
     col_left, col_right = st.columns([2, 3])
     
     with col_left:
-        # Logo and title section
-        logo_col, title_col = st.columns([1, 1])
-        
-        with logo_col:
+        # Logo section
+        st.markdown("""
+        <div style="margin-left: -0.5rem; margin-top: -0.5rem;">
+        """, unsafe_allow_html=True)
+        try:
+            st.image("attached_assets/POSCO Holdings_eng_1749733209456.png", width=150)
+        except:
             st.markdown("""
-            <div style="margin-left: -0.5rem; margin-top: -0.5rem;">
-            """, unsafe_allow_html=True)
-            try:
-                st.image("attached_assets/POSCO Holdings_eng_1749733209456.png", width=150)
-            except:
-                st.markdown("""
-                <div style="text-align: center; padding: 0.5rem; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 8px;">
-                    <h3 style="color: white; margin: 0; font-weight: 700;">POSCO</h3>
-                    <p style="color: #e0f2fe; margin: 0; font-size: 0.7rem;">HOLDINGS</p>
-                </div>
-                """, unsafe_allow_html=True)
-            st.markdown("</div>", unsafe_allow_html=True)
-        
-        with title_col:
-            st.markdown("""
-            <div style="padding: 2rem 0 0 0;">
-                <h3 style="color: #1e40af; margin: 0; font-weight: 600;">AI 투자 경제성 분석</h3>
+            <div style="text-align: center; padding: 0.5rem; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 8px;">
+                <h3 style="color: white; margin: 0; font-weight: 700;">POSCO</h3>
+                <p style="color: #e0f2fe; margin: 0; font-size: 0.7rem;">HOLDINGS</p>
             </div>
             """, unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+        
+        # Title directly under logo
+        st.markdown("""
+        <div style="margin-left: -0.5rem; margin-top: 0.5rem;">
+            <h3 style="color: #1e40af; margin: 0; font-weight: 600;">AI 투자 경제성 분석</h3>
+        </div>
+        """, unsafe_allow_html=True)
     
     with col_right:
         # Menu section
