@@ -534,21 +534,34 @@ def create_sidebar():
         """, unsafe_allow_html=True)
 
 def create_top_menu():
-    """Create top horizontal navigation menu"""
+    """Create top horizontal navigation menu with logo"""
     # Initialize session state
     if 'current_mode' not in st.session_state:
         st.session_state['current_mode'] = '실전모드'
     
-    # Top navigation bar
-    st.markdown("""
-    <div style="background: linear-gradient(90deg, #1e40af 0%, #3b82f6 100%); padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-            <div style="color: white; font-weight: 600; font-size: 1.1rem;">
-                Navigation Menu
+    # Top navigation bar with logo
+    col_logo, col_title, col_spacer = st.columns([1, 3, 1])
+    
+    with col_logo:
+        try:
+            st.image("attached_assets/POSCO Holdings_eng_1749733209456.png", width=150)
+        except:
+            st.markdown("""
+            <div style="text-align: center; padding: 0.5rem; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 8px;">
+                <h3 style="color: white; margin: 0; font-weight: 700;">POSCO</h3>
+                <p style="color: #e0f2fe; margin: 0; font-size: 0.7rem;">HOLDINGS</p>
             </div>
+            """, unsafe_allow_html=True)
+    
+    with col_title:
+        st.markdown("""
+        <div style="text-align: center; padding: 1rem 0;">
+            <h2 style="color: #1e40af; margin: 0; font-weight: 600;">AI 투자 경제성 분석</h2>
+            <p style="color: #64748b; margin: 0; font-size: 0.9rem;">Steel Industry Investment Economic Analysis</p>
         </div>
-    </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
+    
+    st.markdown("---")
     
     # Mode selection and menu in horizontal layout
     col1, col2, col3, col4, col5, col6, col7 = st.columns([1, 1, 1, 1, 1, 1, 1])
@@ -600,7 +613,7 @@ def main():
         page_title="POSCO Holdings - 철강사업 경제성 분석",
         page_icon="🏭",
         layout="wide",
-        initial_sidebar_state="expanded"
+        initial_sidebar_state="collapsed"
     )
     
     # Custom CSS styling inspired by POSCO brand colors
@@ -615,14 +628,9 @@ def main():
         color: #333333;
     }
     
-    /* Sidebar styling - POSCO brand */
+    /* Hide sidebar completely */
     .css-1d391kg {
-        background: rgba(255, 255, 255, 0.5) !important;
-        border-right: 1px solid #e2e8f0;
-    }
-    
-    .css-1d391kg .css-1v3fvcr {
-        color: white;
+        display: none !important;
     }
     
     /* Header styling - POSCO inspired */
@@ -840,8 +848,7 @@ def main():
     </style>
     """, unsafe_allow_html=True)
     
-    # Create sidebar with logo and navigation
-    create_sidebar()
+
     
     # Initialize session state variables
     if 'current_page' not in st.session_state:
