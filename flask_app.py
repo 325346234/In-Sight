@@ -39,6 +39,31 @@ def calculate_economics():
         # Extract parameters from request
         params = data.get('params', {})
         
+        # Add default values for missing parameters
+        default_params = {
+            'total_investment': 1000,
+            'construction_period': 2,
+            'business_period': 15,
+            'equity_ratio': 30,
+            'debt_ratio': 70,
+            'machinery_ratio': 70,
+            'building_ratio': 30,
+            'interest_rate': 4.5,
+            'grace_period': 2,
+            'repayment_period': 10,
+            'corporate_tax_rate': 25,
+            'sales_admin_ratio': 5,
+            'receivables_days': 30,
+            'payables_days': 30,
+            'product_inventory_days': 15,
+            'material_inventory_days': 10
+        }
+        
+        # Merge with provided parameters
+        for key, value in default_params.items():
+            if key not in params:
+                params[key] = value
+        
         # Load data
         data_loader = DataLoader()
         cost_data = data_loader.load_cost_data()
