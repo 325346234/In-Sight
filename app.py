@@ -13,29 +13,37 @@ from data_loader import DataLoader
 
 def create_excel_with_formulas(df_results, results, project_params):
     """Create Excel file with multiple sheets and formulas"""
-    wb = Workbook()
+    # Create a simple Excel file with basic data
+    buffer = BytesIO()
     
-    # Create all sheets properly
-    default_sheet = wb.active
-    if default_sheet:
-        wb.remove(default_sheet)
-    summary_ws = wb.create_sheet("요약")
-    detail_ws = wb.create_sheet("상세분석")
-    assumptions_ws = wb.create_sheet("가정사항")
-    formulas_ws = wb.create_sheet("계산식")
+    # Create Excel writer
+    with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+        # Summary sheet
+        summary_data = {
+            '지표': ['IRR', '총 매출액', '총 투자비', '순현금흐름'],
+            '값': [
+                f"{results.get('irr', 0) * 100:.2f}%" if results.get('irr', 0) < 1 else f"{results.get('irr', 0):.2f}%",
+                f"${sum([v for v in results['total_revenue'].values() if v > 0]):,.0f}",
+                f"${project_params.get('total_investment', 0):,.0f}",
+                f"${list(results['net_cash_flow'].values())[-1]:,.0f}"
+            ],
+            '설명': ['내부수익률', '전체 기간 총 매출', '프로젝트 총 투자금액', '최종년도 순현금흐름']
+        }
+        summary_df = pd.DataFrame(summary_data)
+        summary_df.to_excel(writer, sheet_name='요약', index=False)
+        
+        # Detailed analysis
+        df_results.to_excel(writer, sheet_name='상세분석', index=False)
+        
+        # Parameters sheet
+        params_data = {
+            '항목': list(project_params.keys()),
+            '값': [str(v) for v in project_params.values()]
+        }
+        params_df = pd.DataFrame(params_data)
+        params_df.to_excel(writer, sheet_name='가정사항', index=False)
     
-    # Styling
-    header_font = Font(bold=True, color="FFFFFF")
-    header_fill = PatternFill(start_color="1e40af", end_color="1e40af", fill_type="solid")
-    border = Border(left=Side(style='thin'), right=Side(style='thin'), 
-                   top=Side(style='thin'), bottom=Side(style='thin'))
-    center_align = Alignment(horizontal='center', vertical='center')
-    
-    # 1. Summary Sheet
-    summary_ws.title = "요약"
-    summary_ws['A1'] = "철강사업 프로젝트 경제성 분석 요약"
-    summary_ws['A1'].font = Font(size=16, bold=True)
-    summary_ws.merge_cells('A1:D1')
+    return buffer.getvalue()
     
     # Key metrics
     summary_data = [
@@ -759,9 +767,9 @@ def display_results(results, params):
     <div class="section-header">
         <h3>💸 Free Cash Flow 계산 내역</h3>
         <div style="background: linear-gradient(90deg, #f0f8ff, #ffffff); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-            <p><strong style="color: #4682b4;">현금유입 = 순이익 + 금융비용 + 감가상각 + 잔존가치 + 운전자금유입</strong></p>
-            <p><strong style="color: #4682b4;">현금유출 = 투자비 + 운전자금유출 (운전자금증가분)</strong></p>
-            <p><strong style="color: #4682b4;">순현금흐름(FCF) = 현금유입 - 현금유출</strong></p>
+            <p><strong style="color: #1e40af;">현금유입 = 순이익 + 금융비용 + 감가상각 + 잔존가치 + 운전자금유입</strong></p>
+            <p><strong style="color: #1e40af;">현금유출 = 투자비 + 운전자금유출 (운전자금증가분)</strong></p>
+            <p><strong style="color: #1e40af;">순현금흐름(FCF) = 현금유입 - 현금유출</strong></p>
         </div>
     </div>
     """, unsafe_allow_html=True)
