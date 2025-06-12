@@ -284,7 +284,7 @@ def main():
     /* Buttons - POSCO style */
     .stButton > button {
         background: #003366;
-        color: white;
+        color: white !important;
         border: none;
         border-radius: 4px;
         padding: 0.75rem 2rem;
@@ -297,6 +297,7 @@ def main():
     
     .stButton > button:hover {
         background: #004488;
+        color: white !important;
         transform: translateY(-1px);
         box-shadow: 0 4px 8px rgba(0, 51, 102, 0.3);
     }
