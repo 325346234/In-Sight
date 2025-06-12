@@ -228,9 +228,9 @@ def main():
     
     /* Main background and text */
     .stApp {
-        background: #ffffff;
+        background: #2c3e50;
         font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
-        color: #333333;
+        color: #ffffff;
     }
     
     /* Header styling - POSCO inspired */
@@ -261,24 +261,24 @@ def main():
     /* Typography improvements */
     h1, h2, h3, h4, h5, h6 {
         font-family: 'Noto Sans KR', sans-serif;
-        color: #003366;
+        color: #ffffff;
         font-weight: 500;
         line-height: 1.4;
     }
     
     /* All text elements */
     p, div, span, label, .stMarkdown {
-        color: #003366;
+        color: #ffffff;
     }
     
     /* Cards and containers */
     .stContainer > div {
-        background: #ffffff;
-        border: 1px solid #e8eaf0;
+        background: #34495e;
+        border: 1px solid #5d6d7e;
         border-radius: 8px;
         padding: 1.5rem;
         margin: 1rem 0;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 1px 3px rgba(255, 255, 255, 0.1);
     }
     
     /* Buttons - POSCO style */
@@ -303,9 +303,10 @@ def main():
     
     /* Input fields */
     .stNumberInput > div > div > input {
-        border: 1px solid #b3d9ff;
+        border: 1px solid #5d6d7e;
         border-radius: 4px;
-        background: #f0f8ff;
+        background: #34495e;
+        color: #ffffff;
         font-family: 'Noto Sans KR', sans-serif;
         font-size: 0.95rem;
         padding: 0.75rem;
@@ -313,15 +314,15 @@ def main():
     }
     
     .stNumberInput > div > div > input:focus {
-        border-color: #003366;
-        background: #e6f3ff;
-        box-shadow: 0 0 0 3px rgba(179, 217, 255, 0.3);
+        border-color: #3498db;
+        background: #2c3e50;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
         outline: none;
     }
     
     .stNumberInput > div > div > input:hover {
-        border-color: #66b3ff;
-        background: #e6f3ff;
+        border-color: #85c1e9;
+        background: #2c3e50;
     }
     
     /* Progress bar */
@@ -331,23 +332,23 @@ def main():
     
     /* Metrics - Clean POSCO style */
     .metric-container {
-        background: #ffffff;
-        border: 1px solid #e8eaf0;
+        background: #34495e;
+        border: 1px solid #5d6d7e;
         border-radius: 8px;
         padding: 1.5rem;
         margin: 0.5rem;
         text-align: center;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 1px 3px rgba(255, 255, 255, 0.1);
         transition: all 0.2s ease;
     }
     
     .metric-container:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
         transform: translateY(-2px);
     }
     
     .metric-container h4 {
-        color: #666666;
+        color: #bdc3c7;
         font-size: 0.9rem;
         font-weight: 400;
         margin-bottom: 0.5rem;
@@ -356,7 +357,7 @@ def main():
     }
     
     .metric-container h2 {
-        color: #003366;
+        color: #ffffff;
         font-weight: 700;
         font-size: 1.8rem;
         margin: 0;
@@ -364,11 +365,11 @@ def main():
     
     /* Dataframe styling */
     .stDataFrame {
-        background: white;
-        border: 1px solid #e8eaf0;
+        background: #34495e;
+        border: 1px solid #5d6d7e;
         border-radius: 8px;
         overflow: hidden;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 1px 3px rgba(255, 255, 255, 0.1);
     }
     
     /* Success/Info messages */
@@ -388,29 +389,29 @@ def main():
     
     /* Section headers - Professional style */
     .section-header {
-        background: #f8f9fa;
-        border-left: 4px solid #003366;
+        background: #34495e;
+        border-left: 4px solid #3498db;
         padding: 1.5rem;
         border-radius: 4px;
         margin: 2rem 0 1rem 0;
     }
     
     .section-header h2 {
-        color: #003366;
+        color: #ffffff;
         font-weight: 600;
         font-size: 1.5rem;
         margin-bottom: 0.5rem;
     }
     
     .section-header h3 {
-        color: #003366;
+        color: #ffffff;
         font-weight: 500;
         font-size: 1.2rem;
         margin: 0;
     }
     
     .section-header p {
-        color: #666666;
+        color: #bdc3c7;
         font-size: 0.9rem;
         margin: 0;
         font-weight: 300;
@@ -419,7 +420,7 @@ def main():
     /* Label styling */
     .stNumberInput label {
         font-weight: 500;
-        color: #003366;
+        color: #ffffff;
         font-size: 0.9rem;
     }
     
@@ -457,19 +458,19 @@ def main():
     }
     </style>
     <div style="
-        background: linear-gradient(135deg, #003366 0%, #004488 100%);
-        padding: 1rem 2rem;
+        background: #ffffff;
+        padding: 2rem 2rem;
         margin: 0;
-        color: white;
-        border-bottom: 3px solid #0066cc;
-        box-shadow: 0 2px 10px rgba(0, 51, 102, 0.2);
+        color: #2c3e50;
+        border-bottom: 3px solid #ecf0f1;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         position: relative;
         z-index: 1000;
         width: 100vw;
         margin-left: calc(-50vw + 50%);
     ">
         <!-- Menu content will be added here later -->
-        <div style="height: 20px;"></div>
+        <div style="height: 40px;"></div>
     </div>
     """, unsafe_allow_html=True)
     
