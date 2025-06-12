@@ -375,7 +375,7 @@ def main():
             st.session_state['current_page'] = 'advanced'
     
     with nav_col4:
-        if st.button("💡 Insights", key="nav_insights", use_container_width=True):
+        if st.button("💡 철강사 투자동향", key="nav_insights", use_container_width=True):
             st.session_state['current_page'] = 'insights'
     
     st.markdown("---")
@@ -693,38 +693,39 @@ def show_advanced_analysis_page():
                 st.info(f"총투자비가 1% 증가할 때마다 IRR이 약 {reg_data['slope']:.4%} 변화합니다.")
 
 def show_insights_page():
-    """Insights page with competitor investment trends and market intelligence"""
+    """Steel investment trends page with automatic analysis"""
     
     # Competitor Investment Trends Section
-    st.markdown("### 🏢 경쟁사 투자동향")
+    st.markdown("### 🏢 철강사 투자동향")
     
-    if st.button("최신 투자동향 분석", key="analyze_trends"):
-        try:
-            import openai
-            from openai import OpenAI
-            import os
-            
-            # Initialize OpenAI client
-            client = OpenAI(api_key=os.environ.get("API_KEY"))
-            
-            # Generate steel industry investment news summaries
-            prompt = """
-            철강업계 최신 투자 동향에 대한 뉴스 요약을 다음 형식으로 5개 작성해주세요:
+    # Automatically display analysis without button click
+    try:
+        import openai
+        from openai import OpenAI
+        import os
+        
+        # Initialize OpenAI client
+        client = OpenAI(api_key=os.environ.get("API_KEY"))
+        
+        # Generate steel industry investment news summaries
+        prompt = """
+        철강업계 최신 투자 동향에 대한 뉴스 요약을 다음 형식으로 5개 작성해주세요:
 
-            제목: [100자 이내 뉴스 제목]
-            요약: [100자 이내 핵심 내용 요약]
-            출처: [관련 웹사이트 링크 - 실제 존재하는 사이트]
+        제목: [100자 이내 뉴스 제목]
+        요약: [100자 이내 핵심 내용 요약]
+        출처: [관련 웹사이트 링크 - 실제 존재하는 사이트]
 
-            다음 키워드를 중심으로 작성:
-            - 철강투자
-            - 철강설비투자
-            - 포스코, 현대제철 등 주요 기업
-            - 친환경 기술 투자
-            - 스마트팩토리
+        다음 키워드를 중심으로 작성:
+        - 철강투자
+        - 철강설비투자
+        - 포스코, 현대제철 등 주요 기업
+        - 친환경 기술 투자
+        - 스마트팩토리
 
-            각 뉴스는 구분선(---)으로 분리해주세요.
-            """
-            
+        각 뉴스는 구분선(---)으로 분리해주세요.
+        """
+        
+        with st.spinner("투자동향 분석 중..."):
             response = client.chat.completions.create(
                 model="gpt-4o",
                 messages=[
@@ -736,64 +737,64 @@ def show_insights_page():
             )
             
             analysis_content = response.choices[0].message.content
-            
-            # Display the news summaries in structured format
-            col1, col2 = st.columns([2, 1])
-            
-            with col1:
-                st.markdown("#### 📈 최신 철강투자 뉴스")
-                
-                # Parse and display news summaries
-                if analysis_content:
-                    news_items = analysis_content.split('---')
-                    for i, news_item in enumerate(news_items):
-                        if news_item.strip():
-                            lines = news_item.strip().split('\n')
-                            title = ""
-                            summary = ""
-                            source = ""
-                            
-                            for line in lines:
-                                if line.startswith('제목:'):
-                                    title = line.replace('제목:', '').strip()
-                                elif line.startswith('요약:'):
-                                    summary = line.replace('요약:', '').strip()
-                                elif line.startswith('출처:'):
-                                    source = line.replace('출처:', '').strip()
-                            
-                            if title and summary:
-                                st.markdown(f"""
-                                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin: 1rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                                    <h4 style="color: #1a202c; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; line-height: 1.4;">{title}</h4>
-                                    <p style="color: #4a5568; font-size: 1rem; font-weight: 500; margin-bottom: 0.75rem; line-height: 1.6;">{summary}</p>
-                                    <a href="{source}" target="_blank" style="color: #2c5282; font-size: 0.9rem; font-weight: 600; text-decoration: none;">
-                                        📎 자세히 보기 →
-                                    </a>
-                                </div>
-                                """, unsafe_allow_html=True)
-            
-            with col2:
-                st.markdown("#### 💡 주요 투자 키워드")
-                
-                # Competitor Analysis Table
-                st.markdown("#### 🏢 주요 경쟁사 투자 현황")
-                
-                competitor_data = {
-                    '회사명': ['POSCO', '현대제철', 'JFE스틸', '바오스틸', 'ArcelorMittal'],
-                    '주요 투자분야': ['수소환원제철', '전기로 확대', '탄소중립기술', '스마트제조', '친환경기술'],
-                    '투자규모': ['10조원+', '5조원+', '8조원+', '15조원+', '12조원+'],
-                    '완료시기': ['2030년', '2027년', '2030년', '2025년', '2030년'],
-                    '핵심기술': ['HyREX', '전기로', 'COURSE50', 'AI제조', 'XCarb']
-                }
-                
-                competitor_df = pd.DataFrame(competitor_data)
-                st.dataframe(competitor_df, use_container_width=True)
-                
-                st.info("분석 기준일: 2024년 12월 기준 / 실제 투자 현황은 각 회사 공시자료를 참조하시기 바랍니다.")
         
-        except Exception as e:
-            st.error("투자동향 분석 중 오류가 발생했습니다.")
-            st.info("OpenAI API 연결을 확인하거나 잠시 후 다시 시도해주세요.")
+        # Display the news summaries in structured format
+        col1, col2 = st.columns([2, 1])
+        
+        with col1:
+            st.markdown("#### 📈 최신 철강투자 뉴스")
+            
+            # Parse and display news summaries
+            if analysis_content:
+                news_items = analysis_content.split('---')
+                for i, news_item in enumerate(news_items):
+                    if news_item.strip():
+                        lines = news_item.strip().split('\n')
+                        title = ""
+                        summary = ""
+                        source = ""
+                        
+                        for line in lines:
+                            if line.startswith('제목:'):
+                                title = line.replace('제목:', '').strip()
+                            elif line.startswith('요약:'):
+                                summary = line.replace('요약:', '').strip()
+                            elif line.startswith('출처:'):
+                                source = line.replace('출처:', '').strip()
+                        
+                        if title and summary:
+                            st.markdown(f"""
+                            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin: 1rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                <h4 style="color: #1a202c; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; line-height: 1.4;">{title}</h4>
+                                <p style="color: #4a5568; font-size: 1rem; font-weight: 500; margin-bottom: 0.75rem; line-height: 1.6;">{summary}</p>
+                                <a href="{source}" target="_blank" style="color: #2c5282; font-size: 0.9rem; font-weight: 600; text-decoration: none;">
+                                    📎 자세히 보기 →
+                                </a>
+                            </div>
+                            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown("#### 💡 주요 투자 키워드")
+            
+            # Competitor Analysis Table
+            st.markdown("#### 🏢 주요 경쟁사 투자 현황")
+            
+            competitor_data = {
+                '회사명': ['POSCO', '현대제철', 'JFE스틸', '바오스틸', 'ArcelorMittal'],
+                '주요 투자분야': ['수소환원제철', '전기로 확대', '탄소중립기술', '스마트제조', '친환경기술'],
+                '투자규모': ['10조원+', '5조원+', '8조원+', '15조원+', '12조원+'],
+                '완료시기': ['2030년', '2027년', '2030년', '2025년', '2030년'],
+                '핵심기술': ['HyREX', '전기로', 'COURSE50', 'AI제조', 'XCarb']
+            }
+            
+            competitor_df = pd.DataFrame(competitor_data)
+            st.dataframe(competitor_df, use_container_width=True)
+            
+            st.info("분석 기준일: 2024년 12월 기준 / 실제 투자 현황은 각 회사 공시자료를 참조하시기 바랍니다.")
+    
+    except Exception as e:
+        st.error("투자동향 분석 중 오류가 발생했습니다.")
+        st.info("API_KEY 환경변수에 OpenAI API 키를 설정하거나 잠시 후 다시 시도해주세요.")
 
 def show_input_page():
     
@@ -1385,7 +1386,7 @@ def display_results(results, params):
             st.rerun()
     
     with advanced_col2:
-        if st.button("💡 Insights 페이지로 이동", use_container_width=True):
+        if st.button("💡 철강사 투자동향 페이지로 이동", use_container_width=True):
             st.session_state['current_page'] = 'insights'
             st.rerun()
 
