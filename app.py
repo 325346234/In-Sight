@@ -15,11 +15,12 @@ def create_excel_with_formulas(df_results, results, project_params):
     """Create Excel file with multiple sheets and formulas"""
     wb = Workbook()
     
-    # Remove default sheet
-    wb.remove(wb.active)
+    # Get default sheet and rename it
+    summary_ws = wb.active
+    if summary_ws is not None:
+        summary_ws.title = "요약"
     
-    # Create sheets
-    summary_ws = wb.create_sheet("요약")
+    # Create additional sheets
     detail_ws = wb.create_sheet("상세분석")
     assumptions_ws = wb.create_sheet("가정사항")
     formulas_ws = wb.create_sheet("계산식")
@@ -150,7 +151,7 @@ def create_excel_with_formulas(df_results, results, project_params):
                 cell.fill = header_fill
             cell.border = border
             if col_idx == 2:  # Formula column
-                cell.font = Font(family='Consolas')
+                cell.font = Font(name='Courier New')
     
     # Add NPV and IRR calculations in formulas sheet
     formulas_ws['A12'] = "NPV 계산"
@@ -635,10 +636,11 @@ def display_results(results, params):
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
+        irr_display = results['irr'] * 100 if results['irr'] < 1 else results['irr']
         st.markdown(f"""
         <div class="metric-container">
             <h4>IRR (내부수익률)</h4>
-            <h2 style="color: #4682b4;">{results['irr']:.2%}</h2>
+            <h2 style="color: #1e40af;">{irr_display:.2f}%</h2>
         </div>
         """, unsafe_allow_html=True)
     
