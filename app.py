@@ -511,7 +511,7 @@ def show_monte_carlo_analysis():
         st.markdown("---")
 
 def create_sidebar():
-    """Create sidebar with POSCO Holdings logo and navigation"""
+    """Create sidebar with POSCO Holdings logo only"""
     with st.sidebar:
         # Center-aligned POSCO Holdings logo
         try:
@@ -528,57 +528,72 @@ def create_sidebar():
         
         # Title
         st.markdown("""
-        <div style="text-align: center; margin-bottom: 1.5rem;">
+        <div style="text-align: center; margin: 1.5rem 0;">
             <h3 style="color: #1e40af; margin: 0; font-weight: 600;">AI 투자 경제성 분석</h3>
         </div>
         """, unsafe_allow_html=True)
-        
-        # Mode selection
-        if 'current_mode' not in st.session_state:
+
+def create_top_menu():
+    """Create top horizontal navigation menu"""
+    # Initialize session state
+    if 'current_mode' not in st.session_state:
+        st.session_state['current_mode'] = '실전모드'
+    
+    # Top navigation bar
+    st.markdown("""
+    <div style="background: linear-gradient(90deg, #1e40af 0%, #3b82f6 100%); padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="color: white; font-weight: 600; font-size: 1.1rem;">
+                Navigation Menu
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Mode selection and menu in horizontal layout
+    col1, col2, col3, col4, col5, col6, col7 = st.columns([1, 1, 1, 1, 1, 1, 1])
+    
+    # Mode selection
+    with col1:
+        if st.button("실전모드", key="real_mode", 
+                    use_container_width=True,
+                    type="primary" if st.session_state['current_mode'] == '실전모드' else "secondary"):
             st.session_state['current_mode'] = '실전모드'
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("실전모드", key="real_mode", 
-                        use_container_width=True,
-                        type="primary" if st.session_state['current_mode'] == '실전모드' else "secondary"):
-                st.session_state['current_mode'] = '실전모드'
-                st.rerun()
-        
-        with col2:
-            if st.button("연습모드", key="practice_mode", 
-                        use_container_width=True,
-                        type="primary" if st.session_state['current_mode'] == '연습모드' else "secondary"):
-                st.session_state['current_mode'] = '연습모드'
-                st.rerun()
-        
-        st.markdown("<br>", unsafe_allow_html=True)
-        
-        # Menu based on mode
-        if st.session_state['current_mode'] == '실전모드':
-            # 권한 관리 메뉴
-            if st.button("📋 권한 관리", key="auth_menu", use_container_width=True):
-                st.session_state['current_page'] = 'auth_management'
-                st.rerun()
-            
-            # 권한 관리 하위 메뉴 (항상 표시)
-            st.markdown("&nbsp;&nbsp;&nbsp;&nbsp;", unsafe_allow_html=True)  # 들여쓰기
-            if st.button("&nbsp;&nbsp;&nbsp;&nbsp;권한 요청하기", key="auth_request", use_container_width=True):
-                st.session_state['current_page'] = 'auth_request'
-                st.rerun()
-            
-            if st.button("&nbsp;&nbsp;&nbsp;&nbsp;요청받은 권한", key="auth_received", use_container_width=True):
-                st.session_state['current_page'] = 'auth_received'
-                st.rerun()
-            
-            if st.button("&nbsp;&nbsp;&nbsp;&nbsp;결재 현황", key="approval_status", use_container_width=True):
-                st.session_state['current_page'] = 'approval_status'
-                st.rerun()
-        
-        # AI 경제성 분석 메뉴 (실전모드/연습모드 공통)
+            st.rerun()
+    
+    with col2:
+        if st.button("연습모드", key="practice_mode", 
+                    use_container_width=True,
+                    type="primary" if st.session_state['current_mode'] == '연습모드' else "secondary"):
+            st.session_state['current_mode'] = '연습모드'
+            st.rerun()
+    
+    # Menu items based on mode
+    with col3:
         if st.button("🤖 AI 경제성 분석", key="ai_analysis", use_container_width=True):
             st.session_state['current_page'] = 'input'
             st.rerun()
+    
+    if st.session_state['current_mode'] == '실전모드':
+        with col4:
+            if st.button("📋 권한 관리", key="auth_menu", use_container_width=True):
+                st.session_state['current_page'] = 'auth_management'
+                st.rerun()
+        
+        with col5:
+            if st.button("권한 요청하기", key="auth_request", use_container_width=True):
+                st.session_state['current_page'] = 'auth_request'
+                st.rerun()
+        
+        with col6:
+            if st.button("요청받은 권한", key="auth_received", use_container_width=True):
+                st.session_state['current_page'] = 'auth_received'
+                st.rerun()
+        
+        with col7:
+            if st.button("결재 현황", key="approval_status", use_container_width=True):
+                st.session_state['current_page'] = 'approval_status'
+                st.rerun()
 
 def main():
     st.set_page_config(
@@ -834,6 +849,9 @@ def main():
     
     # Main content area
     with st.container():
+        # Create top navigation menu
+        create_top_menu()
+        
         # Main header with new styling
         st.markdown("""
         <div class="main-header">
