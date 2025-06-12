@@ -61,11 +61,39 @@ def show_progress_page():
         st.session_state['show_results'] = True
         st.rerun()
 
+def create_sidebar():
+    """Create sidebar with POSCO Holdings logo"""
+    with st.sidebar:
+        # POSCO Holdings Logo
+        try:
+            import base64
+            logo_path = "attached_assets/POSCO Holdings_eng_1749728940533.png"
+            with open(logo_path, "rb") as f:
+                img_bytes = f.read()
+                img_base64 = base64.b64encode(img_bytes).decode()
+            
+            st.markdown(f"""
+            <div style="text-align: center; margin: 20px 0;">
+                <img src="data:image/png;base64,{img_base64}" 
+                     style="max-width: 200px; height: auto;" 
+                     alt="POSCO Holdings">
+            </div>
+            """, unsafe_allow_html=True)
+        except Exception as e:
+            st.markdown("""
+            <div style="text-align: center; margin: 20px 0;">
+                <div style="background: #2E5084; color: white; padding: 20px; border-radius: 10px;">
+                    <h3>POSCO Holdings</h3>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
 def main():
     st.set_page_config(
         page_title="철강사업 프로젝트 경제성 분석",
         page_icon="🏭",
-        layout="wide"
+        layout="wide",
+        initial_sidebar_state="expanded"
     )
     
     # Custom CSS styling with skyblue and white theme
@@ -183,6 +211,9 @@ def main():
     }
     </style>
     """, unsafe_allow_html=True)
+    
+    # Create sidebar
+    create_sidebar()
     
     # Main header with new styling
     st.markdown("""
