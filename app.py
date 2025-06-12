@@ -549,7 +549,7 @@ def create_top_menu():
         <div style="margin-left: -0.5rem; margin-top: -0.5rem;">
         """, unsafe_allow_html=True)
         try:
-            st.image("attached_assets/POSCO Holdings_eng_1749733209456.png", width=150)
+            st.image("attached_assets/POSCO_1749737338153.png", width=150)
         except:
             st.markdown("""
             <div style="text-align: center; padding: 0.5rem; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 8px;">
