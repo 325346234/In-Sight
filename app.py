@@ -319,26 +319,79 @@ elif st.session_state.current_page == "AI 경제성 분석":
             sales_volumes = [0, 0, 0, 0, year5_volume, year6_volume] + [year7_plus_volume] * (total_period - 6)
             
             with st.spinner("투자 경제성 분석을 수행하고 있습니다..."):
-                # 분석 실행 (간단한 계산)
+                # 상세 재무 모델 계산
                 cash_flows = []
+                debt_balance = 0
+                previous_working_capital = 0
+                total_debt_principal = total_investment * (debt_ratio / 100)
+                annual_repayment = total_debt_principal / repayment_period
+                investment_execution = [0.3, 0.3, 0.3, 0.1] + [0] * (total_period - 4)
+                
                 for year in range(1, total_period + 1):
-                    if year <= 4:  # 건설기간
-                        investment = total_investment * [0.3, 0.3, 0.3, 0.1][year-1]
-                        cash_flow = -investment
-                    else:  # 운영기간
-                        volume = sales_volumes[year-1] if year <= len(sales_volumes) else sales_volumes[-1]
-                        revenue = unit_selling_price * volume
-                        cost = (avg_material_cost + avg_processing_cost) * volume
-                        
-                        # 간단한 감가상각
-                        depreciation = total_investment / business_period if year > construction_period else 0
-                        
-                        # 세전이익
-                        pretax_income = revenue - cost - depreciation - (revenue * sales_admin_ratio / 100)
-                        tax = max(0, pretax_income * tax_rate / 100)
-                        net_income = pretax_income - tax
-                        
-                        cash_flow = net_income + depreciation
+                    # 기본 값들
+                    sales_volume = sales_volumes[year-1] if year <= len(sales_volumes) else sales_volumes[-1]
+                    total_revenue_year = unit_selling_price * sales_volume
+                    material_cost = avg_material_cost * sales_volume
+                    processing_cost = avg_processing_cost * sales_volume
+                    
+                    # 감가상각 (기계설비/건축물 분리)
+                    if year > construction_period:
+                        machinery_depreciation = (total_investment * machinery_ratio / 100) / 15
+                        building_depreciation = (total_investment * building_ratio / 100) / 20
+                        depreciation = machinery_depreciation + building_depreciation
+                    else:
+                        depreciation = 0
+                    
+                    manufacturing_cost = material_cost + processing_cost + depreciation
+                    
+                    # 투자비
+                    investment = total_investment * investment_execution[year - 1] if year <= len(investment_execution) else 0
+                    
+                    # 차입금 관리
+                    debt_increase = investment * (debt_ratio / 100)
+                    if year > grace_period and year <= grace_period + repayment_period:
+                        debt_decrease = annual_repayment
+                    else:
+                        debt_decrease = 0
+                    
+                    debt_balance = debt_balance + debt_increase - debt_decrease
+                    financial_cost = debt_balance * (long_term_rate / 100)
+                    
+                    # 운전자금 계산
+                    if total_revenue_year > 0:
+                        receivables = (total_revenue_year / 365) * receivables_days
+                        product_inventory = (total_revenue_year * product_inventory_days) / 365
+                        material_inventory = (material_cost * material_inventory_days) / 365 if material_cost > 0 else 0
+                        payables = (material_cost / 365) * payables_days if material_cost > 0 else 0
+                        working_capital = receivables + product_inventory + material_inventory - payables
+                    else:
+                        working_capital = 0
+                    
+                    working_capital_increase = 0
+                    if year > construction_period:
+                        working_capital_increase = working_capital - previous_working_capital
+                    previous_working_capital = working_capital
+                    
+                    # 손익계산
+                    sales_admin_cost = total_revenue_year * (sales_admin_ratio / 100)
+                    ebit = total_revenue_year - manufacturing_cost - sales_admin_cost
+                    pretax_income = ebit - financial_cost
+                    corporate_tax = max(0, pretax_income * (tax_rate / 100))
+                    net_income = pretax_income - corporate_tax
+                    
+                    # 잔존가치 (마지막 년도)
+                    if year == total_period:
+                        total_depreciation_sum = depreciation * (total_period - construction_period)
+                        residual_value = total_investment - total_depreciation_sum
+                        working_capital_recovery = working_capital
+                    else:
+                        residual_value = 0
+                        working_capital_recovery = 0
+                    
+                    # 현금흐름
+                    cash_inflow = net_income + financial_cost + depreciation + residual_value + working_capital_recovery
+                    cash_outflow = investment + working_capital_increase
+                    cash_flow = cash_inflow - cash_outflow
                     
                     cash_flows.append(cash_flow)
                 
