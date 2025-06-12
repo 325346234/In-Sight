@@ -855,14 +855,6 @@ def main():
         # Create top navigation menu
         create_top_menu()
         
-        # Main header with new styling
-        st.markdown("""
-        <div class="main-header">
-            <h1>🏭 POSCO Holdings 철강사업 경제성 분석</h1>
-            <p>Steel Industry Project Economic Feasibility Analysis System</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
         # Page routing based on menu selection
         current_page = st.session_state.get('current_page', 'input')
         
