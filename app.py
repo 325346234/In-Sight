@@ -900,134 +900,76 @@ def main():
             show_input_page()
 
 def show_video_home_page():
-    """Show initial page with full-screen YouTube video like POSCO homepage"""
+    """Show initial page with full-screen YouTube video"""
     st.markdown("""
     <style>
-    /* Hide Streamlit default elements for full-screen experience */
-    .main .block-container {
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-        max-width: 100% !important;
+    .video-container {
+        position: relative;
+        width: 100%;
+        height: 80vh;
+        padding-bottom: 0;
+        overflow: hidden;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(30, 64, 175, 0.2);
     }
     
-    .fullscreen-video-container {
-        position: fixed;
+    .video-container iframe {
+        position: absolute;
         top: 0;
         left: 0;
-        width: 100vw;
-        height: 100vh;
-        z-index: -1;
-        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 12px;
     }
     
-    .fullscreen-video-container iframe {
+    .video-overlay {
         position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 100vw;
-        height: 56.25vw; /* 16:9 aspect ratio */
-        min-height: 100vh;
-        min-width: 177.77vh; /* 16:9 aspect ratio */
-        transform: translate(-50%, -50%);
-        border: none;
-    }
-    
-    .content-overlay {
-        position: relative;
-        z-index: 10;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        background: rgba(0, 0, 0, 0.4);
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        background: rgba(30, 64, 175, 0.9);
         color: white;
-        text-align: center;
-    }
-    
-    .hero-content {
-        max-width: 800px;
-        padding: 2rem;
-        background: rgba(30, 64, 175, 0.8);
-        border-radius: 20px;
+        padding: 1rem;
+        border-radius: 8px;
         backdrop-filter: blur(10px);
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    }
-    
-    .hero-title {
-        font-size: 3.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        line-height: 1.2;
-    }
-    
-    .hero-subtitle {
-        font-size: 1.5rem;
-        margin-bottom: 2rem;
-        opacity: 0.9;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    }
-    
-    .hero-button {
-        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-        color: #1e40af;
-        border: none;
-        padding: 1rem 3rem;
-        font-size: 1.2rem;
-        font-weight: 600;
-        border-radius: 50px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
-        text-decoration: none;
-        display: inline-block;
-    }
-    
-    .hero-button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 40px rgba(255, 255, 255, 0.4);
-        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        z-index: 10;
     }
     </style>
     """, unsafe_allow_html=True)
     
     st.markdown("""
-    <div class="fullscreen-video-container">
+    <div class="video-container">
         <iframe 
-            src="https://www.youtube.com/embed/lukBN6Dg3LU?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&loop=1&playlist=lukBN6Dg3LU&showinfo=0"
-            allow="autoplay; encrypted-media">
+            src="https://www.youtube.com/embed/lukBN6Dg3LU?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1&fs=1"
+            allow="autoplay; encrypted-media; fullscreen"
+            allowfullscreen>
         </iframe>
-    </div>
-    
-    <div class="content-overlay">
-        <div class="hero-content">
-            <h1 class="hero-title">POSCO Holdings</h1>
-            <h2 class="hero-subtitle">AI 투자 경제성 분석 시스템</h2>
-            <p style="font-size: 1.1rem; margin-bottom: 2rem; opacity: 0.8;">
-                Steel Industry Investment Economic Analysis Platform
-            </p>
-            <button class="hero-button" onclick="startAnalysis()">
-                📊 경제성 분석 시작하기
-            </button>
+        <div class="video-overlay">
+            <h3 style="margin: 0 0 0.5rem 0; color: white;">POSCO Holdings 투자 경제성 분석 시스템</h3>
+            <p style="margin: 0; opacity: 0.9;">Steel Industry Investment Economic Analysis Platform</p>
         </div>
     </div>
-    
-    <script>
-    function startAnalysis() {
-        // Trigger Streamlit button click
-        const buttons = parent.document.querySelectorAll('button[data-testid="stButton"]');
-        if (buttons.length > 0) {
-            buttons[0].click();
-        }
-    }
-    </script>
     """, unsafe_allow_html=True)
     
-    # Hidden Streamlit button for navigation
-    if st.button("", key="hidden_start_analysis", help="Start Analysis"):
-        st.session_state['current_page'] = 'analysis_input'
-        st.rerun()
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Action buttons below video
+    col1, col2, col3 = st.columns([1, 2, 1])
+    
+    with col2:
+        st.markdown("""
+        <div style="text-align: center; margin: 2rem 0;">
+            <h3 style="color: #1e40af; margin-bottom: 1rem;">시작하기</h3>
+            <p style="color: #64748b; margin-bottom: 2rem;">
+                투자 프로젝트의 경제성 분석을 시작하려면 아래 버튼을 클릭하세요
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        if st.button("📊 경제성 분석 시작", key="start_analysis", use_container_width=True, type="primary"):
+            st.session_state['current_page'] = 'analysis_input'
+            st.rerun()
 
 def show_input_page():
     st.markdown("""
