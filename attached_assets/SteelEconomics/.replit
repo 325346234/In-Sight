@@ -1,8 +1,8 @@
-modules = ["python-3.11", "python3", "postgresql-16"]
+modules = ["python-3.11"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["glibcLocales", "libxcrypt", "pkg-config", "xsimd", "unzip"]
+packages = ["glibcLocales", "libxcrypt", "pkg-config", "xsimd"]
 
 [deployment]
 deploymentTarget = "autoscale"
@@ -18,16 +18,28 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Steel Economics App"
+args = "Streamlit App"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "streamlit_app"
 
 [[workflows.workflow]]
-name = "Steel Economics App"
+name = "Streamlit App"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "streamlit run app.py --server.port 5000"
 waitForPort = 5000
+
+[[workflows.workflow]]
+name = "streamlit_app"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "uv add plotly scipy openpyxl"
 
 [[ports]]
 localPort = 5000
