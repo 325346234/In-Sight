@@ -263,18 +263,26 @@ class FinancialCalculator:
     
     def calculate_all_metrics(self):
         """모든 재무지표 계산"""
-        # Initialize results with proper typing
-        results = {}
-        
-        # Initialize year-based dictionaries
-        for key in ['total_revenue', 'manufacturing_cost', 'investment', 'depreciation', 
-                   'working_capital', 'working_capital_increase', 'debt_balance', 'financial_cost',
-                   'sales_admin_expense', 'ebit', 'pretax_income', 'corporate_tax', 'net_income',
-                   'residual_value', 'working_capital_inflow', 'cash_inflow', 'cash_outflow', 'net_cash_flow']:
-            results[key] = {}
-        
-        # Initialize scalar value
-        results['irr'] = 0.0
+        results = {
+            'total_revenue': {},
+            'manufacturing_cost': {},
+            'investment': {},
+            'depreciation': {},
+            'working_capital': {},
+            'working_capital_increase': {},
+            'debt_balance': {},
+            'financial_cost': {},
+            'sales_admin_expense': {},
+            'ebit': {},
+            'pretax_income': {},
+            'corporate_tax': {},
+            'net_income': {},
+            'residual_value': {},
+            'working_capital_inflow': {},
+            'cash_inflow': {},
+            'cash_outflow': {},
+            'net_cash_flow': {}
+        }
         
         # First pass: calculate basic metrics
         for year in range(1, self.total_years + 1):
