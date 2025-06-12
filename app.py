@@ -513,18 +513,29 @@ def show_monte_carlo_analysis():
 def create_sidebar():
     """Create sidebar with POSCO Holdings logo and navigation"""
     with st.sidebar:
-        # Center-aligned POSCO Holdings logo
-        try:
-            col1, col2, col3 = st.columns([0.5, 3, 0.5])
-            with col2:
-                st.image("attached_assets/POSCO Holdings_eng_1749733209456.png", width=240)
-        except:
+        # Center-aligned POSCO Holdings logo with white background
+        col1, col2, col3 = st.columns([0.5, 3, 0.5])
+        with col2:
             st.markdown("""
-            <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 8px; margin: 1rem 0;">
-                <h2 style="color: white; margin: 0; font-weight: 700;">POSCO</h2>
-                <p style="color: #e0f2fe; margin: 0; font-size: 0.9rem;">HOLDINGS</p>
-            </div>
+            <div style="
+                background: white; 
+                padding: 15px; 
+                border-radius: 10px; 
+                margin: 10px 0; 
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                text-align: center;
+            ">
             """, unsafe_allow_html=True)
+            
+            try:
+                st.image("attached_assets/POSCO Holdings_eng_1749733209456.png", width=240)
+            except:
+                st.markdown("""
+                <h2 style="color: #1e40af; margin: 0; font-weight: 700; font-size: 2rem;">POSCO</h2>
+                <p style="color: #1e40af; margin: 0; font-size: 1rem; font-weight: 500;">HOLDINGS</p>
+                """, unsafe_allow_html=True)
+            
+            st.markdown("</div>", unsafe_allow_html=True)
         
         # Title
         st.markdown("""
