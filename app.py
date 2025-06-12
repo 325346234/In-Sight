@@ -210,18 +210,362 @@ def show_progress_page():
         st.success("경제성 분석이 완료되었습니다!")
         time.sleep(2)
         
-        # Navigate to results page
-        st.session_state['current_page'] = 'results'
+        # Navigate to analysis page
+        st.session_state['current_page'] = 'analysis'
         st.rerun()
+
+def show_sensitivity_analysis():
+    """Show sensitivity analysis page"""
+    st.markdown("""
+    <div class="section-header">
+        <h2>🎯 실시간 민감도 분석</h2>
+        <p>주요 변수 조정을 통한 IRR 민감도 실시간 분석</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Get analysis results from session state
+    if 'analysis_results' not in st.session_state:
+        st.error("분석 결과가 없습니다. 먼저 기본 분석을 실행해주세요.")
+        return
+    
+    results = st.session_state['analysis_results']
+    params = st.session_state['project_params']
+    cost_data = st.session_state.get('cost_data', pd.DataFrame())
+    sales_data = st.session_state.get('sales_data', pd.DataFrame())
+    
+    # Store base values for sensitivity analysis
+    base_investment = params['total_investment']
+    base_irr = results['irr']
+    
+    st.markdown("### 📊 파라미터 조정")
+    
+    # Create adjustment sliders
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("#### 💰 투자비 조정")
+        investment_change = st.slider(
+            "투자비 변화율 (%)", 
+            -50, 50, 0, 1,
+            help="투자비 증감률을 조정합니다"
+        )
+        new_investment = base_investment * (1 + investment_change/100)
+        st.metric("조정된 투자비", f"${new_investment:,.0f}", f"{investment_change:+.0f}%")
+    
+    with col2:
+        st.markdown("#### 💵 판매가격 조정")
+        price_change = st.slider(
+            "판매가격 변화율 (%)", 
+            -30, 30, 0, 1,
+            help="판매가격 증감률을 조정합니다"
+        )
+        st.metric("가격 조정", f"{price_change:+.0f}%", f"기준가격 대비")
+    
+    with col3:
+        st.markdown("#### 🏭 제조원가 조정")
+        cost_change = st.slider(
+            "제조원가 변화율 (%)", 
+            -30, 30, 0, 1,
+            help="제조원가 증감률을 조정합니다"
+        )
+        st.metric("원가 조정", f"{cost_change:+.0f}%", f"기준원가 대비")
+    
+    # Real-time IRR calculation with adjusted parameters
+    if any([investment_change != 0, price_change != 0, cost_change != 0]):
+        with st.spinner("민감도 분석 계산 중..."):
+            try:
+                # Create modified parameters and data
+                modified_params = params.copy()
+                modified_params['total_investment'] = new_investment
+                
+                modified_sales_data = sales_data.copy()
+                if not sales_data.empty:
+                    if '매출액' in sales_data.columns:
+                        modified_sales_data['매출액'] = sales_data['매출액'] * (1 + price_change/100)
+                    if '총 매출액' in sales_data.columns:
+                        modified_sales_data['총 매출액'] = sales_data['총 매출액'] * (1 + price_change/100)
+                
+                modified_cost_data = cost_data.copy()
+                if not cost_data.empty:
+                    if '소재가격' in cost_data.columns:
+                        modified_cost_data['소재가격'] = cost_data['소재가격'] * (1 + cost_change/100)
+                    if '가공비' in cost_data.columns:
+                        modified_cost_data['가공비'] = cost_data['가공비'] * (1 + cost_change/100)
+                
+                # Calculate new IRR
+                sensitivity_calculator = FinancialCalculator(modified_params, modified_cost_data, modified_sales_data)
+                sensitivity_results = sensitivity_calculator.calculate_all_metrics()
+                new_irr = sensitivity_results['irr']
+                
+                # Display results
+                st.markdown("---")
+                st.markdown("### 📈 민감도 분석 결과")
+                
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    st.markdown(f"""
+                    <div class="metric-container">
+                        <h4>기준 IRR</h4>
+                        <h2 style="color: #64748b;">{base_irr:.2%}</h2>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                with col2:
+                    irr_change = new_irr - base_irr
+                    irr_color = "#22c55e" if irr_change > 0 else "#ef4444" if irr_change < 0 else "#64748b"
+                    st.markdown(f"""
+                    <div class="metric-container">
+                        <h4>조정된 IRR</h4>
+                        <h2 style="color: {irr_color};">{new_irr:.2%}</h2>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                with col3:
+                    irr_change_pct = (irr_change / base_irr * 100) if base_irr != 0 else 0
+                    st.markdown(f"""
+                    <div class="metric-container">
+                        <h4>IRR 변화</h4>
+                        <h2 style="color: {irr_color};">{irr_change:+.2%}</h2>
+                        <p style="margin: 0; color: #64748b;">({irr_change_pct:+.1f}%)</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                # Sensitivity scoring
+                sensitivity_score = abs(irr_change / base_irr * 100) if base_irr != 0 else 0
+                if sensitivity_score < 5:
+                    sensitivity_level = "낮음"
+                    sensitivity_color = "#22c55e"
+                elif sensitivity_score < 15:
+                    sensitivity_level = "중간"
+                    sensitivity_color = "#f59e0b"
+                else:
+                    sensitivity_level = "높음"
+                    sensitivity_color = "#ef4444"
+                
+                st.markdown(f"""
+                <div style="background: #ffffff; border: 1px solid #e2e8f0; padding: 1rem; border-radius: 8px; text-align: center;">
+                    <p><strong>민감도:</strong> <span style="color: {sensitivity_color};">{sensitivity_level}</span></p>
+                    <p><strong>영향도:</strong> {sensitivity_score:.1f}%</p>
+                </div>
+                """, unsafe_allow_html=True)
+                
+            except Exception as e:
+                st.error("IRR 계산 중 오류가 발생했습니다.")
+                st.info("파라미터 조정값이 너무 극단적일 수 있습니다. 슬라이더를 조정해 보세요.")
+
+def show_monte_carlo_analysis():
+    """Show Monte Carlo analysis page"""
+    st.markdown("""
+    <div class="section-header">
+        <h2>🎲 Monte Carlo 위험 분석</h2>
+        <p>판매가격, 원가실적, 총투자비 개별 변동에 따른 IRR 민감도 분석</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Get analysis results from session state
+    if 'analysis_results' not in st.session_state:
+        st.error("분석 결과가 없습니다. 먼저 기본 분석을 실행해주세요.")
+        return
+    
+    results = st.session_state['analysis_results']
+    params = st.session_state['project_params']
+    cost_data = st.session_state.get('cost_data', pd.DataFrame())
+    sales_data = st.session_state.get('sales_data', pd.DataFrame())
+    
+    # Perform separate Monte Carlo analysis for each variable
+    variable_names = {
+        'price': '판매가격 (±20%)',
+        'cost': '원가실적 (±15%)', 
+        'investment': '총투자비 (±25%)'
+    }
+    
+    variable_colors = {
+        'price': '#1e40af',
+        'cost': '#ef4444',
+        'investment': '#64748b'
+    }
+    
+    # Run analyses for each variable
+    monte_carlo_results = {}
+    
+    with st.spinner("Monte Carlo 시뮬레이션 실행 중..."):
+        for var_type in ['price', 'cost', 'investment']:
+            with st.expander(f"{variable_names[var_type]} 분석 진행 중...", expanded=False):
+                result = perform_single_variable_monte_carlo(params, cost_data, sales_data, var_type, n_simulations=300)
+                if result:
+                    monte_carlo_results[var_type] = result
+                    st.success(f"{variable_names[var_type]} 분석 완료: {len(result['irr_results'])}개 시나리오")
+                else:
+                    st.warning(f"{variable_names[var_type]} 분석 실패")
+    
+    if not monte_carlo_results:
+        st.error("Monte Carlo 분석을 수행할 수 없습니다.")
+        return
+    
+    # Display results for each variable
+    for var_type, result in monte_carlo_results.items():
+        st.markdown(f"### {variable_names[var_type]} 민감도 분석")
+        
+        # Metrics for this variable
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.markdown(f"""
+            <div class="metric-container">
+                <h4>기본 IRR</h4>
+                <h2>{result['base_irr']:.2%}</h2>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown(f"""
+            <div class="metric-container">
+                <h4>평균 IRR</h4>
+                <h2>{result['mean_irr']:.2%}</h2>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col3:
+            st.markdown(f"""
+            <div class="metric-container">
+                <h4>5% 하위 IRR</h4>
+                <h2 style="color: #ef4444;">{result['p5_irr']:.2%}</h2>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col4:
+            st.markdown(f"""
+            <div class="metric-container">
+                <h4>95% 상위 IRR</h4>
+                <h2 style="color: #22c55e;">{result['p95_irr']:.2%}</h2>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        # Charts for this variable
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # IRR Distribution Histogram
+            fig_hist = go.Figure()
+            fig_hist.add_trace(go.Histogram(
+                x=result['irr_results'],
+                nbinsx=30,
+                marker_color=variable_colors[var_type],
+                opacity=0.7,
+                name=f'IRR 분포 ({variable_names[var_type]})'
+            ))
+            
+            # Add vertical lines for key statistics
+            fig_hist.add_vline(x=result['base_irr'], line_dash="dash", line_color="red", 
+                               annotation_text="기본", annotation_position="top")
+            fig_hist.add_vline(x=result['mean_irr'], line_dash="dash", line_color="blue", 
+                               annotation_text="평균", annotation_position="top")
+            
+            fig_hist.update_layout(
+                title=f"IRR 분포: {variable_names[var_type]}",
+                xaxis_title="IRR",
+                yaxis_title="빈도",
+                showlegend=False,
+                height=400
+            )
+            
+            st.plotly_chart(fig_hist, use_container_width=True)
+        
+        with col2:
+            # Factor vs IRR Scatter Plot
+            fig_scatter = go.Figure()
+            fig_scatter.add_trace(go.Scatter(
+                x=result['factor_values'],
+                y=result['irr_results'],
+                mode='markers',
+                marker=dict(
+                    color=variable_colors[var_type],
+                    size=6,
+                    opacity=0.6
+                ),
+                name=f'{variable_names[var_type]} vs IRR'
+            ))
+            
+            fig_scatter.update_layout(
+                title=f"변동 요인 vs IRR: {variable_names[var_type]}",
+                xaxis_title="변동 계수",
+                yaxis_title="IRR",
+                showlegend=False,
+                height=400
+            )
+            
+            st.plotly_chart(fig_scatter, use_container_width=True)
+        
+        # Risk assessment
+        risk_range = result['p95_irr'] - result['p5_irr']
+        st.markdown(f"""
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+            <h4 style="margin-top: 0;">📊 위험도 평가</h4>
+            <p><strong>IRR 변동 범위:</strong> {result['p5_irr']:.2%} ~ {result['p95_irr']:.2%}</p>
+            <p><strong>위험도:</strong> {risk_range:.2%}</p>
+            <p><strong>변동계수:</strong> {result.get('cv', 0):.3f}</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+
+def create_sidebar():
+    """Create sidebar with POSCO Holdings logo and navigation"""
+    with st.sidebar:
+        # Add POSCO Holdings logo at the top
+        try:
+            st.image("attached_assets/POSCO Holdings_eng_1749733209456.png", width=200)
+        except:
+            st.markdown("""
+            <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 8px; margin-bottom: 2rem;">
+                <h2 style="color: white; margin: 0; font-weight: 700;">POSCO</h2>
+                <p style="color: #e0f2fe; margin: 0; font-size: 0.9rem;">HOLDINGS</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+        
+        # Navigation menu
+        st.markdown("### 📋 분석 메뉴")
+        
+        # Page selection
+        page_options = {
+            "input": "📊 데이터 입력",
+            "analysis": "📈 경제성 분석", 
+            "sensitivity": "🎯 민감도 분석",
+            "monte_carlo": "🎲 Monte Carlo 분석"
+        }
+        
+        selected_page = st.radio("페이지 선택:", list(page_options.keys()), 
+                                format_func=lambda x: page_options[x], key="page_selector")
+        
+        st.session_state['current_page'] = selected_page
+        
+        st.markdown("---")
+        
+        # Quick info panel
+        st.markdown("### ℹ️ 프로젝트 정보")
+        st.markdown("""
+        <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #1e40af;">
+            <p style="margin: 0; font-size: 0.85rem; color: #64748b;">
+                <strong>분석 유형:</strong> 철강사업 투자<br>
+                <strong>기준 통화:</strong> USD<br>
+                <strong>분석 방법:</strong> DCF, IRR<br>
+                <strong>위험 분석:</strong> Monte Carlo
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
 
 def main():
     st.set_page_config(
-        page_title="철강사업 프로젝트 경제성 분석",
+        page_title="POSCO Holdings - 철강사업 경제성 분석",
         page_icon="🏭",
-        layout="wide"
+        layout="wide",
+        initial_sidebar_state="expanded"
     )
     
-    # Custom CSS styling inspired by POSCO design principles
+    # Custom CSS styling inspired by POSCO brand colors
     st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
@@ -233,15 +577,25 @@ def main():
         color: #333333;
     }
     
+    /* Sidebar styling - POSCO brand */
+    .css-1d391kg {
+        background: linear-gradient(180deg, #1e40af 0%, #3b82f6 100%);
+        border-right: 1px solid #e2e8f0;
+    }
+    
+    .css-1d391kg .css-1v3fvcr {
+        color: white;
+    }
+    
     /* Header styling - POSCO inspired */
     .main-header {
-        background: linear-gradient(135deg, #003366 0%, #004488 100%);
-        padding: 2.5rem 2rem;
-        border-radius: 0;
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        padding: 2rem;
+        border-radius: 12px;
         text-align: center;
         color: white;
         margin-bottom: 2rem;
-        box-shadow: 0 2px 20px rgba(0, 51, 102, 0.15);
+        box-shadow: 0 4px 20px rgba(30, 64, 175, 0.2);
     }
     
     .main-header h1 {
@@ -261,102 +615,98 @@ def main():
     /* Typography improvements */
     h1, h2, h3, h4, h5, h6 {
         font-family: 'Noto Sans KR', sans-serif;
-        color: #003366;
+        color: #1e40af;
         font-weight: 500;
         line-height: 1.4;
     }
     
     /* All text elements */
     p, div, span, label, .stMarkdown {
-        color: #003366;
+        color: #1e40af;
     }
     
     /* Cards and containers */
     .stContainer > div {
         background: #ffffff;
-        border: 1px solid #e8eaf0;
-        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
         padding: 1.5rem;
         margin: 1rem 0;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 8px rgba(30, 64, 175, 0.1);
     }
     
     /* Buttons - POSCO style */
     .stButton > button {
-        background: #003366;
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
         color: white;
         border: none;
-        border-radius: 4px;
+        border-radius: 8px;
         padding: 0.75rem 2rem;
         font-weight: 500;
         font-family: 'Noto Sans KR', sans-serif;
-        transition: all 0.2s ease;
-        box-shadow: 0 2px 4px rgba(0, 51, 102, 0.2);
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(30, 64, 175, 0.2);
         font-size: 1rem;
     }
     
     .stButton > button:hover {
-        background: #004488;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(0, 51, 102, 0.3);
+        background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(30, 64, 175, 0.3);
     }
     
     /* Input fields */
-    .stNumberInput > div > div > input {
-        border: 1px solid #b3d9ff;
-        border-radius: 4px;
-        background: #f0f8ff;
+    .stNumberInput > div > div > input, .stSelectbox > div > div > input {
+        border: 2px solid #cbd5e1;
+        border-radius: 8px;
+        background: #f8fafc;
         font-family: 'Noto Sans KR', sans-serif;
         font-size: 0.95rem;
         padding: 0.75rem;
-        transition: all 0.2s ease;
+        transition: all 0.3s ease;
     }
     
-    .stNumberInput > div > div > input:focus {
-        border-color: #003366;
-        background: #e6f3ff;
-        box-shadow: 0 0 0 3px rgba(179, 217, 255, 0.3);
+    .stNumberInput > div > div > input:focus, .stSelectbox > div > div > input:focus {
+        border-color: #1e40af;
+        background: #eff6ff;
+        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
         outline: none;
-    }
-    
-    .stNumberInput > div > div > input:hover {
-        border-color: #66b3ff;
-        background: #e6f3ff;
     }
     
     /* Progress bar */
     .stProgress > div > div > div {
-        background: linear-gradient(90deg, #003366, #004488);
+        background: linear-gradient(90deg, #1e40af, #3b82f6);
     }
     
     /* Metrics - Clean POSCO style */
     .metric-container {
         background: #ffffff;
-        border: 1px solid #e8eaf0;
-        border-radius: 8px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
         padding: 1.5rem;
         margin: 0.5rem;
         text-align: center;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        transition: all 0.2s ease;
+        box-shadow: 0 4px 12px rgba(30, 64, 175, 0.08);
+        transition: all 0.3s ease;
     }
     
     .metric-container:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(30, 64, 175, 0.15);
+        transform: translateY(-3px);
+        border-color: #1e40af;
     }
     
     .metric-container h4 {
-        color: #666666;
+        color: #64748b;
         font-size: 0.9rem;
-        font-weight: 400;
+        font-weight: 500;
         margin-bottom: 0.5rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
     
     .metric-container h2 {
-        color: #003366;
+        color: #1e40af;
         font-weight: 700;
         font-size: 1.8rem;
         margin: 0;
@@ -365,109 +715,143 @@ def main():
     /* Dataframe styling */
     .stDataFrame {
         background: white;
-        border: 1px solid #e8eaf0;
-        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 12px rgba(30, 64, 175, 0.08);
     }
     
     /* Success/Info messages */
     .stSuccess {
-        background: #f0f9f0;
-        border-left: 4px solid #28a745;
-        border-radius: 4px;
-        color: #155724;
+        background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+        border: 1px solid #22c55e;
+        border-radius: 8px;
+        color: #166534;
     }
     
     .stInfo {
-        background: #e6f3ff;
-        border-left: 4px solid #003366;
-        border-radius: 4px;
-        color: #003366;
+        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        border: 1px solid #1e40af;
+        border-radius: 8px;
+        color: #1e40af;
     }
     
     /* Section headers - Professional style */
     .section-header {
-        background: #f8f9fa;
-        border-left: 4px solid #003366;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border: 1px solid #e2e8f0;
+        border-left: 4px solid #1e40af;
         padding: 1.5rem;
-        border-radius: 4px;
+        border-radius: 12px;
         margin: 2rem 0 1rem 0;
+        box-shadow: 0 2px 8px rgba(30, 64, 175, 0.05);
     }
     
     .section-header h2 {
-        color: #003366;
+        color: #1e40af;
         font-weight: 600;
         font-size: 1.5rem;
         margin-bottom: 0.5rem;
     }
     
     .section-header h3 {
-        color: #003366;
+        color: #1e40af;
         font-weight: 500;
         font-size: 1.2rem;
         margin: 0;
     }
     
     .section-header p {
-        color: #666666;
+        color: #64748b;
         font-size: 0.9rem;
         margin: 0;
-        font-weight: 300;
+        font-weight: 400;
     }
     
     /* Label styling */
-    .stNumberInput label {
+    .stNumberInput label, .stSelectbox label {
         font-weight: 500;
-        color: #003366;
+        color: #1e40af;
         font-size: 0.9rem;
     }
     
-    /* Sidebar removal */
-    .css-1d391kg {
-        display: none;
+    /* Radio button styling */
+    .stRadio > div {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 1rem;
+        border: 1px solid #e2e8f0;
     }
     
     /* Navigation elements */
     .nav-button {
         background: #ffffff;
-        border: 1px solid #003366;
-        color: #003366;
-        border-radius: 4px;
+        border: 2px solid #1e40af;
+        color: #1e40af;
+        border-radius: 8px;
         padding: 0.5rem 1.5rem;
         font-weight: 500;
-        transition: all 0.2s ease;
+        transition: all 0.3s ease;
         font-family: 'Noto Sans KR', sans-serif;
     }
     
     .nav-button:hover {
-        background: #003366;
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
         color: white;
     }
     </style>
     """, unsafe_allow_html=True)
     
-    # Main header with new styling
-    st.markdown("""
-    <div class="main-header">
-        <h1>🏭 철강사업 프로젝트 경제성 분석</h1>
-        <p>Steel Industry Project Economic Feasibility Analysis</p>
-    </div>
-    """, unsafe_allow_html=True)
+    # Create sidebar with logo and navigation
+    create_sidebar()
     
     # Initialize session state variables
     if 'current_page' not in st.session_state:
         st.session_state['current_page'] = 'input'
     
-    # Page routing
-    if st.session_state.get('current_page') == 'progress':
-        show_progress_page()
-    elif st.session_state.get('current_page') == 'results':
-        show_analysis_page()
-    else:
-        # Default to input page
-        st.session_state['current_page'] = 'input'
-        show_input_page()
+    # Main content area
+    with st.container():
+        # Main header with new styling
+        st.markdown("""
+        <div class="main-header">
+            <h1>🏭 POSCO Holdings 철강사업 경제성 분석</h1>
+            <p>Steel Industry Project Economic Feasibility Analysis System</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Page routing based on sidebar selection
+        current_page = st.session_state.get('current_page', 'input')
+        
+        if current_page == 'input':
+            show_input_page()
+        elif current_page == 'analysis':
+            if 'analysis_results' in st.session_state:
+                show_analysis_page()
+            else:
+                st.warning("먼저 데이터를 입력하고 분석을 실행해주세요.")
+                if st.button("데이터 입력 페이지로 이동"):
+                    st.session_state['current_page'] = 'input'
+                    st.rerun()
+        elif current_page == 'sensitivity':
+            if 'analysis_results' in st.session_state:
+                show_sensitivity_analysis()
+            else:
+                st.warning("먼저 기본 분석을 완료해주세요.")
+                if st.button("데이터 입력 페이지로 이동"):
+                    st.session_state['current_page'] = 'input'
+                    st.rerun()
+        elif current_page == 'monte_carlo':
+            if 'analysis_results' in st.session_state:
+                show_monte_carlo_analysis()
+            else:
+                st.warning("먼저 기본 분석을 완료해주세요.")
+                if st.button("데이터 입력 페이지로 이동"):
+                    st.session_state['current_page'] = 'input'
+                    st.rerun()
+        elif current_page == 'progress':
+            show_progress_page()
+        elif current_page == 'results':
+            show_analysis_page()
 
 def show_input_page():
     st.markdown("""
@@ -727,7 +1111,7 @@ def display_results(results, params):
     cash_flows = list(results['net_cash_flow'].values())
     
     fig = go.Figure()
-    colors = ['#dc3545' if cf < 0 else '#003366' for cf in cash_flows]
+    colors = ['#ef4444' if cf < 0 else '#1e40af' for cf in cash_flows]
     
     fig.add_trace(go.Bar(
         x=[f"Year {y}" for y in years],
@@ -779,8 +1163,8 @@ def display_results(results, params):
         y=revenues,
         mode='lines+markers',
         name='총 매출액',
-        line=dict(color='#003366', width=3),
-        marker=dict(color='#003366', size=8)
+        line=dict(color='#1e40af', width=3),
+        marker=dict(color='#1e40af', size=8)
     ))
     
     fig2.add_trace(go.Scatter(
