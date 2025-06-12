@@ -537,19 +537,17 @@ def create_top_menu():
     """Create top horizontal navigation menu with logo"""
     # Top navigation bar with logo - reduced margins
     st.markdown("""
-    <div style="margin-top: -2rem; margin-bottom: 0.25rem;">
+    <div style="margin-top: -1rem; margin-bottom: 0.5rem;">
     """, unsafe_allow_html=True)
     
-    # Main layout: logo section and menu section
-    col_left, col_right = st.columns([2, 3])
+    col_logo, col_title, col_spacer = st.columns([1, 3, 1])
     
-    with col_left:
-        # Logo section
+    with col_logo:
         st.markdown("""
-        <div style="margin-left: -1rem; margin-top: -1rem;">
+        <div style="margin-left: -0.5rem; margin-top: -0.5rem;">
         """, unsafe_allow_html=True)
         try:
-            st.image("attached_assets/POSCO_1749737338153.png", width=225)
+            st.image("attached_assets/POSCO Holdings_eng_1749733209456.png", width=150)
         except:
             st.markdown("""
             <div style="text-align: center; padding: 0.5rem; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); border-radius: 8px;">
@@ -558,51 +556,45 @@ def create_top_menu():
             </div>
             """, unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
-        
-        # Title directly under logo
+    
+    with col_title:
         st.markdown("""
-        <div style="margin-left: -1rem; margin-top: -0.5rem;">
-            <h3 style="color: #1e40af; margin: 0; font-weight: 600;">AI 투자 경제성 분석</h3>
+        <div style="text-align: center; padding: 0.5rem 0; margin-top: -0.3rem;">
+            <h2 style="color: #1e40af; margin: 0; font-weight: 600;">AI 투자 경제성 분석</h2>
+            <p style="color: #64748b; margin: 0; font-size: 0.9rem;">Steel Industry Investment Economic Analysis</p>
         </div>
         """, unsafe_allow_html=True)
     
-    with col_right:
-        # Menu section
-        st.markdown("""
-        <div style="padding-top: 1rem;">
-        """, unsafe_allow_html=True)
-        
-        menu_col1, menu_col2, menu_col3, menu_col4, menu_col5 = st.columns([1, 1, 1, 1, 1])
-        
-        with menu_col1:
-            if st.button("🤖 AI 경제성 분석", key="ai_analysis", use_container_width=True):
-                st.session_state['current_page'] = 'analysis_input'
-                st.rerun()
-        
-        with menu_col2:
-            if st.button("📋 권한 관리", key="auth_menu", use_container_width=True):
-                st.session_state['current_page'] = 'auth_management'
-                st.rerun()
-        
-        with menu_col3:
-            if st.button("권한 요청하기", key="auth_request", use_container_width=True):
-                st.session_state['current_page'] = 'auth_request'
-                st.rerun()
-        
-        with menu_col4:
-            if st.button("요청받은 권한", key="auth_received", use_container_width=True):
-                st.session_state['current_page'] = 'auth_received'
-                st.rerun()
-        
-        with menu_col5:
-            if st.button("결재 현황", key="approval_status", use_container_width=True):
-                st.session_state['current_page'] = 'approval_status'
-                st.rerun()
-        
-        st.markdown("</div>", unsafe_allow_html=True)
-    
     st.markdown("</div>", unsafe_allow_html=True)
     st.markdown("---")
+    
+    # Unified menu without mode distinction
+    col1, col2, col3, col4, col5 = st.columns([2, 2, 2, 2, 2])
+    
+    with col1:
+        if st.button("🤖 AI 경제성 분석", key="ai_analysis", use_container_width=True):
+            st.session_state['current_page'] = 'analysis_input'
+            st.rerun()
+    
+    with col2:
+        if st.button("📋 권한 관리", key="auth_menu", use_container_width=True):
+            st.session_state['current_page'] = 'auth_management'
+            st.rerun()
+    
+    with col3:
+        if st.button("권한 요청하기", key="auth_request", use_container_width=True):
+            st.session_state['current_page'] = 'auth_request'
+            st.rerun()
+    
+    with col4:
+        if st.button("요청받은 권한", key="auth_received", use_container_width=True):
+            st.session_state['current_page'] = 'auth_received'
+            st.rerun()
+    
+    with col5:
+        if st.button("결재 현황", key="approval_status", use_container_width=True):
+            st.session_state['current_page'] = 'approval_status'
+            st.rerun()
 
 def main():
     st.set_page_config(
@@ -855,6 +847,14 @@ def main():
         # Create top navigation menu
         create_top_menu()
         
+        # Main header with new styling
+        st.markdown("""
+        <div class="main-header">
+            <h1>🏭 POSCO Holdings 철강사업 경제성 분석</h1>
+            <p>Steel Industry Project Economic Feasibility Analysis System</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Page routing based on menu selection
         current_page = st.session_state.get('current_page', 'input')
         
@@ -900,53 +900,134 @@ def main():
             show_input_page()
 
 def show_video_home_page():
-    """Show initial page with full-screen YouTube video"""
+    """Show initial page with full-screen YouTube video like POSCO homepage"""
     st.markdown("""
     <style>
-    .video-container {
-        position: relative;
-        width: 100%;
-        height: 80vh;
-        padding-bottom: 0;
-        overflow: hidden;
-        border-radius: 12px;
-        box-shadow: 0 8px 32px rgba(30, 64, 175, 0.2);
+    /* Hide Streamlit default elements for full-screen experience */
+    .main .block-container {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        max-width: 100% !important;
     }
     
-    .video-container iframe {
-        position: absolute;
+    .fullscreen-video-container {
+        position: fixed;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
-        border: none;
-        border-radius: 12px;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        overflow: hidden;
     }
     
-    .video-overlay {
+    .fullscreen-video-container iframe {
         position: absolute;
-        bottom: 20px;
-        left: 20px;
-        right: 20px;
-        background: rgba(30, 64, 175, 0.9);
-        color: white;
-        padding: 1rem;
-        border-radius: 8px;
-        backdrop-filter: blur(10px);
+        top: 50%;
+        left: 50%;
+        width: 100vw;
+        height: 56.25vw; /* 16:9 aspect ratio */
+        min-height: 100vh;
+        min-width: 177.77vh; /* 16:9 aspect ratio */
+        transform: translate(-50%, -50%);
+        border: none;
+    }
+    
+    .content-overlay {
+        position: relative;
         z-index: 10;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.4);
+        color: white;
+        text-align: center;
+    }
+    
+    .hero-content {
+        max-width: 800px;
+        padding: 2rem;
+        background: rgba(30, 64, 175, 0.8);
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        line-height: 1.2;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+    
+    .hero-button {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        color: #1e40af;
+        border: none;
+        padding: 1rem 3rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .hero-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(255, 255, 255, 0.4);
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     }
     </style>
     """, unsafe_allow_html=True)
     
     st.markdown("""
-    <div class="video-container">
+    <div class="fullscreen-video-container">
         <iframe 
-            src="https://www.youtube.com/embed/lukBN6Dg3LU?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1&fs=1"
-            allow="autoplay; encrypted-media; fullscreen"
-            allowfullscreen>
+            src="https://www.youtube.com/embed/lukBN6Dg3LU?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&loop=1&playlist=lukBN6Dg3LU&showinfo=0"
+            allow="autoplay; encrypted-media">
         </iframe>
     </div>
+    
+    <div class="content-overlay">
+        <div class="hero-content">
+            <h1 class="hero-title">POSCO Holdings</h1>
+            <h2 class="hero-subtitle">AI 투자 경제성 분석 시스템</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem; opacity: 0.8;">
+                Steel Industry Investment Economic Analysis Platform
+            </p>
+            <button class="hero-button" onclick="startAnalysis()">
+                📊 경제성 분석 시작하기
+            </button>
+        </div>
+    </div>
+    
+    <script>
+    function startAnalysis() {
+        // Trigger Streamlit button click
+        const buttons = parent.document.querySelectorAll('button[data-testid="stButton"]');
+        if (buttons.length > 0) {
+            buttons[0].click();
+        }
+    }
+    </script>
     """, unsafe_allow_html=True)
+    
+    # Hidden Streamlit button for navigation
+    if st.button("", key="hidden_start_analysis", help="Start Analysis"):
+        st.session_state['current_page'] = 'analysis_input'
+        st.rerun()
 
 def show_input_page():
     st.markdown("""
