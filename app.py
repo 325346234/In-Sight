@@ -447,13 +447,7 @@ def main():
     </style>
     """, unsafe_allow_html=True)
     
-    # Main header with new styling
-    st.markdown("""
-    <div class="main-header">
-        <h1>🏭 철강사업 프로젝트 경제성 분석</h1>
-        <p>Steel Industry Project Economic Feasibility Analysis</p>
-    </div>
-    """, unsafe_allow_html=True)
+
     
     # Initialize session state variables
     if 'current_page' not in st.session_state:
