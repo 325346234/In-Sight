@@ -726,26 +726,196 @@ def show_analysis_page():
         st.warning("먼저 전제사항을 입력하고 경제성 분석을 실행해주세요.")
         return
     
-    # Monte Carlo analysis and other advanced features would go here
-    st.info("심화 분석 기능이 여기에 표시됩니다.")
-    
-    # Placeholder for Monte Carlo analysis
     results = st.session_state['analysis_results']
     params = st.session_state['params']
     
-    st.markdown("### 📈 IRR 민감도 분석")
-    st.markdown(f"기준 IRR: **{results['irr']:.2%}**")
+    # Monte Carlo Risk Analysis Section
+    st.markdown("""
+    <div class="section-header">
+        <h2>🎲 Monte Carlo 위험 분석</h2>
+        <p>판매가격, 원가실적, 총투자비 개별 변동에 따른 IRR 민감도 분석</p>
+    </div>
+    """, unsafe_allow_html=True)
     
-    # Simple sensitivity display
-    st.markdown("#### 변수별 영향도")
-    sensitivity_data = {
-        '변수': ['판매가격', '제조원가', '총투자비'],
-        '기준값 대비 ±10% 변동시 예상 IRR 변화': ['±2.5%p', '±1.8%p', '±1.2%p'],
-        '위험도': ['높음', '중간', '낮음']
+    # Get the original data from session state
+    cost_data = st.session_state.get('cost_data', pd.DataFrame())
+    sales_data = st.session_state.get('sales_data', pd.DataFrame())
+    
+    # Perform separate Monte Carlo analysis for each variable
+    variable_names = {
+        'price': '판매가격 (±20%)',
+        'cost': '원가실적 (±15%)', 
+        'investment': '총투자비 (±25%)'
     }
     
-    sensitivity_df = pd.DataFrame(sensitivity_data)
-    st.dataframe(sensitivity_df, use_container_width=True, hide_index=True)
+    variable_colors = {
+        'price': '#003366',
+        'cost': '#dc3545',
+        'investment': '#6c757d'
+    }
+    
+    # Run analyses for each variable
+    monte_carlo_results = {}
+    
+    with st.spinner("Monte Carlo 시뮬레이션 실행 중..."):
+        for var_type in ['price', 'cost', 'investment']:
+            with st.expander(f"{variable_names[var_type]} 분석 진행 중...", expanded=False):
+                result = perform_single_variable_monte_carlo(params, cost_data, sales_data, var_type, n_simulations=300)
+                if result:
+                    monte_carlo_results[var_type] = result
+                    st.success(f"{variable_names[var_type]} 분석 완료: {len(result['irr_results'])}개 시나리오")
+                else:
+                    st.warning(f"{variable_names[var_type]} 분석 실패")
+    
+    if not monte_carlo_results:
+        st.error("Monte Carlo 분석을 수행할 수 없습니다.")
+        return
+    
+    # Display results for each variable
+    for var_type, result in monte_carlo_results.items():
+        st.markdown(f"### {variable_names[var_type]} 민감도 분석")
+        
+        # Metrics for this variable
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.markdown(f"""
+            <div class="metric-container">
+                <h4>기본 IRR</h4>
+                <h2>{result['base_irr']:.2%}</h2>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown(f"""
+            <div class="metric-container">
+                <h4>평균 IRR</h4>
+                <h2>{result['mean_irr']:.2%}</h2>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col3:
+            st.markdown(f"""
+            <div class="metric-container">
+                <h4>5% 하위 IRR</h4>
+                <h2 style="color: #dc3545;">{result['p5_irr']:.2%}</h2>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col4:
+            st.markdown(f"""
+            <div class="metric-container">
+                <h4>95% 상위 IRR</h4>
+                <h2 style="color: #28a745;">{result['p95_irr']:.2%}</h2>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        # Charts for this variable
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # IRR Distribution Histogram
+            fig_hist = go.Figure()
+            fig_hist.add_trace(go.Histogram(
+                x=result['irr_results'],
+                nbinsx=30,
+                marker_color=variable_colors[var_type],
+                opacity=0.7,
+                name=f'IRR 분포 ({variable_names[var_type]})'
+            ))
+            
+            # Add vertical lines for key statistics
+            fig_hist.add_vline(x=result['base_irr'], line_dash="dash", line_color="red", 
+                               annotation_text="기본", annotation_position="top")
+            fig_hist.add_vline(x=result['mean_irr'], line_dash="dash", line_color="blue", 
+                               annotation_text="평균", annotation_position="top")
+            
+            fig_hist.update_layout(
+                title={
+                    'text': f"IRR 분포 - {variable_names[var_type]}",
+                    'x': 0.5,
+                    'font': {'color': '#333333', 'size': 14, 'family': 'Noto Sans KR'}
+                },
+                xaxis_title="IRR (%)",
+                yaxis_title="빈도",
+                plot_bgcolor='white',
+                paper_bgcolor='white',
+                font={'color': '#333333', 'family': 'Noto Sans KR'},
+                showlegend=False,
+                height=400,
+                xaxis=dict(
+                    gridcolor='#f0f0f0',
+                    linecolor='#e0e0e0',
+                    tickformat='.1%'
+                ),
+                yaxis=dict(
+                    gridcolor='#f0f0f0',
+                    linecolor='#e0e0e0'
+                )
+            )
+            
+            st.plotly_chart(fig_hist, use_container_width=True)
+        
+        with col2:
+            # Box plot for statistical summary
+            fig_box = go.Figure()
+            fig_box.add_trace(go.Box(
+                y=result['irr_results'],
+                name=variable_names[var_type],
+                marker_color=variable_colors[var_type],
+                boxpoints='outliers'
+            ))
+            
+            fig_box.update_layout(
+                title={
+                    'text': f"IRR 분포 요약 - {variable_names[var_type]}",
+                    'x': 0.5,
+                    'font': {'color': '#333333', 'size': 14, 'family': 'Noto Sans KR'}
+                },
+                yaxis_title="IRR (%)",
+                plot_bgcolor='white',
+                paper_bgcolor='white',
+                font={'color': '#333333', 'family': 'Noto Sans KR'},
+                showlegend=False,
+                height=400,
+                yaxis=dict(
+                    gridcolor='#f0f0f0',
+                    linecolor='#e0e0e0',
+                    tickformat='.1%'
+                )
+            )
+            
+            st.plotly_chart(fig_box, use_container_width=True)
+        
+        # Risk statistics table
+        risk_stats = pd.DataFrame({
+            '지표': ['최소값', '5분위수', '25분위수', '평균', '75분위수', '95분위수', '최대값', '표준편차'],
+            '값': [
+                f"{result['min_irr']:.2%}",
+                f"{result['p5_irr']:.2%}",
+                f"{result['p25_irr']:.2%}",
+                f"{result['mean_irr']:.2%}",
+                f"{result['p75_irr']:.2%}",
+                f"{result['p95_irr']:.2%}",
+                f"{result['max_irr']:.2%}",
+                f"{result['std_irr']:.2%}"
+            ]
+        })
+        
+        st.dataframe(risk_stats, use_container_width=True)
+        
+        # Calculate correlation
+        correlation = np.corrcoef(result['factor_values'], result['irr_results'])[0,1]
+        
+        st.markdown(f"""
+        <div style="background: #ffffff; border: 1px solid #e8eaf0; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+            <p><strong>{variable_names[var_type]} 상관계수:</strong> {correlation:.3f}</p>
+            <p><strong>위험도 (표준편차):</strong> {result['std_irr']:.2%}</p>
+            <p><strong>하방위험 (VaR 5%):</strong> {result['p5_irr']:.2%}</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("---")
 
 def display_results(results, params):
     # Key metrics summary with skyblue styling
@@ -975,199 +1145,7 @@ def display_results(results, params):
             mime="text/csv"
         )
     
-    # Monte Carlo Risk Analysis Section
-    st.markdown("""
-    <div class="section-header">
-        <h2>🎲 Monte Carlo 위험 분석</h2>
-        <p>판매가격, 원가실적, 총투자비 개별 변동에 따른 IRR 민감도 분석</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Get the original data from session state
-    cost_data = st.session_state.get('cost_data', pd.DataFrame())
-    sales_data = st.session_state.get('sales_data', pd.DataFrame())
-    
-    # Perform separate Monte Carlo analysis for each variable
-    variable_names = {
-        'price': '판매가격 (±20%)',
-        'cost': '원가실적 (±15%)', 
-        'investment': '총투자비 (±25%)'
-    }
-    
-    variable_colors = {
-        'price': '#003366',
-        'cost': '#dc3545',
-        'investment': '#6c757d'
-    }
-    
-    # Run analyses for each variable
-    monte_carlo_results = {}
-    
-    with st.spinner("Monte Carlo 시뮬레이션 실행 중..."):
-        for var_type in ['price', 'cost', 'investment']:
-            with st.expander(f"{variable_names[var_type]} 분석 진행 중...", expanded=False):
-                result = perform_single_variable_monte_carlo(params, cost_data, sales_data, var_type, n_simulations=300)
-                if result:
-                    monte_carlo_results[var_type] = result
-                    st.success(f"{variable_names[var_type]} 분석 완료: {len(result['irr_results'])}개 시나리오")
-                else:
-                    st.warning(f"{variable_names[var_type]} 분석 실패")
-    
-    if not monte_carlo_results:
-        st.error("Monte Carlo 분석을 수행할 수 없습니다.")
-        return
-    
-    # Display results for each variable
-    for var_type, result in monte_carlo_results.items():
-        st.markdown(f"### {variable_names[var_type]} 민감도 분석")
-        
-        # Metrics for this variable
-        col1, col2, col3, col4 = st.columns(4)
-        
-        with col1:
-            st.markdown(f"""
-            <div class="metric-container">
-                <h4>기본 IRR</h4>
-                <h2>{result['base_irr']:.2%}</h2>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with col2:
-            st.markdown(f"""
-            <div class="metric-container">
-                <h4>평균 IRR</h4>
-                <h2>{result['mean_irr']:.2%}</h2>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with col3:
-            st.markdown(f"""
-            <div class="metric-container">
-                <h4>5% 하위 IRR</h4>
-                <h2 style="color: #dc3545;">{result['p5_irr']:.2%}</h2>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with col4:
-            st.markdown(f"""
-            <div class="metric-container">
-                <h4>95% 상위 IRR</h4>
-                <h2 style="color: #28a745;">{result['p95_irr']:.2%}</h2>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        # Charts for this variable
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            # IRR Distribution Histogram
-            fig_hist = go.Figure()
-            fig_hist.add_trace(go.Histogram(
-                x=result['irr_results'],
-                nbinsx=30,
-                marker_color=variable_colors[var_type],
-                opacity=0.7,
-                name=f'IRR 분포 ({variable_names[var_type]})'
-            ))
-            
-            # Add vertical lines for key statistics
-            fig_hist.add_vline(x=result['base_irr'], line_dash="dash", line_color="red", 
-                               annotation_text="기본", annotation_position="top")
-            fig_hist.add_vline(x=result['mean_irr'], line_dash="dash", line_color="blue", 
-                               annotation_text="평균", annotation_position="top")
-            
-            fig_hist.update_layout(
-                title={
-                    'text': f"IRR 분포 - {variable_names[var_type]}",
-                    'x': 0.5,
-                    'font': {'color': '#333333', 'size': 14, 'family': 'Noto Sans KR'}
-                },
-                xaxis_title="IRR (%)",
-                yaxis_title="빈도",
-                plot_bgcolor='white',
-                paper_bgcolor='white',
-                font={'color': '#333333', 'family': 'Noto Sans KR'},
-                showlegend=False,
-                height=400,
-                xaxis=dict(
-                    gridcolor='#f0f0f0',
-                    linecolor='#e0e0e0',
-                    tickformat='.1%'
-                ),
-                yaxis=dict(
-                    gridcolor='#f0f0f0',
-                    linecolor='#e0e0e0'
-                )
-            )
-            
-            st.plotly_chart(fig_hist, use_container_width=True)
-        
-        with col2:
-            # Scatter plot: Variable vs IRR
-            fig_scatter = go.Figure()
-            fig_scatter.add_trace(go.Scatter(
-                x=(np.array(result['factor_values']) - 1) * 100,
-                y=np.array(result['irr_results']) * 100,
-                mode='markers',
-                marker=dict(color=variable_colors[var_type], opacity=0.6, size=4),
-                name=f'{variable_names[var_type]} vs IRR'
-            ))
-            
-            fig_scatter.update_layout(
-                title={
-                    'text': f"{variable_names[var_type]} 변동 vs IRR",
-                    'x': 0.5,
-                    'font': {'color': '#333333', 'size': 14, 'family': 'Noto Sans KR'}
-                },
-                xaxis_title=f"{variable_names[var_type]} 변동 (%)",
-                yaxis_title="IRR (%)",
-                plot_bgcolor='white',
-                paper_bgcolor='white',
-                font={'color': '#333333', 'family': 'Noto Sans KR'},
-                showlegend=False,
-                height=400,
-                xaxis=dict(
-                    gridcolor='#f0f0f0',
-                    linecolor='#e0e0e0'
-                ),
-                yaxis=dict(
-                    gridcolor='#f0f0f0',
-                    linecolor='#e0e0e0'
-                )
-            )
-            
-            st.plotly_chart(fig_scatter, use_container_width=True)
-        
-        # Risk Statistics for this variable
-        risk_stats = pd.DataFrame({
-            '통계량': ['최솟값', '5%ile', '25%ile', '평균', '75%ile', '95%ile', '최댓값', '표준편차'],
-            f'{variable_names[var_type]} IRR (%)': [
-                f"{result['min_irr']:.2%}",
-                f"{result['p5_irr']:.2%}",
-                f"{result['p25_irr']:.2%}",
-                f"{result['mean_irr']:.2%}",
-                f"{result['p75_irr']:.2%}",
-                f"{result['p95_irr']:.2%}",
-                f"{result['max_irr']:.2%}",
-                f"{result['std_irr']:.2%}"
-            ]
-        })
-        
-        st.dataframe(risk_stats, use_container_width=True)
-        
-        # Calculate correlation
-        correlation = np.corrcoef(result['factor_values'], result['irr_results'])[0,1]
-        
-        st.markdown(f"""
-        <div style="background: #ffffff; border: 1px solid #e8eaf0; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-            <p><strong>{variable_names[var_type]} 상관계수:</strong> {correlation:.3f}</p>
-            <p><strong>위험도 (표준편차):</strong> {result['std_irr']:.2%}</p>
-            <p><strong>하방위험 (VaR 5%):</strong> {result['p5_irr']:.2%}</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown("---")
-    
+
     # Interactive Dashboard Section
     st.markdown("""
     <div class="section-header">
