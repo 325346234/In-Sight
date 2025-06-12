@@ -192,19 +192,27 @@ with st.sidebar:
 
 # 메인 페이지 구성
 if st.session_state.current_page == "메인":
-    # 유튜브 동영상 전체화면 재생
+    # 유튜브 동영상 전체화면 재생 - 최대한 크게
     st.markdown("""
     <style>
-        .main-content {
-            padding: 0;
-            margin: 0;
+        .main > div {
+            padding: 0 !important;
+        }
+        .block-container {
+            padding: 0 !important;
+            margin: 0 !important;
+            max-width: 100% !important;
         }
         .video-container {
             position: relative;
-            width: 100%;
-            height: 80vh;
+            width: 100vw;
+            height: 100vh;
             margin: 0;
             padding: 0;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
         }
         .video-container iframe {
             position: absolute;
@@ -226,17 +234,6 @@ if st.session_state.current_page == "메인":
                 allow="autoplay; encrypted-media" 
                 allowfullscreen>
         </iframe>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # 동영상 하단에 간단한 설명
-    st.markdown("---")
-    st.markdown("""
-    <div style='text-align: center; padding: 20px;'>
-        <h2 style='color: #2E5084;'>AI 기반 철강 투자 경제성 분석 시스템</h2>
-        <p style='font-size: 18px; color: #666;'>
-            정확한 데이터 분석과 AI 인사이트로 최적의 투자 결정을 지원합니다
-        </p>
     </div>
     """, unsafe_allow_html=True)
 
