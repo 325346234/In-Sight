@@ -135,7 +135,7 @@ def show_progress_page():
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-        background: linear-gradient(135deg, #003366 0%, #004488 100%);
+        background: linear-gradient(135deg, #000000 0%, #004488 100%);
         color: white;
         text-align: center;
         padding: 2rem;
@@ -235,7 +235,7 @@ def main():
     
     /* Header styling - POSCO inspired */
     .main-header {
-        background: linear-gradient(135deg, #003366 0%, #004488 100%);
+        background: linear-gradient(135deg, #000000 0%, #004488 100%);
         padding: 2.5rem 2rem;
         border-radius: 0;
         text-align: center;
@@ -261,7 +261,7 @@ def main():
     /* Typography improvements */
     h1, h2, h3, h4, h5, h6 {
         font-family: 'Noto Sans KR', sans-serif;
-        color: #003366;
+        color: #000000;
         font-weight: 500;
         line-height: 1.4;
     }
@@ -289,7 +289,7 @@ def main():
     
     /* Buttons - POSCO style */
     .stButton > button {
-        background: #003366;
+        background: #000000;
         color: white;
         border: none;
         border-radius: 4px;
@@ -355,7 +355,7 @@ def main():
     
     /* Progress bar */
     .stProgress > div > div > div {
-        background: linear-gradient(90deg, #003366, #004488);
+        background: linear-gradient(90deg, #000000, #004488);
     }
     
     /* Metrics - Clean POSCO style */
@@ -385,7 +385,7 @@ def main():
     }
     
     .metric-container h2 {
-        color: #003366;
+        color: #000000;
         font-weight: 700;
         font-size: 1.8rem;
         margin: 0;
@@ -472,7 +472,7 @@ def main():
     /* Label styling */
     .stNumberInput label {
         font-weight: 500;
-        color: #003366;
+        color: #000000;
         font-size: 0.9rem;
     }
     
@@ -484,8 +484,8 @@ def main():
     /* Navigation elements */
     .nav-button {
         background: #ffffff;
-        border: 1px solid #003366;
-        color: #003366;
+        border: 1px solid #000000;
+        color: #000000;
         border-radius: 4px;
         padding: 0.5rem 1.5rem;
         font-weight: 500;
@@ -494,7 +494,7 @@ def main():
     }
     
     .nav-button:hover {
-        background: #003366;
+        background: #000000;
         color: white;
     }
     </style>
@@ -654,8 +654,10 @@ def show_advanced_analysis_page():
                 name='시뮬레이션 결과',
                 marker=dict(color='rgba(44, 82, 130, 0.6)', size=6)
             ))
+            # 변수명 한글 변환을 미리 변수로 할당
+            variable_kor = {'price': '판매가격', 'cost': '제조원가', 'investment': '투자비'}[mc_results['variable_type']]
             fig_scatter.update_layout(
-                title=f"{{'price': '판매가격', 'cost': '제조원가', 'investment': '투자비'}[mc_results['variable_type']]} 변동 vs IRR",
+                title=f"{variable_kor} 변동 vs IRR",
                 xaxis_title="변동 계수",
                 yaxis_title="IRR",
                 height=400
@@ -1022,7 +1024,7 @@ def show_insights_page():
                     """, unsafe_allow_html=True)
             
             # Market Intelligence Summary
-            st.markdown("#### 🎯 시장 인텔리전스 요약")
+            st.markdown("#### 시장 인텔리전스 요약")
             
             intelligence_cols = st.columns(3)
             
@@ -1092,7 +1094,7 @@ def show_insights_page():
 def show_input_page():
     st.markdown("""
     <div class="section-header">
-        <h2>📊 프로젝트 파라미터 입력</h2>
+        <h2>프로젝트 파라미터 입력</h2>
         <p>각 항목의 값을 입력하세요. 기본값이 사전 설정되어 있습니다.</p>
     </div>
     """, unsafe_allow_html=True)
@@ -1103,7 +1105,7 @@ def show_input_page():
     with col1:
         st.markdown("""
         <div class="section-header">
-            <h3>🏢 기본 프로젝트 정보</h3>
+            <h3>기본 프로젝트 정보</h3>
         </div>
         """, unsafe_allow_html=True)
         business_period = st.number_input("사업기간 (년)", min_value=1, max_value=50, value=15)
@@ -1121,7 +1123,7 @@ def show_input_page():
         
         st.markdown("""
         <div class="section-header">
-            <h3>🏦 자금조달</h3>
+            <h3>자금조달</h3>
         </div>
         """, unsafe_allow_html=True)
         equity_ratio = st.number_input("자본비율 (%)", min_value=0.0, max_value=100.0, value=50.0, step=0.1)
@@ -1152,7 +1154,7 @@ def show_input_page():
         
         st.markdown("""
         <div class="section-header">
-            <h3>📈 기타 비율</h3>
+            <h3>기타 비율</h3>
         </div>
         """, unsafe_allow_html=True)
         corporate_tax_rate = st.number_input("법인세율 (%)", min_value=0.0, max_value=100.0, value=25.0, step=0.1)
@@ -1294,7 +1296,7 @@ def display_results(results, params):
     # Key metrics summary with skyblue styling
     st.markdown("""
     <div class="section-header">
-        <h3>📊 주요 재무지표 요약</h3>
+        <h3> 주요 재무지표 요약</h3>
     </div>
     """, unsafe_allow_html=True)
     
@@ -1352,7 +1354,7 @@ def display_results(results, params):
     cash_flows = list(results['net_cash_flow'].values())
     
     fig = go.Figure()
-    colors = ['#dc3545' if cf < 0 else '#003366' for cf in cash_flows]
+    colors = ['#dc3545' if cf < 0 else '#000000' for cf in cash_flows]
     
     fig.add_trace(go.Bar(
         x=[f"Year {y}" for y in years],
@@ -1389,7 +1391,7 @@ def display_results(results, params):
     # Revenue and costs over time with skyblue theme
     st.markdown("""
     <div class="section-header">
-        <h3>💰 매출액 및 제조원가 추이</h3>
+        <h3> 매출액 및 제조원가 추이</h3>
     </div>
     """, unsafe_allow_html=True)
     
@@ -1404,8 +1406,8 @@ def display_results(results, params):
         y=revenues,
         mode='lines+markers',
         name='총 매출액',
-        line=dict(color='#003366', width=3),
-        marker=dict(color='#003366', size=8)
+        line=dict(color='#000000', width=3),
+        marker=dict(color='#000000', size=8)
     ))
     
     fig2.add_trace(go.Scatter(
@@ -1446,7 +1448,7 @@ def display_results(results, params):
     # Detailed financial statements
     st.markdown("""
     <div class="section-header">
-        <h3>📋 상세 재무제표</h3>
+        <h3> 상세 재무제표</h3>
     </div>
     """, unsafe_allow_html=True)
     
@@ -1546,585 +1548,6 @@ def display_results(results, params):
         if st.button("💡 Insights 페이지로 이동", use_container_width=True):
             st.session_state['current_page'] = 'insights'
             st.rerun()
-
-if __name__ == "__main__":
-    main()
-        """, unsafe_allow_html=True)
-        
-        # Enhanced Cost slider
-        st.markdown("""
-        <div class="slider-container">
-            <div class="slider-title">제조원가 조정</div>
-            <div class="base-line"></div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        cost_change = st.slider(
-            "제조원가 변화율",
-            min_value=-100,
-            max_value=100,
-            value=0,
-            step=5,
-            key="cost_slider",
-            format="%d%%"
-        )
-        cost_multiplier = 1 + (cost_change / 100)
-        adjusted_manufacturing_cost = base_manufacturing_cost * cost_multiplier
-        
-        abs_change = abs(cost_change)
-        impact_class = "low-impact" if abs_change <= 20 else "medium-impact" if abs_change <= 50 else "high-impact"
-        impact_label = "낮음" if abs_change <= 20 else "보통" if abs_change <= 50 else "높음"
-        impact_badge_class = "impact-low" if abs_change <= 20 else "impact-medium" if abs_change <= 50 else "impact-high"
-        change_class = "positive-change" if cost_change < 0 else "negative-change" if cost_change > 0 else "no-change"
-        
-        st.markdown(f"""
-        <div class="value-display {impact_class}">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                <strong>제조원가 영향도</strong>
-                <span class="impact-indicator {impact_badge_class}">{impact_label}</span>
-            </div>
-            <strong>기준값:</strong> ${base_manufacturing_cost/1000:,.1f}K/톤<br>
-            <strong>조정값:</strong> ${adjusted_manufacturing_cost/1000:,.1f}K/톤<br>
-            <strong>변화:</strong> <span class="{change_class}">{cost_change:+d}%</span>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col_irr:
-        st.markdown("#### 실시간 IRR 계산")
-        
-        # Calculate IRR with adjusted parameters automatically
-        try:
-            # Create modified parameters and data
-            modified_params = params.copy()
-            modified_params['total_investment'] = adjusted_investment
-            
-            modified_sales_data = sales_data.copy()
-            if '매출액' in sales_data.columns:
-                modified_sales_data['매출액'] = sales_data['매출액'] * price_multiplier
-            if '총 매출액' in sales_data.columns:
-                modified_sales_data['총 매출액'] = sales_data['총 매출액'] * price_multiplier
-            
-            modified_cost_data = cost_data.copy()
-            if '소재가격' in cost_data.columns:
-                modified_cost_data['소재가격'] = cost_data['소재가격'] * cost_multiplier
-            if '가공비' in cost_data.columns:
-                modified_cost_data['가공비'] = cost_data['가공비'] * cost_multiplier
-            
-            # Calculate new IRR
-            dashboard_calculator = FinancialCalculator(modified_params, modified_cost_data, modified_sales_data)
-            dashboard_results = dashboard_calculator.calculate_all_metrics()
-            new_irr = dashboard_results['irr']
-            
-            # Display IRR metrics in vertical layout
-            st.markdown(f"""
-            <div class="metric-container">
-                <h4>기준 IRR</h4>
-                <h2>{results['irr']:.2%}</h2>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            irr_change = new_irr - results['irr']
-            color = "#28a745" if irr_change >= 0 else "#dc3545"
-            
-            st.markdown(f"""
-            <div class="metric-container">
-                <h4>조정된 IRR</h4>
-                <h2 style="color: {color};">{new_irr:.2%}</h2>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            st.markdown(f"""
-            <div class="metric-container">
-                <h4>IRR 변화</h4>
-                <h2 style="color: {color};">{irr_change:+.2%}</h2>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            irr_change_pct = (new_irr / results['irr'] - 1) * 100 if results['irr'] != 0 else 0
-            st.markdown(f"""
-            <div class="metric-container">
-                <h4>IRR 변화율</h4>
-                <h2 style="color: {color};">{irr_change_pct:+.1f}%</h2>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # IRR sensitivity gauge
-            st.markdown("#### 민감도 지표")
-            
-            # Create a simple visual indicator
-            sensitivity_score = abs(irr_change) / abs(results['irr']) * 100 if results['irr'] != 0 else 0
-            
-            if sensitivity_score < 5:
-                sensitivity_level = "낮음"
-                sensitivity_color = "#28a745"
-            elif sensitivity_score < 15:
-                sensitivity_level = "보통"
-                sensitivity_color = "#ffc107"
-            else:
-                sensitivity_level = "높음"
-                sensitivity_color = "#dc3545"
-            
-            st.markdown(f"""
-            <div style="background: #ffffff; border: 1px solid #e8eaf0; padding: 1rem; border-radius: 8px; text-align: center;">
-                <p><strong>민감도:</strong> <span style="color: {sensitivity_color};">{sensitivity_level}</span></p>
-                <p><strong>영향도:</strong> {sensitivity_score:.1f}%</p>
-            </div>
-            """, unsafe_allow_html=True)
-            
-        except Exception as e:
-            st.error("IRR 계산 중 오류가 발생했습니다.")
-            st.info("파라미터 조정값이 너무 극단적일 수 있습니다. 슬라이더를 조정해 보세요.")
-    
-    # Summary chart showing current adjustments
-    st.markdown("---")
-    st.markdown("#### 📊 현재 조정 상태")
-    
-    # Real-time sensitivity chart
-    fig_sensitivity = go.Figure()
-    
-    # Add bars for each adjustment
-    adjustments = [investment_change, price_change, cost_change]
-    colors = ['#6c757d', '#003366', '#dc3545']
-    
-    fig_sensitivity.add_trace(go.Bar(
-        x=['투자비', '판매가격', '제조원가'],
-        y=adjustments,
-        marker_color=colors,
-        name='조정 비율',
-        text=[f"{adj:+.0f}%" for adj in adjustments],
-        textposition='auto'
-    ))
-    
-    fig_sensitivity.update_layout(
-        title={
-            'text': "파라미터 조정 현황",
-            'x': 0.5,
-            'font': {'color': '#333333', 'size': 16, 'family': 'Noto Sans KR'}
-        },
-        xaxis_title="조정 항목",
-        yaxis_title="조정 비율 (%)",
-        plot_bgcolor='white',
-        paper_bgcolor='white',
-        font={'color': '#333333', 'family': 'Noto Sans KR'},
-        showlegend=False,
-        height=300,
-        yaxis=dict(
-            gridcolor='#f0f0f0',
-            linecolor='#e0e0e0',
-            zeroline=True,
-            zerolinecolor='#333333',
-            range=[-100, 100]
-        )
-    )
-    
-    st.plotly_chart(fig_sensitivity, use_container_width=True)
-    
-    # Regression Analysis Section
-    st.markdown("---")
-    st.markdown("""
-    <div class="section-header">
-        <h2>📈 IRR 회귀분석 공식</h2>
-        <p>주요 변수들의 IRR에 대한 영향도를 수학적 공식으로 표현</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    with st.spinner("회귀분석 계산 중..."):
-        # Generate data points for regression analysis
-        sample_points = []
-        sample_irrs = []
-        
-        # Create a grid of sample points around the base values
-        investment_variations = [-50, -25, -10, 0, 10, 25, 50]
-        price_variations = [-30, -15, -5, 0, 5, 15, 30]
-        cost_variations = [-30, -15, -5, 0, 5, 15, 30]
-        
-        try:
-            for inv_change in investment_variations:
-                for price_change in price_variations:
-                    for cost_change in cost_variations:
-                        # Calculate IRR for this combination
-                        modified_params = params.copy()
-                        modified_params['total_investment'] = base_investment * (1 + inv_change/100)
-                        
-                        modified_sales_data = sales_data.copy()
-                        if '매출액' in sales_data.columns:
-                            modified_sales_data['매출액'] = sales_data['매출액'] * (1 + price_change/100)
-                        if '총 매출액' in sales_data.columns:
-                            modified_sales_data['총 매출액'] = sales_data['총 매출액'] * (1 + price_change/100)
-                        
-                        modified_cost_data = cost_data.copy()
-                        if '소재가격' in cost_data.columns:
-                            modified_cost_data['소재가격'] = cost_data['소재가격'] * (1 + cost_change/100)
-                        if '가공비' in cost_data.columns:
-                            modified_cost_data['가공비'] = cost_data['가공비'] * (1 + cost_change/100)
-                        
-                        try:
-                            regression_calculator = FinancialCalculator(modified_params, modified_cost_data, modified_sales_data)
-                            regression_results = regression_calculator.calculate_all_metrics()
-                            
-                            if regression_results['irr'] is not None and not np.isnan(regression_results['irr']) and np.isfinite(regression_results['irr']):
-                                sample_points.append([inv_change, price_change, cost_change])
-                                sample_irrs.append(regression_results['irr'])
-                        except:
-                            continue
-            
-            if len(sample_irrs) >= 10:  # Need sufficient data points
-                # Perform multiple linear regression
-                from sklearn.linear_model import LinearRegression
-                from sklearn.metrics import r2_score
-                
-                X = np.array(sample_points)
-                y = np.array(sample_irrs)
-                
-                # Fit the regression model
-                model = LinearRegression()
-                model.fit(X, y)
-                
-                # Get coefficients
-                intercept = model.intercept_
-                coef_investment = model.coef_[0]
-                coef_price = model.coef_[1]
-                coef_cost = model.coef_[2]
-                
-                # Calculate R-squared
-                y_pred = model.predict(X)
-                r2 = r2_score(y, y_pred)
-                
-                # Display regression results
-                col1, col2 = st.columns([2, 1])
-                
-                with col1:
-                    st.markdown("#### 📊 회귀분석 공식")
-                    
-                    # Format the regression equation
-                    st.markdown(f"""
-                    <div style="background: #f8f9fa; border-left: 4px solid #003366; padding: 1.5rem; border-radius: 8px; margin: 1rem 0;">
-                        <h4 style="color: #003366; margin-bottom: 1rem;">IRR 예측 공식</h4>
-                        <div style="font-family: 'Courier New', monospace; font-size: 1.1rem; background: white; padding: 1rem; border-radius: 4px;">
-                            <strong>IRR = {intercept:.4f} + ({coef_investment:.6f} × 투자비변화율) + ({coef_price:.6f} × 판매가격변화율) + ({coef_cost:.6f} × 제조원가변화율)</strong>
-                        </div>
-                        <p style="margin-top: 1rem; color: #6c757d; font-size: 0.9rem;">
-                            * 변화율은 백분율 단위 (예: 10% 증가 시 10 입력)
-                        </p>
-                    </div>
-                    """, unsafe_allow_html=True)
-                    
-                    # Coefficient interpretation
-                    st.markdown("#### 📋 계수 해석")
-                    
-                    coef_data = {
-                        '변수': ['투자비 변화율', '판매가격 변화율', '제조원가 변화율'],
-                        '계수': [f"{coef_investment:.6f}", f"{coef_price:.6f}", f"{coef_cost:.6f}"],
-                        '영향도': [
-                            "부정적" if coef_investment < 0 else "긍정적",
-                            "긍정적" if coef_price > 0 else "부정적", 
-                            "부정적" if coef_cost < 0 else "긍정적"
-                        ],
-                        '해석': [
-                            f"투자비 1% 증가 시 IRR {coef_investment:.4f} 변화",
-                            f"판매가격 1% 증가 시 IRR {coef_price:.4f} 변화",
-                            f"제조원가 1% 증가 시 IRR {coef_cost:.4f} 변화"
-                        ]
-                    }
-                    
-                    coef_df = pd.DataFrame(coef_data)
-                    st.dataframe(coef_df, use_container_width=True)
-                
-                with col2:
-                    st.markdown("#### 📈 모델 성능")
-                    
-                    st.markdown(f"""
-                    <div class="metric-container">
-                        <h4>결정계수 (R²)</h4>
-                        <h2 style="color: #003366;">{r2:.3f}</h2>
-                        <p>모델 설명력: {r2*100:.1f}%</p>
-                    </div>
-                    """, unsafe_allow_html=True)
-                    
-                    # Model quality assessment
-                    if r2 >= 0.8:
-                        quality = "우수"
-                        quality_color = "#28a745"
-                    elif r2 >= 0.6:
-                        quality = "양호"
-                        quality_color = "#ffc107"
-                    else:
-                        quality = "보통"
-                        quality_color = "#dc3545"
-                    
-                    st.markdown(f"""
-                    <div style="background: #ffffff; border: 1px solid #e8eaf0; padding: 1rem; border-radius: 8px; text-align: center;">
-                        <p><strong>모델 품질:</strong> <span style="color: {quality_color};">{quality}</span></p>
-                        <p><strong>샘플 수:</strong> {len(sample_irrs):,}개</p>
-                    </div>
-                    """, unsafe_allow_html=True)
-                    
-                    st.markdown("#### 💡 활용 방법")
-                    st.markdown("""
-                    <div style="font-size: 0.9rem; color: #6c757d;">
-                        <p>• 각 변수의 1% 변화가 IRR에 미치는 영향을 수치로 확인</p>
-                        <p>• 투자 시나리오별 IRR 예측 가능</p>
-                        <p>• 민감도가 높은 변수 우선 관리</p>
-                    </div>
-                    """, unsafe_allow_html=True)
-                
-                # Sensitivity ranking
-                st.markdown("#### 🎯 민감도 순위")
-                
-                sensitivity_ranking = [
-                    ("투자비", abs(coef_investment)),
-                    ("판매가격", abs(coef_price)),
-                    ("제조원가", abs(coef_cost))
-                ]
-                sensitivity_ranking.sort(key=lambda x: x[1], reverse=True)
-                
-                rank_cols = st.columns(3)
-                for i, (var_name, sensitivity) in enumerate(sensitivity_ranking):
-                    with rank_cols[i]:
-                        rank_color = "#FFD700" if i == 0 else "#C0C0C0" if i == 1 else "#CD7F32"
-                        st.markdown(f"""
-                        <div style="text-align: center; padding: 1rem; border: 2px solid {rank_color}; border-radius: 8px; background: white;">
-                            <h3 style="color: {rank_color}; margin: 0;">{i+1}위</h3>
-                            <h4 style="margin: 0.5rem 0;">{var_name}</h4>
-                            <p style="margin: 0; color: #6c757d;">민감도: {sensitivity:.4f}</p>
-                        </div>
-                        """, unsafe_allow_html=True)
-                
-            else:
-                st.error("회귀분석을 위한 충분한 데이터를 생성할 수 없습니다.")
-                st.info("파라미터 범위를 조정하거나 입력 데이터를 확인해 주세요.")
-                
-        except Exception as e:
-            st.error("회귀분석 계산 중 오류가 발생했습니다.")
-            st.info("극단적인 파라미터 값으로 인한 계산 오류일 수 있습니다.")
-    
-    # Competitor Investment Trends Section
-    st.markdown("---")
-    st.markdown("""
-    <div class="section-header">
-        <h2>🏭 경쟁사 투자동향</h2>
-        <p>철강업계 최신 투자 및 설비투자 동향 분석</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    with st.spinner("최신 철강투자 동향을 분석하고 있습니다..."):
-        try:
-            from openai import OpenAI
-            import os
-            
-            # Initialize OpenAI client
-            client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-            
-            # Generate steel industry investment news summaries
-            prompt = """
-            철강업계 최신 투자 동향에 대한 뉴스 요약을 다음 형식으로 5개 작성해주세요:
-
-            제목: [100자 이내 뉴스 제목]
-            요약: [100자 이내 핵심 내용 요약]
-            출처: [관련 웹사이트 링크 - 실제 존재하는 사이트]
-
-            다음 키워드를 중심으로 작성:
-            - 철강투자
-            - 철강설비투자
-            - 포스코, 현대제철 등 주요 기업
-            - 친환경 기술 투자
-            - 스마트팩토리
-
-            각 뉴스는 구분선(---)으로 분리해주세요.
-            """
-            
-            response = client.chat.completions.create(
-                model="gpt-4o",
-                messages=[
-                    {"role": "system", "content": "당신은 철강업계 전문 애널리스트입니다. 최신 투자동향과 시장 분석에 전문성을 가지고 있습니다."},
-                    {"role": "user", "content": prompt}
-                ],
-                max_tokens=2000,
-                temperature=0.7
-            )
-            
-            analysis_content = response.choices[0].message.content
-            
-            # Display the news summaries in structured format
-            col1, col2 = st.columns([2, 1])
-            
-            with col1:
-                st.markdown("#### 📈 최신 철강투자 뉴스")
-                
-                # Parse and display news summaries
-                if analysis_content:
-                    news_items = analysis_content.split('---')
-                    for i, news_item in enumerate(news_items):
-                        if news_item.strip():
-                            lines = news_item.strip().split('\n')
-                            title = ""
-                            summary = ""
-                            source = ""
-                            
-                            for line in lines:
-                                if line.startswith('제목:'):
-                                    title = line.replace('제목:', '').strip()
-                                elif line.startswith('요약:'):
-                                    summary = line.replace('요약:', '').strip()
-                                elif line.startswith('출처:'):
-                                    source = line.replace('출처:', '').strip()
-                            
-                            if title and summary:
-                                st.markdown(f"""
-                                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin: 1rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                                    <h4 style="color: #1a202c; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; line-height: 1.4;">{title}</h4>
-                                    <p style="color: #4a5568; font-size: 1rem; font-weight: 500; margin-bottom: 0.75rem; line-height: 1.6;">{summary}</p>
-                                    <a href="{source}" target="_blank" style="color: #2c5282; font-size: 0.9rem; font-weight: 600; text-decoration: none;">
-                                        📎 자세히 보기 →
-                                    </a>
-                                </div>
-                                """, unsafe_allow_html=True)
-            
-            with col2:
-                st.markdown("#### 💡 주요 투자 키워드")
-                
-                # Generate key investment keywords with improved formatting
-                keywords_prompt = """
-                철강업계 투자동향에서 주요 키워드 8개를 추출해주세요.
-                각 키워드에 대해 간단한 설명(50자 이내)을 포함해주세요.
-                형식: "키워드: 설명"
-                """
-                
-                keywords_response = client.chat.completions.create(
-                    model="gpt-4o",
-                    messages=[
-                        {"role": "system", "content": "철강업계 투자 트렌드 전문가입니다."},
-                        {"role": "user", "content": keywords_prompt}
-                    ],
-                    max_tokens=600,
-                    temperature=0.5
-                )
-                
-                keywords_content = keywords_response.choices[0].message.content
-                if keywords_content and keywords_content.strip():
-                    keywords_list = keywords_content.split('\n')
-                    
-                    for keyword in keywords_list:
-                        if keyword.strip() and ':' in keyword:
-                            key, desc = keyword.split(':', 1)
-                            st.markdown(f"""
-                            <div style="background: #f8f9fa; border-left: 4px solid #2c5282; padding: 1rem; margin: 0.75rem 0; border-radius: 8px;">
-                                <strong style="color: #1a202c; font-size: 1rem; font-weight: 700;">{key.strip()}</strong><br>
-                                <span style="color: #4a5568; font-size: 0.95rem; font-weight: 500; line-height: 1.5;">{desc.strip()}</span>
-                            </div>
-                            """, unsafe_allow_html=True)
-                
-                st.markdown("#### 📊 투자 규모 전망")
-                
-                # Generate investment scale forecast
-                forecast_prompt = """
-                2024-2025년 철강업계 투자 규모에 대한 전망을 작성해주세요.
-                - 글로벌 철강투자 규모
-                - 국내 철강투자 규모  
-                - 주요 투자 분야별 비중
-                숫자와 함께 간결하게 작성해주세요.
-                """
-                
-                forecast_response = client.chat.completions.create(
-                    model="gpt-4o",
-                    messages=[
-                        {"role": "system", "content": "철강업계 투자 전망 전문가입니다."},
-                        {"role": "user", "content": forecast_prompt}
-                    ],
-                    max_tokens=600,
-                    temperature=0.3
-                )
-                
-                forecast_content = forecast_response.choices[0].message.content
-                if forecast_content and forecast_content.strip():
-                    # Replace newlines with HTML breaks outside of f-string
-                    formatted_content = forecast_content.replace('\n', '<br>')
-                    st.markdown(f"""
-                    <div style="background: #ffffff; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 12px;">
-                        <div style="color: #1a202c; font-size: 1rem; font-weight: 500; line-height: 1.6;">
-                            {formatted_content}
-                        </div>
-                    </div>
-                    """, unsafe_allow_html=True)
-                else:
-                    st.markdown("""
-                    <div style="background: #ffffff; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 12px;">
-                        <div style="color: #1a202c; font-size: 1rem; font-weight: 500; line-height: 1.6;">
-                            <strong>2024-2025 철강투자 전망:</strong><br>
-                            • 글로벌 철강투자 규모: 약 120조원<br>
-                            • 국내 철강투자 규모: 약 8-10조원<br>
-                            • 친환경 기술: 40%, 디지털화: 30%, 설비 현대화: 30%
-                        </div>
-                    </div>
-                    """, unsafe_allow_html=True)
-            
-            # Market Intelligence Summary
-            st.markdown("#### 🎯 시장 인텔리전스 요약")
-            
-            intelligence_cols = st.columns(3)
-            
-            with intelligence_cols[0]:
-                st.markdown("""
-                <div class="metric-container">
-                    <h4>투자 트렌드</h4>
-                    <h2 style="color: #2c5282;">친환경 전환</h2>
-                    <p>탄소중립 대응 투자 급증</p>
-                </div>
-                """, unsafe_allow_html=True)
-            
-            with intelligence_cols[1]:
-                st.markdown("""
-                <div class="metric-container">
-                    <h4>기술 혁신</h4>
-                    <h2 style="color: #2c5282;">디지털화</h2>
-                    <p>AI·IoT 기반 스마트팩토리</p>
-                </div>
-                """, unsafe_allow_html=True)
-            
-            with intelligence_cols[2]:
-                st.markdown("""
-                <div class="metric-container">
-                    <h4>지역 확장</h4>
-                    <h2 style="color: #2c5282;">글로벌화</h2>
-                    <p>신흥시장 진출 확대</p>
-                </div>
-                """, unsafe_allow_html=True)
-            
-            # Competitor Analysis Table
-            st.markdown("#### 🏢 주요 경쟁사 투자 현황")
-            
-            competitor_data = {
-                '회사명': ['POSCO', '현대제철', 'JFE스틸', '바오스틸', 'ArcelorMittal'],
-                '주요 투자분야': ['수소환원제철', '전기로 확대', '탄소중립기술', '스마트제조', '친환경기술'],
-                '투자규모': ['10조원+', '5조원+', '8조원+', '15조원+', '12조원+'],
-                '완료시기': ['2030년', '2027년', '2030년', '2025년', '2030년'],
-                '핵심기술': ['HyREX', '전기로', 'COURSE50', 'AI제조', 'XCarb']
-            }
-            
-            competitor_df = pd.DataFrame(competitor_data)
-            st.dataframe(competitor_df, use_container_width=True)
-            
-            st.info("💡 **분석 기준일**: 2024년 12월 기준 / 실제 투자 현황은 각 회사 공시자료를 참조하시기 바랍니다.")
-            
-        except Exception as e:
-            st.error("투자동향 분석 중 오류가 발생했습니다.")
-            st.info("OpenAI API 연결을 확인하거나 잠시 후 다시 시도해주세요.")
-            
-            # Fallback static content
-            st.markdown("#### 📋 철강업계 투자 동향 개요")
-            st.markdown("""
-            **주요 투자 트렌드:**
-            - 탄소중립 대응 친환경 기술 투자 확대
-            - 수소환원제철 기술 개발 가속화
-            - 디지털 전환 및 스마트팩토리 구축
-            - 전기로 설비 확충 및 현대화
-            - 재생에너지 연계 생산시설 구축
-            
-            **투자 규모:**
-            - 글로벌 철강업계 연간 투자: 약 100조원 규모
-            - 국내 주요 철강사 투자: 연간 3-5조원 수준
-            - 친환경 기술 투자 비중: 전체의 30-40%
-            """)
 
 if __name__ == "__main__":
     main()

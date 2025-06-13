@@ -135,7 +135,7 @@ def show_progress_page():
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-        background: linear-gradient(135deg, #003366 0%, #004488 100%);
+        background: linear-gradient(135deg, #000000 0%, #004488 100%);
         color: white;
         text-align: center;
         padding: 2rem;
@@ -155,6 +155,7 @@ def show_progress_page():
     .progress-title {
         font-size: 2.5rem;
         font-weight: 700;
+        color: #FFFFFF !important;
         margin-bottom: 1rem;
         font-family: 'Noto Sans KR', sans-serif;
     }
@@ -164,6 +165,7 @@ def show_progress_page():
         opacity: 0.9;
         margin-bottom: 3rem;
         font-family: 'Noto Sans KR', sans-serif;
+        color: #FFFFFF !important;
     }
     
     .progress-status {
@@ -224,6 +226,24 @@ def main():
     # Custom CSS styling inspired by POSCO design principles
     st.markdown("""
     <style>
+/* 모든 요소, 가상요소, 인라인 스타일까지 강제 덮어쓰기 */
+*, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+}
+[style*="transition"], [style*="animation"] {
+    transition: none !important;
+    animation: none !important;
+}
+.stButton > button,
+.stSlider,
+.stAlert,
+.stDataFrame,
+.block-container,
+.section-header {
+    transition: none !important;
+    animation: none !important;
+}
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
     
     /* Main background and text */
@@ -233,42 +253,45 @@ def main():
         color: #333333;
     }
     
-    /* Header styling - POSCO inspired */
-    .main-header {
-        background: linear-gradient(135deg, #003366 0%, #004488 100%);
-        padding: 2.5rem 2rem;
-        border-radius: 0;
-        text-align: center;
-        color: white;
-        margin-bottom: 2rem;
-        box-shadow: 0 2px 20px rgba(0, 51, 102, 0.15);
-    }
-    
-    .main-header h1 {
-        font-weight: 700;
-        font-size: 2.2rem;
-        margin-bottom: 0.5rem;
-        letter-spacing: -0.5px;
-    }
-    
-    .main-header p {
-        font-weight: 300;
-        font-size: 1.1rem;
-        opacity: 0.9;
-        margin: 0;
-    }
+/* Header styling - POSCO Blue Solid + Rounded + Compact */
+.main-header {
+    background-color: #FFFFFF;
+    border: 3px solid #000000;
+    padding: 1rem 1rem;
+    border-radius: 0.75rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 16px rgba(0, 87, 139, 0.15);
+}
+
+.main-header h1 {
+    font-weight: 700;
+    font-size: 2.5rem;
+    color: #000000;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+}
+
+.main-header p {
+    font-weight: 300;
+    font-size: 1.2rem;
+    color: #000000;
+    opacity: 0.9;
+    margin: 0;
+}
+
     
     /* Typography improvements */
     h1, h2, h3, h4, h5, h6 {
         font-family: 'Noto Sans KR', sans-serif;
-        color: #003366;
+        color: #000000;
         font-weight: 500;
         line-height: 1.4;
     }
     
     /* All text elements */
     p, div, span, label, .stMarkdown {
-        color: #003366;
+        color: #000000;
     }
     
     /* Cards and containers */
@@ -283,14 +306,13 @@ def main():
     
     /* Buttons - POSCO style */
     .stButton > button {
-        background: #003366;
+        background: #000000;
         color: white !important;
         border: none;
         border-radius: 4px;
         padding: 0.75rem 2rem;
         font-weight: 500;
         font-family: 'Noto Sans KR', sans-serif;
-        transition: all 0.2s ease;
         box-shadow: 0 2px 4px rgba(0, 51, 102, 0.2);
         font-size: 1rem;
     }
@@ -310,11 +332,10 @@ def main():
         font-family: 'Noto Sans KR', sans-serif;
         font-size: 0.95rem;
         padding: 0.75rem;
-        transition: all 0.2s ease;
     }
     
     .stNumberInput > div > div > input:focus {
-        border-color: #003366;
+        border-color: #000000;
         background: #e6f3ff;
         box-shadow: 0 0 0 3px rgba(179, 217, 255, 0.3);
         outline: none;
@@ -327,7 +348,7 @@ def main():
     
     /* Progress bar */
     .stProgress > div > div > div {
-        background: linear-gradient(90deg, #003366, #004488);
+        background: linear-gradient(90deg, #000000, #004488);
     }
     
     /* Metrics - Clean POSCO style */
@@ -339,7 +360,6 @@ def main():
         margin: 0.5rem;
         text-align: center;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        transition: all 0.2s ease;
     }
     
     .metric-container:hover {
@@ -357,7 +377,7 @@ def main():
     }
     
     .metric-container h2 {
-        color: #003366;
+        color: #000000;
         font-weight: 700;
         font-size: 1.8rem;
         margin: 0;
@@ -374,53 +394,54 @@ def main():
     
     /* Success/Info messages */
     .stSuccess {
-        background: #f0f9f0;
-        border-left: 4px solid #28a745;
+        background: #FFFFFF;
+        border-left: 4px solid #000000;
         border-radius: 4px;
         color: #155724;
     }
     
     .stInfo {
         background: #e6f3ff;
-        border-left: 4px solid #003366;
+        border-left: 4px solid #000000;
         border-radius: 4px;
-        color: #003366;
+        color: #000000;
     }
     
     /* Section headers - Professional style */
     .section-header {
-        background: #f8f9fa;
-        border-left: 4px solid #003366;
-        padding: 1.5rem;
+        background: #fbfcfb;
+        border-left: 4px solid #000000;
+        padding: 1rem;
         border-radius: 4px;
         margin: 2rem 0 1rem 0;
     }
     
     .section-header h2 {
-        color: #003366;
+        color: #000000;
         font-weight: 600;
         font-size: 1.5rem;
-        margin-bottom: 0.5rem;
+        margin-left: 0.5rem;
     }
     
     .section-header h3 {
-        color: #003366;
+        color: #000000;
         font-weight: 500;
         font-size: 1.2rem;
-        margin: 0;
+        
     }
     
     .section-header p {
         color: #666666;
-        font-size: 0.9rem;
+        font-size: 1rem;
         margin: 0;
         font-weight: 300;
+        margin-left:0.5rem;
     }
     
     /* Label styling */
     .stNumberInput label {
         font-weight: 500;
-        color: #003366;
+        color: #000000;
         font-size: 0.9rem;
     }
     
@@ -428,30 +449,37 @@ def main():
     .css-1d391kg {
         display: none;
     }
+
+.stButton > button, .stButton > button * {
+    background: #000 !important;
+    color: #fff !important;
+    border-radius: 16px !important;
+}
     
-    /* Navigation elements */
-    .nav-button {
-        background: #ffffff;
-        border: 1px solid #003366;
-        color: #003366;
-        border-radius: 4px;
-        padding: 0.5rem 1.5rem;
-        font-weight: 500;
-        transition: all 0.2s ease;
-        font-family: 'Noto Sans KR', sans-serif;
-    }
-    
-    .nav-button:hover {
-        background: #003366;
-        color: white;
-    }
-    </style>
+                
+/* Navigation elements - White Text & Rounded */
+.nav-button {
+    background: #FFFFFF;
+    border: 2px solid #000000;
+    color: #fff;
+    border-radius: 16px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.nav-button:hover {
+    background: ;
+    color: #fff !important;
+    border-radius: 16px;
+}
+                
     """, unsafe_allow_html=True)
     
     # Main header with new styling
     st.markdown("""
     <div class="main-header">
-        <h1>🏭 철강사업 프로젝트 경제성 분석</h1>
+        <h1>In-Sight, Insight to Your Investment</h1>
         <p>Steel Industry Project Economic Feasibility Analysis</p>
     </div>
     """, unsafe_allow_html=True)
@@ -480,12 +508,12 @@ def create_navigation_menu():
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        if st.button("📝 전제사항 입력", key="nav_input", use_container_width=True):
+        if st.button("전제사항 입력", key="nav_input", use_container_width=True):
             st.session_state['current_page'] = 'input'
             st.rerun()
     
     with col2:
-        if st.button("📊 경제성 분석 결과", key="nav_results", use_container_width=True):
+        if st.button("경제성 분석 결과", key="nav_results", use_container_width=True):
             if 'analysis_results' in st.session_state and st.session_state['analysis_results'] is not None:
                 st.session_state['current_page'] = 'results'
                 st.rerun()
@@ -493,7 +521,7 @@ def create_navigation_menu():
                 st.warning("먼저 전제사항을 입력하고 분석을 실행해주세요.")
     
     with col3:
-        if st.button("🔬 심화 분석", key="nav_advanced", use_container_width=True):
+        if st.button("심화 분석", key="nav_advanced", use_container_width=True):
             if 'analysis_results' in st.session_state and st.session_state['analysis_results'] is not None:
                 st.session_state['current_page'] = 'analysis'
                 st.rerun()
@@ -501,7 +529,7 @@ def create_navigation_menu():
                 st.warning("먼저 전제사항을 입력하고 분석을 실행해주세요.")
     
     with col4:
-        if st.button("💡 철강사 투자동향", key="nav_insights", use_container_width=True):
+        if st.button("철강사 투자동향", key="nav_insights", use_container_width=True):
             st.session_state['current_page'] = 'insights'
             st.rerun()
     
@@ -511,7 +539,7 @@ def show_results_page():
     """Display economic analysis results"""
     st.markdown("""
     <div class="section-header">
-        <h2>📊 경제성 분석 결과</h2>
+        <h2> 경제성 분석 결과</h2>
         <p>Steel Industry Project Economic Analysis Results</p>
     </div>
     """, unsafe_allow_html=True)
@@ -573,45 +601,38 @@ def show_results_page():
 def show_input_page():
     st.markdown("""
     <div class="section-header">
-        <h2>📊 프로젝트 파라미터 입력</h2>
+        <h2>프로젝트 파라미터 입력</h2>
         <p>각 항목의 값을 입력하세요. 기본값이 사전 설정되어 있습니다.</p>
     </div>
     """, unsafe_allow_html=True)
     
     # Create columns for better layout
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     
     with col1:
         st.markdown("""
         <div class="section-header">
-            <h3>🏢 기본 프로젝트 정보</h3>
+            <h3>기본 프로젝트 정보</h3>
         </div>
         """, unsafe_allow_html=True)
         business_period = st.number_input("사업기간 (년)", min_value=1, max_value=50, value=15)
         construction_period = st.number_input("공사기간 (년)", min_value=1, max_value=10, value=4)
         interest_rate = st.number_input("할인율 (%)", min_value=0.0, max_value=50.0, value=6.92, step=0.01)
-        
+    
+    with col2:
         st.markdown("""
         <div class="section-header">
-            <h3>💰 투자비 정보</h3>
+            <h3>투자비 정보</h3>
         </div>
         """, unsafe_allow_html=True)
         total_investment = st.number_input("총투자비 ($)", min_value=0, value=400000000, step=1000000)
         machinery_ratio = st.number_input("기계설비투자비비율 (%)", min_value=0.0, max_value=100.0, value=80.0, step=0.1)
         building_ratio = st.number_input("건축물투자비비율 (%)", min_value=0.0, max_value=100.0, value=20.0, step=0.1)
-        
-        st.markdown("""
-        <div class="section-header">
-            <h3>🏦 자금조달</h3>
-        </div>
-        """, unsafe_allow_html=True)
-        equity_ratio = st.number_input("자본비율 (%)", min_value=0.0, max_value=100.0, value=50.0, step=0.1)
-        debt_ratio = st.number_input("차입비율 (%)", min_value=0.0, max_value=100.0, value=50.0, step=0.1)
     
-    with col2:
+    with col3:
         st.markdown("""
         <div class="section-header">
-            <h3>📊 투자비 집행률</h3>
+            <h3>투자비 집행률</h3>
         </div>
         """, unsafe_allow_html=True)
         investment_year1 = st.number_input("투자비집행Year1 (%)", min_value=0.0, max_value=100.0, value=30.0, step=0.1)
@@ -619,58 +640,95 @@ def show_input_page():
         investment_year3 = st.number_input("투자비집행Year3 (%)", min_value=0.0, max_value=100.0, value=30.0, step=0.1)
         investment_year4 = st.number_input("투자비집행Year4 (%)", min_value=0.0, max_value=100.0, value=10.0, step=0.1)
         
+
+    col4, col5, col6 = st.columns(3)
+    with col4:
+
         st.markdown("""
         <div class="section-header">
-            <h3>💳 차입금 조건</h3>
+            <h3>자금조달</h3>
         </div>
         """, unsafe_allow_html=True)
-        grace_period = st.number_input("감가상각기계설비 (년)", min_value=1, value=15)
-        building_depreciation = st.number_input("감가상각건축물 (년)", min_value=1, value=20)
-        loan_grace_period = st.number_input("장기차입거치기간 (년)", min_value=0, value=4)
-        loan_repayment_period = st.number_input("장기차입상환기간 (년)", min_value=1, value=8)
-        loan_interest_rate = st.number_input("장기차입금리 (%)", min_value=0.0, max_value=50.0, value=3.7, step=0.01)
-        short_term_interest_rate = st.number_input("단기차입금리 (%)", min_value=0.0, max_value=50.0, value=4.8, step=0.01)
-        
+        equity_ratio = st.number_input("자본비율 (%)", min_value=0.0, max_value=100.0, value=50.0, step=0.1)
+        debt_ratio = st.number_input("차입비율 (%)", min_value=0.0, max_value=100.0, value=50.0, step=0.1)
+    
+    with col5:
         st.markdown("""
         <div class="section-header">
-            <h3>📈 기타 비율</h3>
+            <h3>차입금 조건</h3>
+        </div>
+        """, unsafe_allow_html=True)
+
+        col1, col2 = st.columns(2)
+        with col1:
+            grace_period = st.number_input("감가상각기계설비 (년)", min_value=1, value=15)
+        with col2:
+            building_depreciation = st.number_input("감가상각건축물 (년)", min_value=1, value=20)
+        col1, col2 = st.columns(2)
+        with col1:
+            loan_grace_period = st.number_input("장기차입거치기간 (년)", min_value=0, value=4)
+        with col2:
+            loan_repayment_period = st.number_input("장기차입상환기간 (년)", min_value=1, value=8)
+        col1, col2 = st.columns(2)
+        with col1:
+            loan_interest_rate = st.number_input("장기차입금리 (%)", min_value=0.0, max_value=50.0, value=3.7, step=0.01)
+        with col2:
+            short_term_interest_rate = st.number_input("단기차입금리 (%)", min_value=0.0, max_value=50.0, value=4.8, step=0.01)
+    
+    with col6:
+        st.markdown("""
+        <div class="section-header">
+            <h3>기타 비율</h3>
         </div>
         """, unsafe_allow_html=True)
         corporate_tax_rate = st.number_input("법인세율 (%)", min_value=0.0, max_value=100.0, value=25.0, step=0.1)
         sales_admin_ratio = st.number_input("판매관리비비율 (%)", min_value=0.0, max_value=100.0, value=4.0, step=0.1)
     
+    col1, col2 = st.columns(2)
+    with col1:
     # Sales volume inputs
-    st.markdown("""
+        st.markdown("""
     <div class="section-header">
-        <h3>🏭 판매량 정보</h3>
+        <h3>판매량 정보</h3>
         <p>연도별 판매량 (톤단위)</p>
     </div>
     """, unsafe_allow_html=True)
+
     col3, col4 = st.columns(2)
     
     with col3:
-        st.info("**Year 1-4:** 공사기간으로 판매량 0")
+        sales_year1to4 = st.number_input("Year1-4 (톤)", min_value=0, value=0)
         sales_year5 = st.number_input("판매량Year5 (톤)", min_value=0, value=70000)
         sales_year6 = st.number_input("판매량Year6 (톤)", min_value=0, value=80000)
     
-    with col4:    
-        sales_after_year7 = st.number_input("판매량AfterYear7 (톤)", min_value=0, value=100000)
-    
-    # Working capital days
-    st.markdown("""
-    <div class="section-header">
-        <h3>💼 운전자금 관련 일수</h3>
-    </div>
-    """, unsafe_allow_html=True)
+    with col4:
+        receivables_days = st.number_input("매출채권일수 (일)", min_value=0, value=50)
+        payables_days = st.number_input("매입채무일수 (일)", min_value=0, value=30)
+        product_inventory_days = st.number_input("제품재고일수 (일)", min_value=0, value=50)
+       
+
     col5, col6 = st.columns(2)
     
     with col5:
-        receivables_days = st.number_input("매출채권일수 (일)", min_value=0, value=50)
-        payables_days = st.number_input("매입채무일수 (일)", min_value=0, value=30)
+        sales_after_year7 = st.number_input("판매량AfterYear7 (톤)", min_value=0, value=100000)
+       
     
-    with col6:
-        product_inventory_days = st.number_input("제품재고일수 (일)", min_value=0, value=50)
+    with col6:    
         material_inventory_days = st.number_input("소재재고일수 (일)", min_value=0, value=40)
+
+
+
+
+
+    
+    with col2:
+    # Working capital days
+        st.markdown("""
+    <div class="section-header">
+        <h3>운전자금 관련 일수</h3>
+    </div>
+    """, unsafe_allow_html=True)
+  
     
     # Store parameters in session state
     if st.button("분석 시작", type="primary"):
@@ -717,268 +775,30 @@ def show_analysis_page():
     """Advanced analysis page with Monte Carlo analysis"""
     st.markdown("""
     <div class="section-header">
-        <h2>🔬 심화 분석</h2>
+        <h2> 심화 분석</h2>
         <p>Advanced Economic Analysis and Risk Assessment</p>
     </div>
     """, unsafe_allow_html=True)
-    
     if 'analysis_results' not in st.session_state or st.session_state['analysis_results'] is None:
         st.warning("먼저 전제사항을 입력하고 경제성 분석을 실행해주세요.")
         return
-    
-    # Monte Carlo analysis and other advanced features would go here
-    st.info("심화 분석 기능이 여기에 표시됩니다.")
-    
-    # Placeholder for Monte Carlo analysis
     results = st.session_state['analysis_results']
     params = st.session_state['params']
-    
+    # 변수별 영향도 영역
     st.markdown("### 📈 IRR 민감도 분석")
     st.markdown(f"기준 IRR: **{results['irr']:.2%}**")
-    
-    # Simple sensitivity display
     st.markdown("#### 변수별 영향도")
     sensitivity_data = {
         '변수': ['판매가격', '제조원가', '총투자비'],
         '기준값 대비 ±10% 변동시 예상 IRR 변화': ['±2.5%p', '±1.8%p', '±1.2%p'],
         '위험도': ['높음', '중간', '낮음']
     }
-    
     sensitivity_df = pd.DataFrame(sensitivity_data)
     st.dataframe(sensitivity_df, use_container_width=True, hide_index=True)
-
-def display_results(results, params):
-    # Key metrics summary with skyblue styling
+ 
     st.markdown("""
     <div class="section-header">
-        <h3>📊 주요 재무지표 요약</h3>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    col1, col2, col3, col4 = st.columns(4)
-    
-    with col1:
-        st.markdown(f"""
-        <div class="metric-container">
-            <h4>IRR (내부수익률)</h4>
-            <h2>{results['irr']:.2%}</h2>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col2:
-        total_revenue = sum([v for v in results['total_revenue'].values() if v > 0])
-        st.markdown(f"""
-        <div class="metric-container">
-            <h4>총 매출액</h4>
-            <h2>${total_revenue:,.0f}</h2>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col3:
-        final_year = params['business_period'] + params['construction_period']
-        final_cash_flow = results['net_cash_flow'].get(final_year, 0)
-        st.markdown(f"""
-        <div class="metric-container">
-            <h4>최종년도 순현금흐름</h4>
-            <h2>${final_cash_flow:,.0f}</h2>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col4:
-        total_investment = params['total_investment']
-        st.markdown(f"""
-        <div class="metric-container">
-            <h4>총 투자비</h4>
-            <h2>${total_investment:,.0f}</h2>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    # Cash flow chart with skyblue theme
-    st.markdown("""
-    <div class="section-header">
-        <h3>📈 연도별 순현금흐름</h3>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    years = list(results['net_cash_flow'].keys())
-    cash_flows = list(results['net_cash_flow'].values())
-    
-    fig = go.Figure()
-    colors = ['#dc3545' if cf < 0 else '#003366' for cf in cash_flows]
-    
-    fig.add_trace(go.Bar(
-        x=[f"Year {y}" for y in years],
-        y=cash_flows,
-        marker_color=colors,
-        name="순현금흐름",
-        marker_line=dict(color='rgba(0,0,0,0.1)', width=1)
-    ))
-    
-    fig.update_layout(
-        title={
-            'text': "연도별 순현금흐름",
-            'x': 0.5,
-            'font': {'color': '#333333', 'size': 18, 'family': 'Noto Sans KR'}
-        },
-        xaxis_title="연도",
-        yaxis_title="현금흐름 ($)",
-        showlegend=False,
-        plot_bgcolor='white',
-        paper_bgcolor='white',
-        font={'color': '#333333', 'family': 'Noto Sans KR'},
-        xaxis=dict(
-            gridcolor='#f0f0f0',
-            linecolor='#e0e0e0'
-        ),
-        yaxis=dict(
-            gridcolor='#f0f0f0',
-            linecolor='#e0e0e0'
-        )
-    )
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-    # Revenue and costs over time with skyblue theme
-    st.markdown("""
-    <div class="section-header">
-        <h3>💰 매출액 및 제조원가 추이</h3>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    revenue_years = [y for y in years if results['total_revenue'].get(y, 0) > 0]
-    revenues = [results['total_revenue'][y] for y in revenue_years]
-    manufacturing_costs = [results['manufacturing_cost'][y] for y in revenue_years]
-    
-    fig2 = go.Figure()
-    
-    fig2.add_trace(go.Scatter(
-        x=[f"Year {y}" for y in revenue_years],
-        y=revenues,
-        mode='lines+markers',
-        name='총 매출액',
-        line=dict(color='#003366', width=3),
-        marker=dict(color='#003366', size=8)
-    ))
-    
-    fig2.add_trace(go.Scatter(
-        x=[f"Year {y}" for y in revenue_years],
-        y=manufacturing_costs,
-        mode='lines+markers',
-        name='제조원가',
-        line=dict(color='#6c757d', width=3),
-        marker=dict(color='#6c757d', size=8)
-    ))
-    
-    fig2.update_layout(
-        title={
-            'text': "매출액 및 제조원가 추이",
-            'x': 0.5,
-            'font': {'color': '#333333', 'size': 18, 'family': 'Noto Sans KR'}
-        },
-        xaxis_title="연도",
-        yaxis_title="금액 ($)",
-        legend=dict(x=0, y=1, bgcolor='rgba(255,255,255,0.9)', bordercolor='#e0e0e0', borderwidth=1),
-        plot_bgcolor='white',
-        paper_bgcolor='white',
-        font={'color': '#333333', 'family': 'Noto Sans KR'},
-        xaxis=dict(
-            gridcolor='#f0f0f0',
-            linecolor='#e0e0e0'
-        ),
-        yaxis=dict(
-            gridcolor='#f0f0f0',
-            linecolor='#e0e0e0'
-        )
-    )
-    
-    st.plotly_chart(fig2, use_container_width=True)
-    
-
-    
-    # Detailed financial statements
-    st.markdown("""
-    <div class="section-header">
-        <h3>📋 상세 재무제표</h3>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # 손익계산서 Table
-    st.markdown("#### 손익계산서")
-    df_income_statement = pd.DataFrame()
-    
-    for year in years:
-        year_data = {
-            '연도': f"Year {year}",
-            '총매출액': results['total_revenue'].get(year, 0),
-            '제조원가': results['manufacturing_cost'].get(year, 0),
-            '판매관리비': results['sales_admin_expense'].get(year, 0),
-            'EBIT': results['ebit'].get(year, 0),
-            '금융비용': results['financial_cost'].get(year, 0),
-            '세전이익': results['pretax_income'].get(year, 0),
-            '법인세': results['corporate_tax'].get(year, 0),
-            '순이익': results['net_income'].get(year, 0)
-        }
-        df_income_statement = pd.concat([df_income_statement, pd.DataFrame([year_data])], ignore_index=True)
-    
-    # Format numbers for income statement
-    numeric_cols = df_income_statement.select_dtypes(include=[np.number]).columns
-    for col in numeric_cols:
-        if col != '연도':
-            df_income_statement[col] = df_income_statement[col].apply(lambda x: f"${x:,.0f}" if pd.notnull(x) else "$0")
-    
-    st.dataframe(df_income_statement, use_container_width=True)
-    
-    # Free Cash Flow Table
-    st.markdown("#### Free Cash Flow")
-    df_cashflow = pd.DataFrame()
-    
-    for year in years:
-        year_data = {
-            '연도': f"Year {year}",
-            '현금유입': results['cash_inflow'].get(year, 0),
-            '순이익': results['net_income'].get(year, 0),
-            '금융비용': results['financial_cost'].get(year, 0),
-            '감가상각': results['depreciation'].get(year, 0),
-            '잔존가치': results['residual_value'].get(year, 0),
-            '운전자금유입': results['working_capital_inflow'].get(year, 0),
-            '현금유출': results['cash_outflow'].get(year, 0),
-            '투자비': results['investment'].get(year, 0),
-            '운전자금유출': results['working_capital_increase'].get(year, 0)
-        }
-        df_cashflow = pd.concat([df_cashflow, pd.DataFrame([year_data])], ignore_index=True)
-    
-    # Format numbers for cash flow
-    numeric_cols = df_cashflow.select_dtypes(include=[np.number]).columns
-    for col in numeric_cols:
-        if col != '연도':
-            df_cashflow[col] = df_cashflow[col].apply(lambda x: f"${x:,.0f}" if pd.notnull(x) else "$0")
-    
-    st.dataframe(df_cashflow, use_container_width=True)
-    
-    # Download button for results
-    col1, col2 = st.columns(2)
-    with col1:
-        csv_income = df_income_statement.to_csv(index=False, encoding='utf-8-sig')
-        st.download_button(
-            label="손익계산서 CSV 다운로드",
-            data=csv_income,
-            file_name="income_statement.csv",
-            mime="text/csv"
-        )
-    
-    with col2:
-        csv_cashflow = df_cashflow.to_csv(index=False, encoding='utf-8-sig')
-        st.download_button(
-            label="Cash Flow CSV 다운로드",
-            data=csv_cashflow,
-            file_name="cash_flow_statement.csv",
-            mime="text/csv"
-        )
-    
-    # Monte Carlo Risk Analysis Section
-    st.markdown("""
-    <div class="section-header">
-        <h2>🎲 Monte Carlo 위험 분석</h2>
+        <h2> Monte Carlo 위험 분석</h2>
         <p>판매가격, 원가실적, 총투자비 개별 변동에 따른 IRR 민감도 분석</p>
     </div>
     """, unsafe_allow_html=True)
@@ -995,14 +815,12 @@ def display_results(results, params):
     }
     
     variable_colors = {
-        'price': '#003366',
+        'price': '#000000',
         'cost': '#dc3545',
         'investment': '#6c757d'
     }
     
-    # Run analyses for each variable
     monte_carlo_results = {}
-    
     with st.spinner("Monte Carlo 시뮬레이션 실행 중..."):
         for var_type in ['price', 'cost', 'investment']:
             with st.expander(f"{variable_names[var_type]} 분석 진행 중...", expanded=False):
@@ -1012,12 +830,9 @@ def display_results(results, params):
                     st.success(f"{variable_names[var_type]} 분석 완료: {len(result['irr_results'])}개 시나리오")
                 else:
                     st.warning(f"{variable_names[var_type]} 분석 실패")
-    
     if not monte_carlo_results:
         st.error("Monte Carlo 분석을 수행할 수 없습니다.")
         return
-    
-    # Display results for each variable
     for var_type, result in monte_carlo_results.items():
         st.markdown(f"### {variable_names[var_type]} 민감도 분석")
         
@@ -1088,7 +903,7 @@ def display_results(results, params):
                 paper_bgcolor='white',
                 font={'color': '#333333', 'family': 'Noto Sans KR'},
                 showlegend=False,
-                height=400,
+                height=300,
                 xaxis=dict(
                     gridcolor='#f0f0f0',
                     linecolor='#e0e0e0',
@@ -1125,7 +940,7 @@ def display_results(results, params):
                 paper_bgcolor='white',
                 font={'color': '#333333', 'family': 'Noto Sans KR'},
                 showlegend=False,
-                height=400,
+                height=300,
                 xaxis=dict(
                     gridcolor='#f0f0f0',
                     linecolor='#e0e0e0'
@@ -1171,7 +986,7 @@ def display_results(results, params):
     # Interactive Dashboard Section
     st.markdown("""
     <div class="section-header">
-        <h2>🎛️ 실시간 민감도 대시보드</h2>
+        <h2> 실시간 민감도 대시보드</h2>
         <p>슬라이드바를 조정하여 실시간으로 IRR 변화를 확인하세요</p>
     </div>
     """, unsafe_allow_html=True)
@@ -1189,20 +1004,18 @@ def display_results(results, params):
     .slider-container {
         background: #ffffff;
         border: 1px solid #e8eaf0;
-        border-radius: 12px;
+        border-radius: 16px; /* 더 둥글게 */
         padding: 1.5rem;
         margin-bottom: 1rem;
         position: relative;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    
     .slider-title {
         font-size: 1.1rem;
         font-weight: 600;
-        color: #003366;
+        color: #fff; /* 흰색 텍스트 */
         margin-bottom: 0.5rem;
     }
-    
     .base-line {
         position: absolute;
         left: 50%;
@@ -1213,45 +1026,33 @@ def display_results(results, params):
         z-index: 1;
         opacity: 0.7;
     }
-    
     .value-display {
-        background: #f8f9fa;
-        border-radius: 8px;
+        background: #000000;
+        border-radius: 16px; /* 더 둥글게 */
         padding: 0.75rem;
         margin-top: 0.5rem;
         font-size: 0.9rem;
         border-left: 4px solid #dee2e6;
-        transition: all 0.3s ease;
+        color: #fff; /* 흰색 텍스트 */
     }
-    
     .value-display.low-impact {
-        border-left-color: #28a745;
-        background: #f8fff8;
+        border-left-color: #000000;
+        background: #FFFFFF;
+        color: #000000;
     }
-    
     .value-display.medium-impact {
-        border-left-color: #ffc107;
-        background: #fffef8;
+        border: 3px solid #000000;
+        background: #FFFFFF;
+        color: #000000;
     }
-    
     .value-display.high-impact {
-        border-left-color: #dc3545;
-        background: #fff8f8;
+        border-left-color: #000000;
+        background: #FFFFFF;
+        color: #000000;
     }
-    
-    .positive-change { 
-        color: #28a745; 
-        font-weight: 600;
-    }
-    .negative-change { 
-        color: #dc3545; 
-        font-weight: 600;
-    }
-    .no-change { 
-        color: #6c757d; 
-        font-weight: 600;
-    }
-    
+    .positive-change { color: #28a745; font-weight: 600; }
+    .negative-change { color: #dc3545; font-weight: 600; }
+    .no-change { color: #fff; font-weight: 600; }
     .impact-indicator {
         display: inline-block;
         padding: 0.25rem 0.5rem;
@@ -1260,26 +1061,54 @@ def display_results(results, params):
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        color: #fff;
+        background: #000000;
     }
-    
-    .impact-low {
-        background: #d4edda;
-        color: #155724;
-    }
-    
-    .impact-medium {
-        background: #fff3cd;
-        color: #856404;
-    }
-    
-    .impact-high {
-        background: #f8d7da;
-        color: #721c24;
-    }
-    
+    .impact-low { background: #28a745; color: #fff; }
+    .impact-medium { background: #ffc107; color: #000000; }
+    .impact-high { background: #dc3545; color: #fff; }
     /* Custom slider styling */
     .stSlider > div > div > div > div {
         background: linear-gradient(90deg, #dc3545 0%, #ffc107 50%, #28a745 100%);
+        border-radius: 16px;
+    }
+    /* 컨테이너, 회귀분석 등 주요 박스 둥글게, 텍스트 흰색 */
+    .metric-container {
+        background: #FFFFFF;
+        border: 3px solid #000000;
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin: 0.5rem;
+        text-align: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        color: #000000;
+    }
+    .metric-container h4 {
+        color: #000000;
+        font-size: 2rem;
+    }
+    
+    .metric-container h2 {
+        color: #000000;
+    }
+    .section-header {
+        background: #fbfcfb;
+        border-left: 4px solid #000000;
+        padding: 1.5rem;
+        border-radius: 16px;
+        margin: 2rem 0 1rem 0;
+        color: #fff;
+    }
+    .section-header h2, .section-header h3, .section-header p {
+        color: #000000;
+    }
+    /* 회귀분석 공식 등 주요 박스 */
+    .regression-box {
+        background: #000000;
+        border-radius: 16px;
+        color: #fff;
+        padding: 1.5rem;
+        margin: 1rem 0;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -1291,7 +1120,7 @@ def display_results(results, params):
         # Enhanced Investment slider
         st.markdown("""
         <div class="slider-container">
-            <div class="slider-title">총투자비 조정</div>
+            <div class="slider-title" style="color: #000000;">총투자비 조정</div>
             <div class="base-line"></div>
         </div>
         """, unsafe_allow_html=True)
@@ -1330,7 +1159,7 @@ def display_results(results, params):
         # Enhanced Price slider
         st.markdown("""
         <div class="slider-container">
-            <div class="slider-title">판매가격 조정</div>
+            <div class="slider-title" style="color: #000000;">판매가격 조정</div>
             <div class="base-line"></div>
         </div>
         """, unsafe_allow_html=True)
@@ -1368,7 +1197,7 @@ def display_results(results, params):
         # Enhanced Cost slider
         st.markdown("""
         <div class="slider-container">
-            <div class="slider-title">제조원가 조정</div>
+            <div class="slider-title" style="color: #000000;">제조원가 조정</div>
             <div class="base-line"></div>
         </div>
         """, unsafe_allow_html=True)
@@ -1491,14 +1320,14 @@ def display_results(results, params):
     
     # Summary chart showing current adjustments
     st.markdown("---")
-    st.markdown("#### 📊 현재 조정 상태")
+    st.markdown("####  현재 조정 상태")
     
     # Real-time sensitivity chart
     fig_sensitivity = go.Figure()
     
     # Add bars for each adjustment
     adjustments = [investment_change, price_change, cost_change]
-    colors = ['#6c757d', '#003366', '#dc3545']
+    colors = ['#6c757d', '#000000', '#dc3545']
     
     fig_sensitivity.add_trace(go.Bar(
         x=['투자비', '판매가격', '제조원가'],
@@ -1521,7 +1350,7 @@ def display_results(results, params):
         paper_bgcolor='white',
         font={'color': '#333333', 'family': 'Noto Sans KR'},
         showlegend=False,
-        height=300,
+        height=220,
         yaxis=dict(
             gridcolor='#f0f0f0',
             linecolor='#e0e0e0',
@@ -1537,7 +1366,7 @@ def display_results(results, params):
     st.markdown("---")
     st.markdown("""
     <div class="section-header">
-        <h2>📈 IRR 회귀분석 공식</h2>
+        <h2> IRR 회귀분석 공식</h2>
         <p>주요 변수들의 IRR에 대한 영향도를 수학적 공식으로 표현</p>
     </div>
     """, unsafe_allow_html=True)
@@ -1612,8 +1441,8 @@ def display_results(results, params):
                     
                     # Format the regression equation
                     st.markdown(f"""
-                    <div style="background: #f8f9fa; border-left: 4px solid #003366; padding: 1.5rem; border-radius: 8px; margin: 1rem 0;">
-                        <h4 style="color: #003366; margin-bottom: 1rem;">IRR 예측 공식</h4>
+                    <div class="regression-box">
+                        <h4 style="color: #fff;">IRR 예측 공식</h4>
                         <div style="font-family: 'Courier New', monospace; font-size: 1.1rem; background: white; padding: 1rem; border-radius: 4px;">
                             <strong>IRR = {intercept:.4f} + ({coef_investment:.6f} × 투자비변화율) + ({coef_price:.6f} × 판매가격변화율) + ({coef_cost:.6f} × 제조원가변화율)</strong>
                         </div>
@@ -1624,7 +1453,7 @@ def display_results(results, params):
                     """, unsafe_allow_html=True)
                     
                     # Coefficient interpretation
-                    st.markdown("#### 📋 계수 해석")
+                    st.markdown("#### 계수 해석")
                     
                     coef_data = {
                         '변수': ['투자비 변화율', '판매가격 변화율', '제조원가 변화율'],
@@ -1645,13 +1474,14 @@ def display_results(results, params):
                     st.dataframe(coef_df, use_container_width=True)
                 
                 with col2:
-                    st.markdown("#### 📈 모델 성능")
+                    st.markdown("#### 모델 성능")
                     
                     st.markdown(f"""
                     <div class="metric-container">
                         <h4>결정계수 (R²)</h4>
-                        <h2 style="color: #003366;">{r2:.3f}</h2>
+                        <h2>{r2:.3f}</h2>
                         <p>모델 설명력: {r2*100:.1f}%</p>
+                        <p>샘플 수: {len(sample_irrs):,}개</p>
                     </div>
                     """, unsafe_allow_html=True)
                     
@@ -1666,14 +1496,9 @@ def display_results(results, params):
                         quality = "보통"
                         quality_color = "#dc3545"
                     
-                    st.markdown(f"""
-                    <div style="background: #ffffff; border: 1px solid #e8eaf0; padding: 1rem; border-radius: 8px; text-align: center;">
-                        <p><strong>모델 품질:</strong> <span style="color: {quality_color};">{quality}</span></p>
-                        <p><strong>샘플 수:</strong> {len(sample_irrs):,}개</p>
-                    </div>
-                    """, unsafe_allow_html=True)
+    
                     
-                    st.markdown("#### 💡 활용 방법")
+                    st.markdown("#### 활용 방법")
                     st.markdown("""
                     <div style="font-size: 0.9rem; color: #6c757d;">
                         <p>• 각 변수의 1% 변화가 IRR에 미치는 영향을 수치로 확인</p>
@@ -1683,7 +1508,7 @@ def display_results(results, params):
                     """, unsafe_allow_html=True)
                 
                 # Sensitivity ranking
-                st.markdown("#### 🎯 민감도 순위")
+                st.markdown("#### 민감도 순위")
                 
                 sensitivity_ranking = [
                     ("투자비", abs(coef_investment)),
@@ -1711,6 +1536,240 @@ def display_results(results, params):
         except Exception as e:
             st.error("회귀분석 계산 중 오류가 발생했습니다.")
             st.info("극단적인 파라미터 값으로 인한 계산 오류일 수 있습니다.")
+
+def display_results(results, params):
+    # Key metrics summary with skyblue styling
+    st.markdown("""
+    <div class="section-header">
+        <h3> 주요 재무지표 요약</h3>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.markdown(f"""
+        <div class="metric-container">
+            <h4>IRR (내부수익률)</h4>
+            <h2>{results['irr']:.2%}</h2>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        total_revenue = sum([v for v in results['total_revenue'].values() if v > 0])
+        st.markdown(f"""
+        <div class="metric-container">
+            <h4>총 매출액</h4>
+            <h2>${total_revenue:,.0f}</h2>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        final_year = params['business_period'] + params['construction_period']
+        final_cash_flow = results['net_cash_flow'].get(final_year, 0)
+        st.markdown(f"""
+        <div class="metric-container">
+            <h4>최종년도 순현금흐름</h4>
+            <h2>${final_cash_flow:,.0f}</h2>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col4:
+        total_investment = params['total_investment']
+        st.markdown(f"""
+        <div class="metric-container">
+            <h4>총 투자비</h4>
+            <h2>${total_investment:,.0f}</h2>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Cash flow chart with skyblue theme
+    st.markdown("""
+    <div class="section-header">
+        <h3> 연도별 순현금흐름</h3>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    years = list(results['net_cash_flow'].keys())
+    cash_flows = list(results['net_cash_flow'].values())
+    
+    fig = go.Figure()
+    colors = ['#dc3545' if cf < 0 else '#000000' for cf in cash_flows]
+    
+    fig.add_trace(go.Bar(
+        x=[f"Year {y}" for y in years],
+        y=cash_flows,
+        marker_color=colors,
+        name="순현금흐름",
+        marker_line=dict(color='rgba(0,0,0,0.1)', width=1)
+    ))
+    
+    fig.update_layout(
+        title={
+            'text': "연도별 순현금흐름",
+            'x': 0.5,
+            'font': {'color': '#333333', 'size': 18, 'family': 'Noto Sans KR'}
+        },
+        xaxis_title="연도",
+        yaxis_title="현금흐름 ($)",
+        showlegend=False,
+        plot_bgcolor='white',
+        paper_bgcolor='white',
+        font={'color': '#333333', 'family': 'Noto Sans KR'},
+        xaxis=dict(
+            gridcolor='#f0f0f0',
+            linecolor='#e0e0e0'
+        ),
+        yaxis=dict(
+            gridcolor='#f0f0f0',
+            linecolor='#e0e0e0'
+        )
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Revenue and costs over time with skyblue theme
+    st.markdown("""
+    <div class="section-header">
+        <h3> 매출액 및 제조원가 추이</h3>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    revenue_years = [y for y in years if results['total_revenue'].get(y, 0) > 0]
+    revenues = [results['total_revenue'][y] for y in revenue_years]
+    manufacturing_costs = [results['manufacturing_cost'][y] for y in revenue_years]
+    
+    fig2 = go.Figure()
+    
+    fig2.add_trace(go.Scatter(
+        x=[f"Year {y}" for y in revenue_years],
+        y=revenues,
+        mode='lines+markers',
+        name='총 매출액',
+        line=dict(color='#000000', width=3),
+        marker=dict(color='#000000', size=8)
+    ))
+    
+    fig2.add_trace(go.Scatter(
+        x=[f"Year {y}" for y in revenue_years],
+        y=manufacturing_costs,
+        mode='lines+markers',
+        name='제조원가',
+        line=dict(color='#6c757d', width=3),
+        marker=dict(color='#6c757d', size=8)
+    ))
+    
+    fig2.update_layout(
+        title={
+            'text': "매출액 및 제조원가 추이",
+            'x': 0.5,
+            'font': {'color': '#333333', 'size': 18, 'family': 'Noto Sans KR'}
+        },
+        xaxis_title="연도",
+        yaxis_title="금액 ($)",
+        legend=dict(x=0, y=1, bgcolor='rgba(255,255,255,0.9)', bordercolor='#e0e0e0', borderwidth=1),
+        plot_bgcolor='white',
+        paper_bgcolor='white',
+        font={'color': '#333333', 'family': 'Noto Sans KR'},
+        xaxis=dict(
+            gridcolor='#f0f0f0',
+            linecolor='#e0e0e0'
+        ),
+        yaxis=dict(
+            gridcolor='#f0f0f0',
+            linecolor='#e0e0e0'
+        )
+    )
+    
+    st.plotly_chart(fig2, use_container_width=True)
+    
+
+    
+    # Detailed financial statements
+    st.markdown("""
+    <div class="section-header">
+        <h3> 상세 재무제표</h3>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # 손익계산서 Table
+    st.markdown("#### 손익계산서")
+    df_income_statement = pd.DataFrame()
+    
+    for year in years:
+        year_data = {
+            '연도': f"Year {year}",
+            '총매출액': results['total_revenue'].get(year, 0),
+            '제조원가': results['manufacturing_cost'].get(year, 0),
+            '판매관리비': results['sales_admin_expense'].get(year, 0),
+            'EBIT': results['ebit'].get(year, 0),
+            '금융비용': results['financial_cost'].get(year, 0),
+            '세전이익': results['pretax_income'].get(year, 0),
+            '법인세': results['corporate_tax'].get(year, 0),
+            '순이익': results['net_income'].get(year, 0)
+        }
+        df_income_statement = pd.concat([df_income_statement, pd.DataFrame([year_data])], ignore_index=True)
+    
+    # Format numbers for income statement
+    numeric_cols = df_income_statement.select_dtypes(include=[np.number]).columns
+    for col in numeric_cols:
+        if col != '연도':
+            df_income_statement[col] = df_income_statement[col].apply(lambda x: f"${x:,.0f}" if pd.notnull(x) else "$0")
+    
+    st.dataframe(df_income_statement, use_container_width=True)
+    
+    # Free Cash Flow Table
+    st.markdown("#### Free Cash Flow")
+    df_cashflow = pd.DataFrame()
+    
+    for year in years:
+        year_data = {
+            '연도': f"Year {year}",
+            '현금유입': results['cash_inflow'].get(year, 0),
+            '순이익': results['net_income'].get(year, 0),
+            '금융비용': results['financial_cost'].get(year, 0),
+            '감가상각': results['depreciation'].get(year, 0),
+            '잔존가치': results['residual_value'].get(year, 0),
+            '운전자금유입': results['working_capital_inflow'].get(year, 0),
+            '현금유출': results['cash_outflow'].get(year, 0),
+            '투자비': results['investment'].get(year, 0),
+            '운전자금유출': results['working_capital_increase'].get(year, 0)
+        }
+        df_cashflow = pd.concat([df_cashflow, pd.DataFrame([year_data])], ignore_index=True)
+    
+    # Format numbers for cash flow
+    numeric_cols = df_cashflow.select_dtypes(include=[np.number]).columns
+    for col in numeric_cols:
+        if col != '연도':
+            df_cashflow[col] = df_cashflow[col].apply(lambda x: f"${x:,.0f}" if pd.notnull(x) else "$0")
+    
+    st.dataframe(df_cashflow, use_container_width=True)
+    
+    # Download button for results
+    col1, col2 = st.columns(2)
+    with col1:
+        csv_income = df_income_statement.to_csv(index=False, encoding='utf-8-sig')
+        st.download_button(
+            label="손익계산서 CSV 다운로드",
+            data=csv_income,
+            file_name="income_statement.csv",
+            mime="text/csv"
+        )
+    
+    with col2:
+        csv_cashflow = df_cashflow.to_csv(index=False, encoding='utf-8-sig')
+        st.download_button(
+            label="Cash Flow CSV 다운로드",
+            data=csv_cashflow,
+            file_name="cash_flow_statement.csv",
+            mime="text/csv"
+        )
+    
+    
+
+def display_advanced_analysis(results, params):
+    cost_data = st.session_state.get('cost_data', pd.DataFrame())
+    sales_data = st.session_state.get('sales_data', pd.DataFrame())
 
 if __name__ == "__main__":
     main()

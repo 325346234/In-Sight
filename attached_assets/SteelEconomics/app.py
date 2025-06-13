@@ -135,7 +135,7 @@ def show_progress_page():
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-        background: linear-gradient(135deg, #003366 0%, #004488 100%);
+        background: linear-gradient(135deg, #000000 0%, #004488 100%);
         color: white;
         text-align: center;
         padding: 2rem;
@@ -235,7 +235,7 @@ def main():
     
     /* Header styling - POSCO inspired */
     .main-header {
-        background: linear-gradient(135deg, #003366 0%, #004488 100%);
+        background: linear-gradient(135deg, #000000 0%, #004488 100%);
         padding: 2.5rem 2rem;
         border-radius: 0;
         text-align: center;
@@ -261,14 +261,14 @@ def main():
     /* Typography improvements */
     h1, h2, h3, h4, h5, h6 {
         font-family: 'Noto Sans KR', sans-serif;
-        color: #003366;
+        color: #000000;
         font-weight: 500;
         line-height: 1.4;
     }
     
     /* All text elements */
     p, div, span, label, .stMarkdown {
-        color: #003366;
+        color: #000000;
     }
     
     /* Cards and containers */
@@ -283,7 +283,7 @@ def main():
     
     /* Buttons - POSCO style */
     .stButton > button {
-        background: #003366;
+        background: #000000;
         color: white;
         border: none;
         border-radius: 4px;
@@ -313,7 +313,7 @@ def main():
     }
     
     .stNumberInput > div > div > input:focus {
-        border-color: #003366;
+        border-color: #000000;
         background: #e6f3ff;
         box-shadow: 0 0 0 3px rgba(179, 217, 255, 0.3);
         outline: none;
@@ -326,7 +326,7 @@ def main():
     
     /* Progress bar */
     .stProgress > div > div > div {
-        background: linear-gradient(90deg, #003366, #004488);
+        background: linear-gradient(90deg, #000000, #004488);
     }
     
     /* Metrics - Clean POSCO style */
@@ -356,7 +356,7 @@ def main():
     }
     
     .metric-container h2 {
-        color: #003366;
+        color: #000000;
         font-weight: 700;
         font-size: 1.8rem;
         margin: 0;
@@ -381,29 +381,29 @@ def main():
     
     .stInfo {
         background: #e6f3ff;
-        border-left: 4px solid #003366;
+        border-left: 4px solid #000000;
         border-radius: 4px;
-        color: #003366;
+        color: #000000;
     }
     
     /* Section headers - Professional style */
     .section-header {
         background: #f8f9fa;
-        border-left: 4px solid #003366;
+        border-left: 4px solid #000000;
         padding: 1.5rem;
         border-radius: 4px;
         margin: 2rem 0 1rem 0;
     }
     
     .section-header h2 {
-        color: #003366;
+        color: #000000;
         font-weight: 600;
         font-size: 1.5rem;
         margin-bottom: 0.5rem;
     }
     
     .section-header h3 {
-        color: #003366;
+        color: #000000;
         font-weight: 500;
         font-size: 1.2rem;
         margin: 0;
@@ -419,7 +419,7 @@ def main():
     /* Label styling */
     .stNumberInput label {
         font-weight: 500;
-        color: #003366;
+        color: #000000;
         font-size: 0.9rem;
     }
     
@@ -431,8 +431,8 @@ def main():
     /* Navigation elements */
     .nav-button {
         background: #ffffff;
-        border: 1px solid #003366;
-        color: #003366;
+        border: 1px solid #000000;
+        color: #000000;
         border-radius: 4px;
         padding: 0.5rem 1.5rem;
         font-weight: 500;
@@ -441,7 +441,7 @@ def main():
     }
     
     .nav-button:hover {
-        background: #003366;
+        background: #000000;
         color: white;
     }
     </style>
@@ -472,7 +472,7 @@ def main():
 def show_input_page():
     st.markdown("""
     <div class="section-header">
-        <h2>📊 프로젝트 파라미터 입력</h2>
+        <h2>프로젝트 파라미터 입력</h2>
         <p>각 항목의 값을 입력하세요. 기본값이 사전 설정되어 있습니다.</p>
     </div>
     """, unsafe_allow_html=True)
@@ -483,7 +483,7 @@ def show_input_page():
     with col1:
         st.markdown("""
         <div class="section-header">
-            <h3>🏢 기본 프로젝트 정보</h3>
+            <h3>기본 프로젝트 정보</h3>
         </div>
         """, unsafe_allow_html=True)
         business_period = st.number_input("사업기간 (년)", min_value=1, max_value=50, value=15)
@@ -501,7 +501,7 @@ def show_input_page():
         
         st.markdown("""
         <div class="section-header">
-            <h3>🏦 자금조달</h3>
+            <h3>자금조달</h3>
         </div>
         """, unsafe_allow_html=True)
         equity_ratio = st.number_input("자본비율 (%)", min_value=0.0, max_value=100.0, value=50.0, step=0.1)
@@ -532,7 +532,7 @@ def show_input_page():
         
         st.markdown("""
         <div class="section-header">
-            <h3>📈 기타 비율</h3>
+            <h3>기타 비율</h3>
         </div>
         """, unsafe_allow_html=True)
         corporate_tax_rate = st.number_input("법인세율 (%)", min_value=0.0, max_value=100.0, value=25.0, step=0.1)
@@ -674,7 +674,7 @@ def display_results(results, params):
     # Key metrics summary with skyblue styling
     st.markdown("""
     <div class="section-header">
-        <h3>📊 주요 재무지표 요약</h3>
+        <h3> 주요 재무지표 요약</h3>
     </div>
     """, unsafe_allow_html=True)
     
@@ -727,7 +727,7 @@ def display_results(results, params):
     cash_flows = list(results['net_cash_flow'].values())
     
     fig = go.Figure()
-    colors = ['#dc3545' if cf < 0 else '#003366' for cf in cash_flows]
+    colors = ['#dc3545' if cf < 0 else '#000000' for cf in cash_flows]
     
     fig.add_trace(go.Bar(
         x=[f"Year {y}" for y in years],
@@ -764,7 +764,7 @@ def display_results(results, params):
     # Revenue and costs over time with skyblue theme
     st.markdown("""
     <div class="section-header">
-        <h3>💰 매출액 및 제조원가 추이</h3>
+        <h3> 매출액 및 제조원가 추이</h3>
     </div>
     """, unsafe_allow_html=True)
     
@@ -779,8 +779,8 @@ def display_results(results, params):
         y=revenues,
         mode='lines+markers',
         name='총 매출액',
-        line=dict(color='#003366', width=3),
-        marker=dict(color='#003366', size=8)
+        line=dict(color='#000000', width=3),
+        marker=dict(color='#000000', size=8)
     ))
     
     fig2.add_trace(go.Scatter(
@@ -821,7 +821,7 @@ def display_results(results, params):
     # Detailed financial statements
     st.markdown("""
     <div class="section-header">
-        <h3>📋 상세 재무제표</h3>
+        <h3> 상세 재무제표</h3>
     </div>
     """, unsafe_allow_html=True)
     
@@ -918,7 +918,7 @@ def display_results(results, params):
     }
     
     variable_colors = {
-        'price': '#003366',
+        'price': '#000000',
         'cost': '#dc3545',
         'investment': '#6c757d'
     }
@@ -1122,7 +1122,7 @@ def display_results(results, params):
     .slider-title {
         font-size: 1.1rem;
         font-weight: 600;
-        color: #003366;
+        color: #000000;
         margin-bottom: 0.5rem;
     }
     
@@ -1421,7 +1421,7 @@ def display_results(results, params):
     
     # Add bars for each adjustment
     adjustments = [investment_change, price_change, cost_change]
-    colors = ['#6c757d', '#003366', '#dc3545']
+    colors = ['#6c757d', '#000000', '#dc3545']
     
     fig_sensitivity.add_trace(go.Bar(
         x=['투자비', '판매가격', '제조원가'],
@@ -1460,7 +1460,7 @@ def display_results(results, params):
     st.markdown("---")
     st.markdown("""
     <div class="section-header">
-        <h2>📈 IRR 회귀분석 공식</h2>
+        <h2> IRR 회귀분석 공식</h2>
         <p>주요 변수들의 IRR에 대한 영향도를 수학적 공식으로 표현</p>
     </div>
     """, unsafe_allow_html=True)
@@ -1535,8 +1535,8 @@ def display_results(results, params):
                     
                     # Format the regression equation
                     st.markdown(f"""
-                    <div style="background: #f8f9fa; border-left: 4px solid #003366; padding: 1.5rem; border-radius: 8px; margin: 1rem 0;">
-                        <h4 style="color: #003366; margin-bottom: 1rem;">IRR 예측 공식</h4>
+                    <div style="background: #f8f9fa; border-left: 4px solid #000000; padding: 1.5rem; border-radius: 8px; margin: 1rem 0;">
+                        <h4 style="color: #000000; margin-bottom: 1rem;">IRR 예측 공식</h4>
                         <div style="font-family: 'Courier New', monospace; font-size: 1.1rem; background: white; padding: 1rem; border-radius: 4px;">
                             <strong>IRR = {intercept:.4f} + ({coef_investment:.6f} × 투자비변화율) + ({coef_price:.6f} × 판매가격변화율) + ({coef_cost:.6f} × 제조원가변화율)</strong>
                         </div>
@@ -1573,7 +1573,7 @@ def display_results(results, params):
                     st.markdown(f"""
                     <div class="metric-container">
                         <h4>결정계수 (R²)</h4>
-                        <h2 style="color: #003366;">{r2:.3f}</h2>
+                        <h2 style="color: #000000;">{r2:.3f}</h2>
                         <p>모델 설명력: {r2*100:.1f}%</p>
                     </div>
                     """, unsafe_allow_html=True)
@@ -1606,7 +1606,7 @@ def display_results(results, params):
                     """, unsafe_allow_html=True)
                 
                 # Sensitivity ranking
-                st.markdown("#### 🎯 민감도 순위")
+                st.markdown("#### 민감도 순위")
                 
                 sensitivity_ranking = [
                     ("투자비", abs(coef_investment)),
